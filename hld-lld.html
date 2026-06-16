@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HLD / LLD — Interview Prep</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" integrity="sha512-Jk4AqjWsdSzSWCSuQTfYRIF84Rq/eV0G2+tu07byYwHcbTGfdmLrHjUSwvzp5HvbiqK4ibmNwdcG49Y5RGYPg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <div id="progressBar" class="progress-bar"></div>
+  <button class="sidebar-float-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">📐</span>
+          <span class="logo-text">HLD / LLD</span>
+        </div>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search topics..." />
+        <span class="search-icon">🔍</span>
+      </div>
+      <nav class="nav" id="nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Navigation</div>
+          <a href="index.html" class="nav-link" style="color:#68d391;font-weight:600;">🏠 Back to Home</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">HLD / LLD</div>
+          <a href="#hld-fundamentals" class="nav-link" data-section="hld-fundamentals">HLD Framework</a>
+          <a href="#lld-fundamentals" class="nav-link" data-section="lld-fundamentals">LLD & OOP Design</a>
+          <a href="#design-whatsapp" class="nav-link" data-section="design-whatsapp">Design WhatsApp</a>
+          <a href="#design-uber" class="nav-link" data-section="design-uber">Design Uber</a>
+          <a href="#design-netflix" class="nav-link" data-section="design-netflix">Design Netflix</a>
+          <a href="#design-twitter" class="nav-link" data-section="design-twitter">Design Twitter Feed</a>
+          <a href="#design-interview" class="nav-link" data-section="design-interview">HLD/LLD Interview Q&A</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Other Topics</div>
+          <a href="javascript.html" class="nav-link">JavaScript Fundamentals</a>
+          <a href="nodejs.html" class="nav-link">Node.js Mastery</a>
+          <a href="react.html" class="nav-link">React.js</a>
+          <a href="dsa.html" class="nav-link">DSA</a>
+          <a href="system-design.html" class="nav-link">System Design</a>
+          <a href="databases.html" class="nav-link">Databases</a>
+          <a href="kafka.html" class="nav-link">Kafka & Streaming</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="main" id="main">
+      <div class="content-wrapper">
+        <section class="section" id="hld-fundamentals">
+                  <div class="section-header">
+                    <span class="section-tag">HLD</span>
+                    <h2>High-Level Design (HLD) Framework</h2>
+                  </div>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:20px;">HLD asks you to architect a large-scale distributed system in 45 minutes. You're evaluated on: requirements clarification, capacity estimation, API design, data modeling, component selection, scalability approach, and trade-off reasoning. Use this framework on every system design question.</p>
+        
+                  <!-- SVG: HLD Framework flow -->
+                  <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:20px;margin-bottom:20px;overflow-x:auto;">
+                    <svg viewBox="0 0 720 80" style="width:100%;max-width:720px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="0" y="0" width="720" height="80" fill="#0f172a"/>
+                      <rect x="5"   y="20" width="95" height="40" rx="5" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="52"  y="38" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">1. Clarify</text>
+                      <text x="52"  y="52" text-anchor="middle" fill="#64748b" font-size="9"  font-family="monospace">requirements</text>
+                      <path d="M100 40 L115 40" stroke="#475569" stroke-width="1.5" marker-end="url(#hf)"/>
+                      <rect x="115" y="20" width="90" height="40" rx="5" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="160" y="38" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">2. Estimate</text>
+                      <text x="160" y="52" text-anchor="middle" fill="#64748b" font-size="9"  font-family="monospace">scale &amp; QPS</text>
+                      <path d="M205 40 L220 40" stroke="#475569" stroke-width="1.5" marker-end="url(#hf)"/>
+                      <rect x="220" y="20" width="90" height="40" rx="5" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="265" y="38" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">3. API</text>
+                      <text x="265" y="52" text-anchor="middle" fill="#64748b" font-size="9"  font-family="monospace">design</text>
+                      <path d="M310 40 L325 40" stroke="#475569" stroke-width="1.5" marker-end="url(#hf)"/>
+                      <rect x="325" y="20" width="90" height="40" rx="5" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="370" y="38" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">4. Data</text>
+                      <text x="370" y="52" text-anchor="middle" fill="#64748b" font-size="9"  font-family="monospace">model</text>
+                      <path d="M415 40 L430 40" stroke="#475569" stroke-width="1.5" marker-end="url(#hf)"/>
+                      <rect x="430" y="20" width="90" height="40" rx="5" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="475" y="38" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">5. HLD</text>
+                      <text x="475" y="52" text-anchor="middle" fill="#64748b" font-size="9"  font-family="monospace">diagram</text>
+                      <path d="M520 40 L535 40" stroke="#475569" stroke-width="1.5" marker-end="url(#hf)"/>
+                      <rect x="535" y="20" width="90" height="40" rx="5" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="580" y="38" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">6. Deep</text>
+                      <text x="580" y="52" text-anchor="middle" fill="#64748b" font-size="9"  font-family="monospace">dive</text>
+                      <path d="M625 40 L640 40" stroke="#475569" stroke-width="1.5" marker-end="url(#hf)"/>
+                      <rect x="640" y="20" width="75" height="40" rx="5" fill="#1a2e1a" stroke="#4ade80" stroke-width="1.5"/>
+                      <text x="677" y="38" text-anchor="middle" fill="#86efac" font-size="10" font-family="monospace">7. Trade-</text>
+                      <text x="677" y="52" text-anchor="middle" fill="#86efac" font-size="9"  font-family="monospace">offs</text>
+                      <defs><marker id="hf" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#475569"/></marker></defs>
+                    </svg>
+                  </div>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">Step-by-Step Framework</h3>
+                  <div class="feature-grid" style="grid-template-columns:repeat(2,1fr);">
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:8px;">Step 1: Clarify Requirements (5 min)</h4>
+                      <ul style="color:#94a3b8;font-size:13px;line-height:1.9;padding-left:16px;">
+                        <li>Functional: what must the system do? Core features only (v1)</li>
+                        <li>Non-functional: latency target? consistency? availability?</li>
+                        <li>Scale: DAU, QPS, data size, read:write ratio</li>
+                        <li>Constraints: mobile? global? real-time?</li>
+                      </ul>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:8px;">Step 2: Capacity Estimation (3 min)</h4>
+                      <ul style="color:#94a3b8;font-size:13px;line-height:1.9;padding-left:16px;">
+                        <li>QPS = DAU × actions/day ÷ 86400</li>
+                        <li>Storage = records/day × record size × retention days</li>
+                        <li>Bandwidth = QPS × avg response size</li>
+                        <li>Read/write ratio → drives cache and replica strategy</li>
+                      </ul>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:8px;">Step 3–4: API + Data Model (8 min)</h4>
+                      <ul style="color:#94a3b8;font-size:13px;line-height:1.9;padding-left:16px;">
+                        <li>Define 3–5 core APIs: method, path, request/response</li>
+                        <li>Primary entities and relationships</li>
+                        <li>SQL vs NoSQL decision with reasoning</li>
+                        <li>Key indexes and access patterns</li>
+                      </ul>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:8px;">Step 5–7: Design + Deep Dive (25 min)</h4>
+                      <ul style="color:#94a3b8;font-size:13px;line-height:1.9;padding-left:16px;">
+                        <li>Draw the HLD: clients → CDN → LB → services → DB/cache</li>
+                        <li>Let interviewer pick a component to deep dive</li>
+                        <li>Discuss bottlenecks and how you'd scale each component</li>
+                        <li>Explicitly call out trade-offs: CP vs AP, sync vs async</li>
+                      </ul>
+                    </div>
+                  </div>
+                </section>
+
+        <section class="section" id="lld-fundamentals">
+                  <div class="section-header">
+                    <span class="section-tag">LLD</span>
+                    <h2>Low-Level Design (LLD) &amp; OOP Design</h2>
+                  </div>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:20px;">LLD asks you to design the classes, interfaces, and relationships for a specific component — a parking lot, elevator system, chess game, or ATM. Evaluated on: SOLID principles, design patterns, extensibility, and clean OOP.</p>
+
+                  <!-- LLD Class Diagram: Parking Lot -->
+                  <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:20px;margin-bottom:20px;overflow-x:auto;">
+                    <svg viewBox="0 0 720 300" style="width:100%;max-width:720px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="0" y="0" width="720" height="300" fill="#0f172a"/>
+                      <text x="360" y="20" text-anchor="middle" fill="#64748b" font-size="12" font-family="monospace">LLD Class Diagram — Parking Lot</text>
+
+                      <!-- ParkingLot -->
+                      <rect x="270" y="35" width="180" height="80" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+                      <rect x="270" y="35" width="180" height="24" rx="6" fill="#2d1f00"/>
+                      <text x="360" y="52" text-anchor="middle" fill="#fcd34d" font-size="12" font-family="monospace" font-weight="bold">ParkingLot</text>
+                      <line x1="270" y1="59" x2="450" y2="59" stroke="#f59e0b" stroke-width="1"/>
+                      <text x="280" y="74" fill="#94a3b8" font-size="10" font-family="monospace">floors: Floor[]</text>
+                      <text x="280" y="87" fill="#94a3b8" font-size="10" font-family="monospace">activeTickets: Map</text>
+                      <text x="280" y="100" fill="#94a3b8" font-size="10" font-family="monospace">feeStrategy: IFeeStrategy</text>
+                      <text x="280" y="113" fill="#68d391" font-size="10" font-family="monospace">park(vehicle) / exit(plate)</text>
+
+                      <!-- ParkingSpot -->
+                      <rect x="30" y="170" width="160" height="80" rx="6" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                      <rect x="30" y="170" width="160" height="24" rx="6" fill="#1e2d4a"/>
+                      <text x="110" y="187" text-anchor="middle" fill="#93c5fd" font-size="12" font-family="monospace" font-weight="bold">ParkingSpot</text>
+                      <line x1="30" y1="194" x2="190" y2="194" stroke="#60a5fa" stroke-width="1"/>
+                      <text x="40" y="209" fill="#94a3b8" font-size="10" font-family="monospace">id, floor, type</text>
+                      <text x="40" y="222" fill="#94a3b8" font-size="10" font-family="monospace">vehicle: Vehicle|null</text>
+                      <text x="40" y="235" fill="#68d391" font-size="10" font-family="monospace">park() / unpark()</text>
+                      <text x="40" y="248" fill="#68d391" font-size="10" font-family="monospace">isAvailable()</text>
+
+                      <!-- Vehicle -->
+                      <rect x="220" y="170" width="150" height="65" rx="6" fill="#1e293b" stroke="#a78bfa" stroke-width="1.5"/>
+                      <rect x="220" y="170" width="150" height="24" rx="6" fill="#2a1f4a"/>
+                      <text x="295" y="187" text-anchor="middle" fill="#c4b5fd" font-size="12" font-family="monospace" font-weight="bold">Vehicle</text>
+                      <line x1="220" y1="194" x2="370" y2="194" stroke="#a78bfa" stroke-width="1"/>
+                      <text x="230" y="209" fill="#94a3b8" font-size="10" font-family="monospace">plate: string</text>
+                      <text x="230" y="222" fill="#94a3b8" font-size="10" font-family="monospace">type: VehicleType</text>
+
+                      <!-- ParkingTicket -->
+                      <rect x="395" y="170" width="160" height="80" rx="6" fill="#1e293b" stroke="#4ade80" stroke-width="1.5"/>
+                      <rect x="395" y="170" width="160" height="24" rx="6" fill="#1a2e1a"/>
+                      <text x="475" y="187" text-anchor="middle" fill="#86efac" font-size="12" font-family="monospace" font-weight="bold">ParkingTicket</text>
+                      <line x1="395" y1="194" x2="555" y2="194" stroke="#4ade80" stroke-width="1"/>
+                      <text x="405" y="209" fill="#94a3b8" font-size="10" font-family="monospace">id, entryTime, exitTime</text>
+                      <text x="405" y="222" fill="#94a3b8" font-size="10" font-family="monospace">vehicle, spot</text>
+                      <text x="405" y="235" fill="#68d391" font-size="10" font-family="monospace">close() / durationHours()</text>
+
+                      <!-- IFeeStrategy (interface) -->
+                      <rect x="570" y="170" width="140" height="65" rx="6" fill="#1e293b" stroke="#f87171" stroke-width="1.5" stroke-dasharray="5,3"/>
+                      <rect x="570" y="170" width="140" height="24" rx="6" fill="#2d1b1b"/>
+                      <text x="640" y="183" text-anchor="middle" fill="#fca5a5" font-size="10" font-family="monospace">«interface»</text>
+                      <text x="640" y="196" text-anchor="middle" fill="#fca5a5" font-size="11" font-family="monospace" font-weight="bold">IFeeStrategy</text>
+                      <line x1="570" y1="200" x2="710" y2="200" stroke="#f87171" stroke-width="1"/>
+                      <text x="580" y="215" fill="#94a3b8" font-size="10" font-family="monospace">calculate(hrs,type)</text>
+                      <text x="580" y="228" fill="#94a3b8" font-size="10" font-family="monospace">: number</text>
+
+                      <!-- Relationships -->
+                      <!-- ParkingLot → has many ParkingSpot -->
+                      <path d="M300 115 L110 170" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="4,2"/>
+                      <text x="160" y="145" fill="#64748b" font-size="9" font-family="monospace">1..*</text>
+                      <!-- ParkingLot → creates ParkingTicket -->
+                      <path d="M420 115 L475 170" stroke="#4ade80" stroke-width="1.5" stroke-dasharray="4,2"/>
+                      <text x="455" y="148" fill="#64748b" font-size="9" font-family="monospace">creates</text>
+                      <!-- ParkingLot → uses IFeeStrategy -->
+                      <path d="M450 75 L640 170" stroke="#f87171" stroke-width="1.5" stroke-dasharray="4,2"/>
+                      <text x="560" y="120" fill="#64748b" font-size="9" font-family="monospace">uses</text>
+                      <!-- ParkingSpot → parks Vehicle -->
+                      <path d="M190 210 L220 210" stroke="#a78bfa" stroke-width="1.5"/>
+                      <text x="196" y="204" fill="#64748b" font-size="9" font-family="monospace">0..1</text>
+
+                      <!-- Pattern labels at bottom -->
+                      <rect x="10" y="268" width="100" height="22" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+                      <text x="60" y="283" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">Strategy Pattern</text>
+                      <rect x="120" y="268" width="100" height="22" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+                      <text x="170" y="283" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">Single Responsibility</text>
+                      <rect x="230" y="268" width="80" height="22" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+                      <text x="270" y="283" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">Dependency Inv.</text>
+                      <defs><marker id="lld1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#475569"/></marker></defs>
+                    </svg>
+                  </div>
+
+                  <pre><code class="language-javascript">// ─── LLD: Design a Parking Lot ───
+        // Requirements: multiple floors, multiple spot types, entry/exit, billing
+        
+        // SOLID: each class has one responsibility
+        class ParkingSpot {
+          constructor(id, floor, type) { // type: COMPACT, REGULAR, LARGE, MOTORCYCLE
+            this.id = id; this.floor = floor; this.type = type;
+            this.vehicle = null;
+          }
+          isAvailable() { return this.vehicle === null; }
+          park(vehicle) { this.vehicle = vehicle; }
+          unpark() { const v = this.vehicle; this.vehicle = null; return v; }
+        }
+        
+        class Vehicle {
+          constructor(plate, type) { this.plate = plate; this.type = type; }
+        }
+        
+        // Strategy pattern: pluggable fee calculation
+        class HourlyFeeStrategy {
+          calculate(hours, type) {
+            const rates = { MOTORCYCLE: 1, COMPACT: 2, REGULAR: 3, LARGE: 4 };
+            return hours * (rates[type] || 3);
+          }
+        }
+        
+        class ParkingTicket {
+          constructor(vehicle, spot) {
+            this.id = crypto.randomUUID();
+            this.vehicle = vehicle;
+            this.spot = spot;
+            this.entryTime = Date.now();
+            this.exitTime = null;
+          }
+          close() { this.exitTime = Date.now(); }
+          durationHours() { return (this.exitTime - this.entryTime) / 3_600_000; }
+        }
+        
+        class ParkingLot {
+          constructor(floors, spotsPerFloor) {
+            this.floors = floors;
+            this.spots = new Map(); // spotId → ParkingSpot
+            this.activeTickets = new Map(); // plate → ParkingTicket
+            this.feeStrategy = new HourlyFeeStrategy();
+            this._initialize(floors, spotsPerFloor);
+          }
+        
+          _initialize(floors, spotsPerFloor) {
+            for (let f = 0; f < floors; f++) {
+              for (let s = 0; s < spotsPerFloor; s++) {
+                const type = s < 2 ? 'MOTORCYCLE' : s < 6 ? 'COMPACT' : s < 9 ? 'REGULAR' : 'LARGE';
+                const id = `F${f}S${s}`;
+                this.spots.set(id, new ParkingSpot(id, f, type));
+              }
+            }
+          }
+        
+          // Find nearest available spot for vehicle type
+          findSpot(vehicleType) {
+            // Order: same floor, nearest spot
+            for (const [, spot] of this.spots) {
+              if (spot.isAvailable() && this._canFit(vehicleType, spot.type)) return spot;
+            }
+            return null; // lot full
+          }
+        
+          _canFit(vehicleType, spotType) {
+            const sizes = { MOTORCYCLE: 0, COMPACT: 1, REGULAR: 2, LARGE: 3 };
+            return sizes[vehicleType] <= sizes[spotType];
+          }
+        
+          park(vehicle) {
+            if (this.activeTickets.has(vehicle.plate)) throw new Error('Already parked');
+            const spot = this.findSpot(vehicle.type);
+            if (!spot) throw new Error('Lot full');
+            spot.park(vehicle);
+            const ticket = new ParkingTicket(vehicle, spot);
+            this.activeTickets.set(vehicle.plate, ticket);
+            return ticket;
+          }
+        
+          exit(plate) {
+            const ticket = this.activeTickets.get(plate);
+            if (!ticket) throw new Error('Not found');
+            ticket.close();
+            ticket.spot.unpark();
+            this.activeTickets.delete(plate);
+            const fee = this.feeStrategy.calculate(ticket.durationHours(), ticket.vehicle.type);
+            return { ticket, fee };
+          }
+        
+          availableCount() {
+            return [...this.spots.values()].filter(s => s.isAvailable()).length;
+          }
+        }
+        
+        // Key design patterns used:
+        // Strategy: HourlyFeeStrategy — swap in WeekendFeeStrategy without changing ParkingLot
+        // Observer: ParkingLot could emit events for capacity alerts
+        // Singleton: ParkingLot instance managed by IoC container
+        // Factory: VehicleFactory to create correct vehicle type from input</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:24px 0 12px;">SOLID Principles — Rapid Reference</h3>
+                  <div class="feature-grid" style="grid-template-columns:repeat(5,1fr);">
+                    <div class="feature-card" style="padding:12px;"><span style="color:#f59e0b;font-weight:800;font-size:22px;display:block;margin-bottom:4px;">S</span><h4 style="color:#f1f5f9;font-size:13px;margin-bottom:4px;">Single Responsibility</h4><p style="color:#64748b;font-size:12px;">One class = one reason to change</p></div>
+                    <div class="feature-card" style="padding:12px;"><span style="color:#f59e0b;font-weight:800;font-size:22px;display:block;margin-bottom:4px;">O</span><h4 style="color:#f1f5f9;font-size:13px;margin-bottom:4px;">Open/Closed</h4><p style="color:#64748b;font-size:12px;">Open for extension, closed for modification</p></div>
+                    <div class="feature-card" style="padding:12px;"><span style="color:#f59e0b;font-weight:800;font-size:22px;display:block;margin-bottom:4px;">L</span><h4 style="color:#f1f5f9;font-size:13px;margin-bottom:4px;">Liskov Substitution</h4><p style="color:#64748b;font-size:12px;">Subtypes must be substitutable for base types</p></div>
+                    <div class="feature-card" style="padding:12px;"><span style="color:#f59e0b;font-weight:800;font-size:22px;display:block;margin-bottom:4px;">I</span><h4 style="color:#f1f5f9;font-size:13px;margin-bottom:4px;">Interface Segregation</h4><p style="color:#64748b;font-size:12px;">Clients shouldn't depend on unused methods</p></div>
+                    <div class="feature-card" style="padding:12px;"><span style="color:#f59e0b;font-weight:800;font-size:22px;display:block;margin-bottom:4px;">D</span><h4 style="color:#f1f5f9;font-size:13px;margin-bottom:4px;">Dependency Inversion</h4><p style="color:#64748b;font-size:12px;">Depend on abstractions, not concretions</p></div>
+                  </div>
+                </section>
+
+        <section class="section" id="design-whatsapp">
+                  <div class="section-header">
+                    <span class="section-tag">System Design</span>
+                    <h2>Design WhatsApp / Messaging System</h2>
+                  </div>
+                  <!-- SVG: WhatsApp architecture -->
+                  <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:20px;margin-bottom:20px;overflow-x:auto;">
+                    <svg viewBox="0 0 720 240" style="width:100%;max-width:720px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="0" y="0" width="720" height="240" fill="#0f172a"/>
+                      <!-- Client A -->
+                      <rect x="10" y="85" width="80" height="50" rx="6" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="50" y="107" text-anchor="middle" fill="#93c5fd" font-size="11" font-family="monospace">Client A</text>
+                      <text x="50" y="122" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">WebSocket</text>
+                      <!-- LB -->
+                      <rect x="110" y="85" width="70" height="50" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                      <text x="145" y="107" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace">LB</text>
+                      <text x="145" y="120" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">(L4/L7)</text>
+                      <!-- Arrows -->
+                      <path d="M90 110 L110 110" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#wh)"/>
+                      <path d="M180 110 L200 110" stroke="#475569" stroke-width="1.5" marker-end="url(#wh)"/>
+                      <!-- Chat Servers -->
+                      <rect x="200" y="55" width="110" height="110" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
+                      <text x="255" y="78" text-anchor="middle" fill="#fcd34d" font-size="11" font-family="monospace">Chat Servers</text>
+                      <rect x="210" y="85" width="90" height="22" rx="3" fill="#334155" stroke="#64748b" stroke-width="1"/>
+                      <text x="255" y="100" text-anchor="middle" fill="#e2e8f0" font-size="9" font-family="monospace">WebSocket mgr</text>
+                      <rect x="210" y="112" width="90" height="22" rx="3" fill="#334155" stroke="#64748b" stroke-width="1"/>
+                      <text x="255" y="127" text-anchor="middle" fill="#e2e8f0" font-size="9" font-family="monospace">Msg router</text>
+                      <rect x="210" y="139" width="90" height="16" rx="3" fill="#334155" stroke="#64748b" stroke-width="1"/>
+                      <text x="255" y="151" text-anchor="middle" fill="#e2e8f0" font-size="9" font-family="monospace">Presence</text>
+                      <!-- Middle arrows -->
+                      <path d="M310 90 L340 80" stroke="#475569" stroke-width="1.5" marker-end="url(#wh)"/>
+                      <path d="M310 110 L340 110" stroke="#475569" stroke-width="1.5" marker-end="url(#wh)"/>
+                      <path d="M310 130 L340 140" stroke="#475569" stroke-width="1.5" marker-end="url(#wh)"/>
+                      <!-- Services -->
+                      <rect x="340" y="15" width="120" height="40" rx="5" fill="#1a2e1a" stroke="#4ade80" stroke-width="1.5"/>
+                      <text x="400" y="32" text-anchor="middle" fill="#86efac" font-size="10" font-family="monospace">Message Store</text>
+                      <text x="400" y="46" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">Cassandra (time-series)</text>
+                      <rect x="340" y="90" width="120" height="40" rx="5" fill="#2d1b4e" stroke="#a78bfa" stroke-width="1.5"/>
+                      <text x="400" y="107" text-anchor="middle" fill="#c4b5fd" font-size="10" font-family="monospace">Presence Service</text>
+                      <text x="400" y="121" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">Redis (TTL heartbeat)</text>
+                      <rect x="340" y="160" width="120" height="40" rx="5" fill="#2d1b1b" stroke="#f87171" stroke-width="1.5"/>
+                      <text x="400" y="177" text-anchor="middle" fill="#fca5a5" font-size="10" font-family="monospace">Push Notif Service</text>
+                      <text x="400" y="191" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">FCM / APNs</text>
+                      <!-- S3 -->
+                      <rect x="490" y="15" width="90" height="35" rx="5" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                      <text x="535" y="30" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace">S3 / CDN</text>
+                      <text x="535" y="43" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">media files</text>
+                      <!-- Client B -->
+                      <rect x="490" y="85" width="80" height="50" rx="6" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="530" y="107" text-anchor="middle" fill="#93c5fd" font-size="11" font-family="monospace">Client B</text>
+                      <text x="530" y="122" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">WebSocket</text>
+                      <!-- Offline queue -->
+                      <rect x="590" y="85" width="120" height="50" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
+                      <text x="650" y="105" text-anchor="middle" fill="#fcd34d" font-size="10" font-family="monospace">Offline Queue</text>
+                      <text x="650" y="120" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">SQS / Redis List</text>
+                      <!-- Right arrows — Message Store → S3 and Chat Server → Client B -->
+                      <path d="M460 35 L490 32" stroke="#475569" stroke-width="1.5" marker-end="url(#wh)"/>
+                      <path d="M460 110 L490 110" stroke="#475569" stroke-width="1.5" marker-end="url(#wh)"/>
+                      <path d="M570 110 L590 110" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#wh)"/>
+                      <defs><marker id="wh" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#475569"/></marker></defs>
+                    </svg>
+                  </div>
+                  <pre><code class="language-javascript">// ─── Scale: 2B users, 100B msgs/day ───
+        // QPS: 100B / 86400 ≈ 1.2M msgs/sec
+        // Storage: avg 100 bytes × 100B = 10TB/day
+        
+        // ─── Core architecture decisions ───
+        
+        // 1. Transport: WebSocket for persistent bidirectional connection
+        //    Long polling fallback for mobile networks
+        //    Connection server per user: user connects to specific chat server
+        //    Service discovery (ZooKeeper) maps userId → chatServerId
+        
+        // 2. Message routing flow:
+        //    Sender → sender's chat server
+        //    → check if recipient online (Redis presence)
+        //    → YES: send to recipient's chat server → push via WebSocket
+        //    → NO: store in offline message queue (Redis or SQS) + send push notification
+        
+        // 3. Message storage: Apache Cassandra
+        //    Why Cassandra: wide-column, optimized for time-series append
+        //    Schema: partition_key=(chat_id), clustering_key=(message_id DESC)
+        //    → O(1) write, O(1) range read for last N messages per chat
+        //    Snowflake IDs for message_id: timestamp bits (41) + machine (10) + sequence (12)
+        //    → global uniqueness, sortable by time, no coordination needed
+        
+        // 4. Media (images, video): pre-signed S3 URLs
+        //    Client uploads directly to S3 (bypasses chat servers)
+        //    Only metadata (S3 URL) sent via chat servers
+        //    CDN in front of S3 for delivery
+        
+        // 5. Group messaging:
+        //    Up to 256 members: fan-out on write (message copied to each member's mailbox)
+        //    Above 256 members: fan-out on read (store once, each client reads from shared partition)
+        
+        // 6. End-to-end encryption (WhatsApp Signal protocol):
+        //    Keys exchanged out-of-band (server never holds private keys)
+        //    Server stores only encrypted ciphertext
+        //    Read receipts: double tick (delivered), blue tick (read) — ACK sent from client
+        
+        // 7. Presence service (online/last seen):
+        //    Redis SET userId → lastHeartbeatTs with TTL 60s
+        //    Client sends heartbeat every 30s
+        //    GET userId → if missing from Redis = offline; compute "last seen" from last heartbeat</code></pre>
+                </section>
+
+        <section class="section" id="design-uber">
+                  <div class="section-header">
+                    <span class="section-tag">System Design</span>
+                    <h2>Design Uber / Ride-Sharing</h2>
+                  </div>
+
+                  <!-- Uber architecture SVG -->
+                  <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:20px;margin-bottom:20px;overflow-x:auto;">
+                    <svg viewBox="0 0 720 290" style="width:100%;max-width:720px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
+                      <defs><marker id="ub" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#475569"/></marker></defs>
+                      <rect x="0" y="0" width="720" height="290" fill="#0f172a"/>
+                      <text x="360" y="18" text-anchor="middle" fill="#64748b" font-size="11" font-family="monospace">Uber High-Level Architecture</text>
+
+                      <!-- Rider & Driver apps -->
+                      <rect x="5" y="35" width="80" height="38" rx="5" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="45" y="51" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">Rider App</text>
+                      <text x="45" y="64" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">REST/WS</text>
+                      <rect x="5" y="85" width="80" height="38" rx="5" fill="#1a2e1a" stroke="#4ade80" stroke-width="1.5"/>
+                      <text x="45" y="101" text-anchor="middle" fill="#86efac" font-size="10" font-family="monospace">Driver App</text>
+                      <text x="45" y="114" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">WebSocket</text>
+
+                      <!-- API Gateway -->
+                      <rect x="105" y="55" width="75" height="45" rx="5" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                      <text x="142" y="74" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace">API</text>
+                      <text x="142" y="87" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace">Gateway</text>
+                      <path d="M85 54 L105 70" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#ub)"/>
+                      <path d="M85 104 L105 85" stroke="#4ade80" stroke-width="1.5" marker-end="url(#ub)"/>
+
+                      <!-- Services column — fan out from gateway -->
+                      <path d="M180 77 L200 57" stroke="#475569" stroke-width="1.5" marker-end="url(#ub)"/>
+                      <path d="M180 77 L200 103" stroke="#475569" stroke-width="1.5" marker-end="url(#ub)"/>
+                      <path d="M180 77 L200 149" stroke="#475569" stroke-width="1.5" marker-end="url(#ub)"/>
+                      <path d="M180 77 L200 191" stroke="#475569" stroke-width="1.5" marker-end="url(#ub)"/>
+
+                      <!-- Trip Service -->
+                      <rect x="200" y="38" width="120" height="38" rx="5" fill="#2d1b1b" stroke="#f59e0b" stroke-width="1.5"/>
+                      <text x="260" y="54" text-anchor="middle" fill="#fcd34d" font-size="10" font-family="monospace">Trip Service</text>
+                      <text x="260" y="67" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">Postgres (ACID)</text>
+
+                      <!-- Location Service -->
+                      <rect x="200" y="84" width="120" height="38" rx="5" fill="#1a2e1a" stroke="#4ade80" stroke-width="1.5"/>
+                      <text x="260" y="100" text-anchor="middle" fill="#86efac" font-size="10" font-family="monospace">Location Service</text>
+                      <text x="260" y="113" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">Redis GEOSEARCH</text>
+
+                      <!-- Matching Service -->
+                      <rect x="200" y="130" width="120" height="38" rx="5" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="260" y="146" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">Matching Service</text>
+                      <text x="260" y="159" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">GEORADIUS → ETA rank</text>
+
+                      <!-- Surge Pricing -->
+                      <rect x="200" y="176" width="120" height="38" rx="5" fill="#2d1b4e" stroke="#a78bfa" stroke-width="1.5"/>
+                      <text x="260" y="192" text-anchor="middle" fill="#c4b5fd" font-size="10" font-family="monospace">Surge Pricing</text>
+                      <text x="260" y="205" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">demand/supply ratio</text>
+
+                      <!-- Right side arrows to data stores -->
+                      <path d="M320 57" stroke="#475569" stroke-width="1.5" marker-end="url(#ub)"/><path d="M320 57 L350 57" stroke="#475569" stroke-width="1.5" marker-end="url(#ub)"/>
+                      <path d="M320 103 L350 103" stroke="#475569" stroke-width="1.5" marker-end="url(#ub)"/>
+                      <path d="M320 149 L350 149" stroke="#475569" stroke-width="1.5" marker-end="url(#ub)"/>
+
+                      <!-- Kafka -->
+                      <rect x="350" y="38" width="110" height="38" rx="5" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
+                      <text x="405" y="54" text-anchor="middle" fill="#fcd34d" font-size="10" font-family="monospace">Kafka</text>
+                      <text x="405" y="67" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">trip-events topic</text>
+
+                      <!-- Redis Geospatial -->
+                      <rect x="350" y="84" width="110" height="38" rx="5" fill="#1e293b" stroke="#4ade80" stroke-width="1.5"/>
+                      <text x="405" y="100" text-anchor="middle" fill="#86efac" font-size="10" font-family="monospace">Redis Cluster</text>
+                      <text x="405" y="113" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">drivers:available</text>
+
+                      <!-- Maps / ETA -->
+                      <rect x="350" y="130" width="110" height="38" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="405" y="146" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">Maps / OSRM</text>
+                      <text x="405" y="159" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">ETA calculation</text>
+
+                      <!-- Kafka consumers -->
+                      <path d="M460 57 L490 39" stroke="#475569" stroke-width="1.5" marker-end="url(#ub)"/>
+                      <path d="M460 57 L490 75" stroke="#475569" stroke-width="1.5" marker-end="url(#ub)"/>
+                      <path d="M460 57 L490 111" stroke="#475569" stroke-width="1.5" marker-end="url(#ub)"/>
+
+                      <rect x="490" y="25" width="110" height="28" rx="4" fill="#1e293b" stroke="#f87171" stroke-width="1.5"/>
+                      <text x="545" y="43" text-anchor="middle" fill="#fca5a5" font-size="9" font-family="monospace">Billing Service</text>
+                      <rect x="490" y="62" width="110" height="28" rx="4" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="545" y="80" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace">Notification Svc</text>
+                      <rect x="490" y="99" width="110" height="28" rx="4" fill="#1e293b" stroke="#a78bfa" stroke-width="1.5"/>
+                      <text x="545" y="117" text-anchor="middle" fill="#c4b5fd" font-size="9" font-family="monospace">Analytics Service</text>
+
+                      <!-- State machine — pushed down to its own row -->
+                      <line x1="10" y1="228" x2="710" y2="228" stroke="#1e293b" stroke-width="1"/>
+                      <text x="14" y="244" fill="#64748b" font-size="10" font-family="monospace">Trip State Machine:</text>
+                      <rect x="14" y="252" width="82" height="24" rx="4" fill="#1e293b" stroke="#64748b" stroke-width="1"/>
+                      <text x="55" y="268" text-anchor="middle" fill="#e2e8f0" font-size="9" font-family="monospace">REQUESTED</text>
+                      <path d="M96 264 L112 264" stroke="#64748b" stroke-width="1.5" marker-end="url(#ub)"/>
+                      <rect x="112" y="252" width="82" height="24" rx="4" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1"/>
+                      <text x="153" y="268" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace">ASSIGNED</text>
+                      <path d="M194 264 L210 264" stroke="#64748b" stroke-width="1.5" marker-end="url(#ub)"/>
+                      <rect x="210" y="252" width="82" height="24" rx="4" fill="#1e293b" stroke="#f59e0b" stroke-width="1"/>
+                      <text x="251" y="268" text-anchor="middle" fill="#fcd34d" font-size="9" font-family="monospace">ARRIVING</text>
+                      <path d="M292 264 L308 264" stroke="#64748b" stroke-width="1.5" marker-end="url(#ub)"/>
+                      <rect x="308" y="252" width="90" height="24" rx="4" fill="#1a2e1a" stroke="#4ade80" stroke-width="1"/>
+                      <text x="353" y="268" text-anchor="middle" fill="#86efac" font-size="9" font-family="monospace">IN_PROGRESS</text>
+                      <path d="M398 264 L414 264" stroke="#64748b" stroke-width="1.5" marker-end="url(#ub)"/>
+                      <rect x="414" y="252" width="82" height="24" rx="4" fill="#1e293b" stroke="#a78bfa" stroke-width="1"/>
+                      <text x="455" y="268" text-anchor="middle" fill="#c4b5fd" font-size="9" font-family="monospace">COMPLETED</text>
+                    </svg>
+                  </div>
+
+                  <pre><code class="language-javascript">// ─── Scale: 5M rides/day, 3M active drivers ───
+        // QPS: ~58 requests/sec for bookings; driver location updates: 3M × (1/5 sec) = 600K/sec
+        
+        // ─── Core challenges ───
+        // 1. Geospatial matching: find nearby available drivers in O(log n)
+        // 2. Surge pricing: calculate in real-time based on supply/demand
+        // 3. Driver location: handle 600K location updates/second
+        // 4. Trip state machine: atomically transition states across services
+        
+        // ─── Architecture ───
+        
+        // Driver location service:
+        // Geohash: encode lat/lng as a base32 string — adjacent cells share prefix
+        // Resolution 6 geohash ≈ 1.2km × 0.6km precision
+        // Redis GEOADD: stores (lng, lat) in a sorted set using geohash scoring
+        //   GEOADD drivers:available lng lat "driver-123"
+        //   GEORADIUS drivers:available lng lat 3 km WITHCOORD WITHDIST COUNT 10 ASC
+        // Driver publishes location every 5 sec via WebSocket to location service
+        // Location service writes to Redis (TTL 30s — driver disappears if no update)
+        
+        // Matching service:
+        // When user requests ride: GEORADIUS to find nearest 10 drivers
+        // Sort by ETA (call routing service or use Haversine distance as proxy)
+        // Dispatch to nearest driver via push notification
+        // Driver has 15s to accept; if declined, move to next candidate
+        // Optimistic: pre-compute driver ETAs using road network (OSRM or Google Maps API)
+        
+        // Trip service — state machine:
+        // States: REQUESTED → DRIVER_ASSIGNED → DRIVER_ARRIVING → IN_PROGRESS → COMPLETED
+        // Each transition is an event published to Kafka
+        // State stored in Postgres (ACID — financial accuracy matters)
+        // Kafka consumers: billing, analytics, support, notifications
+        
+        // Surge pricing:
+        // Supply/demand ratio per geohash × time window
+        // demand_ratio = pending_requests / available_drivers
+        // if ratio > 1.5 → surge = 1.2x; > 2.0 → 1.5x; > 3.0 → 2.0x
+        // Computed by a streaming job (Flink/Spark Streaming) on rider request events
+        // Cached in Redis with 1-minute TTL
+        
+        // Payments:
+        // Pre-authorize card at ride request
+        // Capture actual amount at trip completion
+        // Fare = base_fare + (per_mile × distance) + (per_min × duration) × surge_multiplier
+        // Stripe or Braintree for payment processing; idempotency keys on all payment calls
+        
+        // Data storage choices:
+        // Driver locations: Redis (ephemeral, sub-ms reads)
+        // Trips: PostgreSQL (ACID, relational, financial)
+        // Ride history (analytics): S3 + Redshift (columnar, cheap long-term)
+        // Real-time geospatial: Redis GEOSEARCH + PostGIS for complex polygons (surge zones)</code></pre>
+                </section>
+
+        <section class="section" id="design-netflix">
+                  <div class="section-header">
+                    <span class="section-tag">System Design</span>
+                    <h2>Design Netflix / Video Streaming</h2>
+                  </div>
+                  <!-- Netflix Architecture Diagram -->
+                  <svg viewBox="0 0 860 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;border-radius:10px;border:1px solid #2a3044;background:#13161e;margin-bottom:20px;display:block;">
+                    <defs>
+                      <marker id="nf-arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#475569"/></marker>
+                      <marker id="nf-arrow-g" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#68d391"/></marker>
+                      <marker id="nf-arrow-b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#60a5fa"/></marker>
+                    </defs>
+
+                    <!-- Title -->
+                    <text x="430" y="26" text-anchor="middle" fill="#f1f5f9" font-size="14" font-weight="700" font-family="system-ui,sans-serif">Netflix Architecture</text>
+
+                    <!-- ── UPLOAD PIPELINE (top-left) ── -->
+                    <text x="14" y="52" fill="#94a3b8" font-size="11" font-weight="600" font-family="system-ui,sans-serif" text-transform="uppercase">UPLOAD PIPELINE</text>
+                    <!-- Studio -->
+                    <rect x="14" y="58" width="110" height="38" rx="6" fill="#1e2230" stroke="#f87171" stroke-width="1.5"/>
+                    <text x="69" y="72" text-anchor="middle" fill="#fca5a5" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Studio Upload</text>
+                    <text x="69" y="87" text-anchor="middle" fill="#64748b" font-size="10" font-family="system-ui,sans-serif">Raw 4K file (TBs)</text>
+                    <!-- Arrow -->
+                    <line x1="124" y1="77" x2="148" y2="77" stroke="#475569" stroke-width="1.5" marker-end="url(#nf-arrow)"/>
+                    <!-- Transcoding -->
+                    <rect x="150" y="58" width="130" height="38" rx="6" fill="#1e2230" stroke="#fb923c" stroke-width="1.5"/>
+                    <text x="215" y="72" text-anchor="middle" fill="#fdba74" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Transcoding Service</text>
+                    <text x="215" y="87" text-anchor="middle" fill="#64748b" font-size="10" font-family="system-ui,sans-serif">~1200 variants/title</text>
+                    <!-- Arrow -->
+                    <line x1="280" y1="77" x2="304" y2="77" stroke="#475569" stroke-width="1.5" marker-end="url(#nf-arrow)"/>
+                    <!-- S3 -->
+                    <rect x="306" y="58" width="100" height="38" rx="6" fill="#1e2230" stroke="#fbbf24" stroke-width="1.5"/>
+                    <text x="356" y="72" text-anchor="middle" fill="#fde68a" font-size="11" font-weight="700" font-family="system-ui,sans-serif">S3 Storage</text>
+                    <text x="356" y="87" text-anchor="middle" fill="#64748b" font-size="10" font-family="system-ui,sans-serif">Chunks + manifests</text>
+                    <!-- Arrow to CDN -->
+                    <line x1="406" y1="77" x2="430" y2="77" stroke="#475569" stroke-width="1.5" marker-end="url(#nf-arrow)"/>
+                    <!-- CDN -->
+                    <rect x="432" y="58" width="120" height="38" rx="6" fill="#1e2230" stroke="#68d391" stroke-width="1.5"/>
+                    <text x="492" y="72" text-anchor="middle" fill="#86efac" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Open Connect CDN</text>
+                    <text x="492" y="87" text-anchor="middle" fill="#64748b" font-size="10" font-family="system-ui,sans-serif">ISP-embedded boxes</text>
+
+                    <!-- Codec labels under transcoding -->
+                    <text x="215" y="108" text-anchor="middle" fill="#475569" font-size="9.5" font-family="system-ui,sans-serif">H.264 / H.265 / AV1 · 240p→4K · multi-audio</text>
+
+                    <!-- ── CDN HIERARCHY (right panel) ── -->
+                    <text x="600" y="52" fill="#94a3b8" font-size="11" font-weight="600" font-family="system-ui,sans-serif">CDN HIERARCHY</text>
+                    <rect x="600" y="58" width="240" height="28" rx="5" fill="#1e3a2a" stroke="#68d391" stroke-width="1.2"/>
+                    <text x="720" y="77" text-anchor="middle" fill="#86efac" font-size="11" font-family="system-ui,sans-serif">ISP CDN (Open Connect Appliance)</text>
+                    <line x1="720" y1="86" x2="720" y2="104" stroke="#475569" stroke-width="1.5" marker-end="url(#nf-arrow)"/>
+                    <rect x="616" y="104" width="208" height="26" rx="5" fill="#1a2535" stroke="#60a5fa" stroke-width="1.2"/>
+                    <text x="720" y="121" text-anchor="middle" fill="#93c5fd" font-size="11" font-family="system-ui,sans-serif">Regional CDN (PoP)</text>
+                    <line x1="720" y1="130" x2="720" y2="148" stroke="#475569" stroke-width="1.5" marker-end="url(#nf-arrow)"/>
+                    <rect x="632" y="148" width="176" height="26" rx="5" fill="#1e2230" stroke="#a78bfa" stroke-width="1.2"/>
+                    <text x="720" y="165" text-anchor="middle" fill="#c4b5fd" font-size="11" font-family="system-ui,sans-serif">Origin S3 (source of truth)</text>
+                    <text x="720" y="188" text-anchor="middle" fill="#475569" font-size="9.5" font-family="system-ui,sans-serif">Top 1000 titles pre-positioned nightly</text>
+
+                    <!-- ── ABR PLAYER (bottom-left) ── -->
+                    <text x="14" y="140" fill="#94a3b8" font-size="11" font-weight="600" font-family="system-ui,sans-serif">ADAPTIVE BITRATE STREAMING (ABR)</text>
+                    <!-- Client player -->
+                    <rect x="14" y="146" width="140" height="66" rx="6" fill="#1e2230" stroke="#60a5fa" stroke-width="1.5"/>
+                    <text x="84" y="162" text-anchor="middle" fill="#93c5fd" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Client Player</text>
+                    <text x="84" y="177" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">1. Fetch .m3u8 manifest</text>
+                    <text x="84" y="190" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">2. Monitor bandwidth + buffer</text>
+                    <text x="84" y="203" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">3. BOLA selects quality/chunk</text>
+                    <!-- Arrow -->
+                    <line x1="154" y1="179" x2="204" y2="179" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#nf-arrow-b)"/>
+                    <!-- ABR decision -->
+                    <rect x="206" y="156" width="150" height="46" rx="6" fill="#1a2535" stroke="#60a5fa" stroke-width="1.2"/>
+                    <text x="281" y="172" text-anchor="middle" fill="#93c5fd" font-size="11" font-weight="700" font-family="system-ui,sans-serif">ABR Algorithm</text>
+                    <text x="281" y="186" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Buffer &gt;30s → highest quality</text>
+                    <text x="281" y="198" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">BW drop → step down quality</text>
+                    <!-- Arrow to CDN -->
+                    <line x1="356" y1="179" x2="430" y2="130" stroke="#60a5fa" stroke-width="1.2" marker-end="url(#nf-arrow-b)" stroke-dasharray="4,3"/>
+
+                    <!-- ── MICROSERVICES ROW ── -->
+                    <text x="14" y="238" fill="#94a3b8" font-size="11" font-weight="600" font-family="system-ui,sans-serif">MICROSERVICES (API GATEWAY → services)</text>
+
+                    <!-- API Gateway -->
+                    <rect x="14" y="244" width="100" height="34" rx="6" fill="#1e2230" stroke="#f59e0b" stroke-width="1.5"/>
+                    <text x="64" y="258" text-anchor="middle" fill="#fcd34d" font-size="11" font-weight="700" font-family="system-ui,sans-serif">API Gateway</text>
+                    <text x="64" y="272" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Zuul / Envoy</text>
+
+                    <!-- Services -->
+                    <line x1="114" y1="261" x2="140" y2="261" stroke="#475569" stroke-width="1.5" marker-end="url(#nf-arrow)"/>
+                    <rect x="142" y="244" width="100" height="34" rx="5" fill="#1e2230" stroke="#a78bfa" stroke-width="1.2"/>
+                    <text x="192" y="260" text-anchor="middle" fill="#c4b5fd" font-size="10.5" font-weight="700" font-family="system-ui,sans-serif">Auth Service</text>
+                    <text x="192" y="272" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">MySQL (accounts)</text>
+
+                    <rect x="252" y="244" width="110" height="34" rx="5" fill="#1e2230" stroke="#68d391" stroke-width="1.2"/>
+                    <text x="307" y="260" text-anchor="middle" fill="#86efac" font-size="10.5" font-weight="700" font-family="system-ui,sans-serif">Recommendation</text>
+                    <text x="307" y="272" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Spark ML + Kafka</text>
+
+                    <rect x="372" y="244" width="100" height="34" rx="5" fill="#1e2230" stroke="#60a5fa" stroke-width="1.2"/>
+                    <text x="422" y="260" text-anchor="middle" fill="#93c5fd" font-size="10.5" font-weight="700" font-family="system-ui,sans-serif">Metadata Svc</text>
+                    <text x="422" y="272" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Elasticsearch + DynamoDB</text>
+
+                    <rect x="482" y="244" width="100" height="34" rx="5" fill="#1e2230" stroke="#f87171" stroke-width="1.2"/>
+                    <text x="532" y="260" text-anchor="middle" fill="#fca5a5" font-size="10.5" font-weight="700" font-family="system-ui,sans-serif">Viewing History</text>
+                    <text x="532" y="272" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Cassandra (append)</text>
+
+                    <rect x="592" y="244" width="110" height="34" rx="5" fill="#1e2230" stroke="#fb923c" stroke-width="1.2"/>
+                    <text x="647" y="260" text-anchor="middle" fill="#fdba74" font-size="10.5" font-weight="700" font-family="system-ui,sans-serif">A/B Testing</text>
+                    <text x="647" y="272" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Archaius / ZooKeeper</text>
+
+                    <rect x="712" y="244" width="110" height="34" rx="5" fill="#1e2230" stroke="#22d3ee" stroke-width="1.2"/>
+                    <text x="767" y="260" text-anchor="middle" fill="#67e8f9" font-size="10.5" font-weight="700" font-family="system-ui,sans-serif">Analytics</text>
+                    <text x="767" y="272" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Iceberg + Spark</text>
+
+                    <!-- ── RESILIENCE ROW ── -->
+                    <text x="14" y="310" fill="#94a3b8" font-size="11" font-weight="600" font-family="system-ui,sans-serif">RESILIENCE — SIMIAN ARMY</text>
+
+                    <rect x="14" y="316" width="130" height="40" rx="6" fill="#2d1a1a" stroke="#f87171" stroke-width="1.5"/>
+                    <text x="79" y="331" text-anchor="middle" fill="#fca5a5" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Chaos Monkey</text>
+                    <text x="79" y="347" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Kills random prod instances</text>
+
+                    <rect x="154" y="316" width="130" height="40" rx="6" fill="#2d1a1a" stroke="#fb923c" stroke-width="1.5"/>
+                    <text x="219" y="331" text-anchor="middle" fill="#fdba74" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Hystrix</text>
+                    <text x="219" y="347" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Circuit breaker + fallback</text>
+
+                    <rect x="294" y="316" width="150" height="40" rx="6" fill="#1a2a1a" stroke="#68d391" stroke-width="1.5"/>
+                    <text x="369" y="331" text-anchor="middle" fill="#86efac" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Fallback Strategy</text>
+                    <text x="369" y="347" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Rec fails → editorial list</text>
+
+                    <!-- ── PERSONALIZATION callout ── -->
+                    <rect x="460" y="310" width="370" height="54" rx="8" fill="#1a1e28" stroke="#a78bfa" stroke-width="1.5"/>
+                    <text x="645" y="328" text-anchor="middle" fill="#c4b5fd" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Personalization</text>
+                    <text x="645" y="344" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Collaborative filtering offline (Spark) + near-real-time (Kafka → feature store)</text>
+                    <text x="645" y="357" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">A/B-tested thumbnails per user · Row ordering scored per-user</text>
+
+                    <!-- ── KEY NUMBERS footer ── -->
+                    <rect x="14" y="384" width="832" height="32" rx="6" fill="#1e2230" stroke="#2a3044" stroke-width="1"/>
+                    <text x="430" y="396" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif" font-weight="600">KEY NUMBERS</text>
+                    <text x="430" y="409" text-anchor="middle" fill="#475569" font-size="9.5" font-family="system-ui,sans-serif">200M subscribers · 15% global internet traffic · 1.4M concurrent streams · ~1,200 encoding variants/title · 2-4s MPEG-DASH segments</text>
+
+                    <!-- ── LEGEND ── -->
+                    <circle cx="26" cy="434" r="5" fill="#f87171"/><text x="36" y="438" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">Ingestion</text>
+                    <circle cx="106" cy="434" r="5" fill="#fb923c"/><text x="116" y="438" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">Transcoding</text>
+                    <circle cx="206" cy="434" r="5" fill="#68d391"/><text x="216" y="438" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">CDN / Delivery</text>
+                    <circle cx="316" cy="434" r="5" fill="#60a5fa"/><text x="326" y="438" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">ABR Player</text>
+                    <circle cx="406" cy="434" r="5" fill="#a78bfa"/><text x="416" y="438" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">Personalization</text>
+                    <circle cx="516" cy="434" r="5" fill="#f87171"/><text x="526" y="438" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">Resilience</text>
+                  </svg>
+
+                  <pre><code class="language-javascript">// ─── Scale: 200M subscribers, 15% of global internet traffic ───
+        // 2 billion hours streamed per month ≈ 1.4M concurrent streams
+        
+        // ─── Upload pipeline (content ingestion) ───
+        // 1. Studio uploads raw video file (up to 4K, terabytes)
+        // 2. Transcoding service converts to multiple formats:
+        //    - Resolutions: 240p, 360p, 480p, 720p, 1080p, 4K
+        //    - Codecs: H.264 (compatibility), H.265/HEVC (efficiency), AV1 (newest)
+        //    - Audio: multiple languages, audio descriptions
+        // 3. Each video → ~1200 encoding variants per title
+        // 4. Chunked into 2-4 second segments (MPEG-DASH / HLS manifests)
+        // 5. Stored on S3; metadata in Cassandra; manifests in S3
+        
+        // ─── Adaptive Bitrate Streaming (ABR) ───
+        // Client downloads manifest (.m3u8 or .mpd) listing all quality levels
+        // Player monitors bandwidth and buffer health in real-time
+        // ABR algorithm picks quality level per chunk:
+        //   - Buffer-based: if buffer > 30s → use highest quality
+        //   - Bandwidth-based: estimate bandwidth from last download speed
+        //   - Hybrid (Netflix BOLA): minimizes stalls, maximizes quality
+        // Segment URL: cdn.example.com/{videoId}/1080p/chunk_0042.ts
+        
+        // ─── CDN strategy ───
+        // Netflix Open Connect: Netflix's own CDN (ISP-embedded servers)
+        //   Netflix ships 100TB+ appliances to major ISPs for free
+        //   Popular titles cached at ISP level — last-mile latency eliminated
+        // Cache hierarchy: browser → ISP CDN → regional CDN → origin S3
+        // Pre-positioning: top 1000 titles pushed to CDN during off-peak hours (nightly)
+        
+        // ─── Recommendation system ───
+        // Offline: collaborative filtering on viewing history (Apache Spark ML)
+        // Near-real-time: Kafka → feature store → model serving (TensorFlow Serving)
+        // Personalized thumbnails: A/B tested per user — same title, different image
+        // Row ordering: each row (Continue Watching, Trending, etc.) scored per user
+        
+        // ─── Resilience: Netflix Chaos Engineering ───
+        // Hystrix: circuit breaker library — fallback to degraded mode on service failure
+        // Chaos Monkey: randomly kills production instances — forces fault-tolerant design
+        // Simian Army: chaos testing across region failures, latency injection, etc.
+        // Fallback strategy: if recommendation service fails → serve curated editorial list
+        
+        // ─── Database choices ───
+        // User data (accounts, billing): MySQL (strong consistency)
+        // Viewing history: Cassandra (time-series, append-only, globally distributed)
+        // Metadata (title info, cast): Elasticsearch (full-text search) + DynamoDB (primary)
+        // A/B testing config: Archaius (dynamic property service, ZooKeeper-backed)
+        // Analytics: Apache Iceberg on S3 + Spark (petabyte-scale offline analytics)</code></pre>
+                </section>
+
+        <section class="section" id="design-twitter">
+                  <div class="section-header">
+                    <span class="section-tag">System Design</span>
+                    <h2>Design Twitter / Social Feed</h2>
+                  </div>
+                  <!-- Twitter Architecture Diagram -->
+                  <svg viewBox="0 0 860 570" xmlns="http://www.w3.org/2000/svg" style="width:100%;border-radius:10px;border:1px solid #2a3044;background:#13161e;margin-bottom:20px;display:block;">
+                    <defs>
+                      <marker id="tw-arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#475569"/></marker>
+                      <marker id="tw-arr-p" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#a78bfa"/></marker>
+                    </defs>
+
+                    <!-- ── TITLE ── -->
+                    <text x="430" y="24" text-anchor="middle" fill="#f1f5f9" font-size="14" font-weight="700" font-family="system-ui,sans-serif">Twitter Architecture</text>
+
+                    <!-- ══ ROW 1: REQUEST PATH ══ -->
+                    <!-- Client -->
+                    <rect x="14" y="36" width="90" height="42" rx="6" fill="#1e2230" stroke="#60a5fa" stroke-width="1.5"/>
+                    <text x="59" y="53" text-anchor="middle" fill="#93c5fd" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Client</text>
+                    <text x="59" y="70" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui,sans-serif">Web / Mobile</text>
+                    <line x1="104" y1="57" x2="124" y2="57" stroke="#475569" stroke-width="1.5" marker-end="url(#tw-arr)"/>
+
+                    <!-- API Gateway -->
+                    <rect x="126" y="36" width="118" height="42" rx="6" fill="#1e2230" stroke="#f59e0b" stroke-width="1.5"/>
+                    <text x="185" y="53" text-anchor="middle" fill="#fcd34d" font-size="11" font-weight="700" font-family="system-ui,sans-serif">API Gateway</text>
+                    <text x="185" y="70" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui,sans-serif">Auth · Rate Limit · Route</text>
+                    <line x1="244" y1="57" x2="264" y2="57" stroke="#475569" stroke-width="1.5" marker-end="url(#tw-arr)"/>
+
+                    <!-- Tweet Service -->
+                    <rect x="266" y="36" width="116" height="42" rx="6" fill="#1e2230" stroke="#68d391" stroke-width="1.5"/>
+                    <text x="324" y="53" text-anchor="middle" fill="#86efac" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Tweet Service</text>
+                    <text x="324" y="70" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui,sans-serif">Write to MySQL</text>
+                    <line x1="382" y1="57" x2="402" y2="57" stroke="#475569" stroke-width="1.5" marker-end="url(#tw-arr)"/>
+
+                    <!-- Fan-out Service -->
+                    <rect x="404" y="36" width="128" height="42" rx="6" fill="#1e2230" stroke="#a78bfa" stroke-width="1.5"/>
+                    <text x="468" y="53" text-anchor="middle" fill="#c4b5fd" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Fan-out Service</text>
+                    <text x="468" y="70" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui,sans-serif">Kafka → worker pool</text>
+                    <!-- arrow pointing down to fan-out strategies -->
+                    <line x1="468" y1="78" x2="468" y2="100" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#tw-arr-p)"/>
+
+                    <!-- ID Generator -->
+                    <rect x="548" y="36" width="128" height="42" rx="6" fill="#1e2230" stroke="#fbbf24" stroke-width="1.2"/>
+                    <text x="612" y="53" text-anchor="middle" fill="#fde68a" font-size="11" font-weight="700" font-family="system-ui,sans-serif">ID Generator</text>
+                    <text x="612" y="70" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui,sans-serif">Snowflake 64-bit</text>
+
+                    <!-- Media Store -->
+                    <rect x="692" y="36" width="154" height="42" rx="6" fill="#1e2230" stroke="#f87171" stroke-width="1.2"/>
+                    <text x="769" y="53" text-anchor="middle" fill="#fca5a5" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Media Store</text>
+                    <text x="769" y="70" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui,sans-serif">S3 + CDN (images/video)</text>
+
+                    <!-- ══ ROW 2: FAN-OUT STRATEGIES ══ -->
+                    <line x1="14" y1="96" x2="846" y2="96" stroke="#2a3044" stroke-width="1"/>
+                    <text x="14" y="113" fill="#94a3b8" font-size="10" font-weight="700" font-family="system-ui,sans-serif" text-decoration="uppercase" letter-spacing="1">FAN-OUT STRATEGIES</text>
+
+                    <!-- WRITE box -->
+                    <rect x="14" y="118" width="256" height="88" rx="7" fill="#0f1f0f" stroke="#68d391" stroke-width="1.5"/>
+                    <text x="142" y="136" text-anchor="middle" fill="#86efac" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Fan-out on WRITE (Push)</text>
+                    <line x1="24" y1="143" x2="260" y2="143" stroke="#1a3a1a" stroke-width="1"/>
+                    <text x="142" y="158" text-anchor="middle" fill="#94a3b8" font-size="9.5" font-family="system-ui,sans-serif">On tweet → push tweetId to every</text>
+                    <text x="142" y="172" text-anchor="middle" fill="#94a3b8" font-size="9.5" font-family="system-ui,sans-serif">follower's Redis timeline cache</text>
+                    <text x="142" y="186" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui,sans-serif">Read O(1) · Write O(n followers)</text>
+                    <text x="142" y="199" text-anchor="middle" fill="#68d391" font-size="9" font-weight="600" font-family="system-ui,sans-serif">→ Regular users (&lt;100K followers)</text>
+
+                    <!-- VS label -->
+                    <text x="282" y="166" text-anchor="middle" fill="#475569" font-size="11" font-weight="700" font-family="system-ui,sans-serif">VS</text>
+
+                    <!-- READ box -->
+                    <rect x="298" y="118" width="256" height="88" rx="7" fill="#0f0f1f" stroke="#60a5fa" stroke-width="1.5"/>
+                    <text x="426" y="136" text-anchor="middle" fill="#93c5fd" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Fan-out on READ (Pull)</text>
+                    <line x1="308" y1="143" x2="544" y2="143" stroke="#1a1a3a" stroke-width="1"/>
+                    <text x="426" y="158" text-anchor="middle" fill="#94a3b8" font-size="9.5" font-family="system-ui,sans-serif">On read → fetch tweets from all</text>
+                    <text x="426" y="172" text-anchor="middle" fill="#94a3b8" font-size="9.5" font-family="system-ui,sans-serif">followed accounts, merge + sort</text>
+                    <text x="426" y="186" text-anchor="middle" fill="#64748b" font-size="9" font-family="system-ui,sans-serif">Read O(n follows) · Write O(1)</text>
+                    <text x="426" y="199" text-anchor="middle" fill="#60a5fa" font-size="9" font-weight="600" font-family="system-ui,sans-serif">→ Celebrities (&gt;100K followers)</text>
+
+                    <!-- HYBRID box -->
+                    <rect x="566" y="118" width="280" height="88" rx="7" fill="#1a1a0f" stroke="#fbbf24" stroke-width="1.5"/>
+                    <text x="706" y="136" text-anchor="middle" fill="#fde68a" font-size="11" font-weight="700" font-family="system-ui,sans-serif">HYBRID — Twitter's Actual Approach</text>
+                    <line x1="576" y1="143" x2="836" y2="143" stroke="#2a2a1a" stroke-width="1"/>
+                    <text x="706" y="158" text-anchor="middle" fill="#94a3b8" font-size="9.5" font-family="system-ui,sans-serif">Regular users: fan-out on write</text>
+                    <text x="706" y="172" text-anchor="middle" fill="#94a3b8" font-size="9.5" font-family="system-ui,sans-serif">Celebrities: excluded from write fan-out</text>
+                    <text x="706" y="186" text-anchor="middle" fill="#94a3b8" font-size="9.5" font-family="system-ui,sans-serif">At read time: merge cache + celeb tweets</text>
+                    <text x="706" y="199" text-anchor="middle" fill="#fbbf24" font-size="9" font-weight="600" font-family="system-ui,sans-serif">→ Best of both: fast reads + no write explosion</text>
+
+                    <!-- ══ ROW 3: STORAGE LAYER ══ -->
+                    <line x1="14" y1="220" x2="846" y2="220" stroke="#2a3044" stroke-width="1"/>
+                    <text x="14" y="237" fill="#94a3b8" font-size="10" font-weight="700" font-family="system-ui,sans-serif">STORAGE &amp; SERVICES</text>
+
+                    <!-- Redis Timeline box -->
+                    <rect x="14" y="242" width="380" height="82" rx="7" fill="#1e2230" stroke="#f87171" stroke-width="1.5"/>
+                    <text x="204" y="259" text-anchor="middle" fill="#fca5a5" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Redis Timeline Cache</text>
+                    <line x1="24" y1="266" x2="384" y2="266" stroke="#2a3044" stroke-width="1"/>
+                    <text x="24" y="281" fill="#fca5a5" font-size="10" font-weight="700" font-family="monospace">ZADD timeline:uid score tweetId</text>
+                    <text x="24" y="296" fill="#64748b" font-size="9.5" font-family="monospace">ZREVRANGE timeline:uid 0 19</text>
+                    <text x="24" y="311" fill="#64748b" font-size="9.5" font-family="monospace">MGET tweet:id1 tweet:id2 ...</text>
+                    <text x="24" y="318" fill="#475569" font-size="8.5" font-family="system-ui,sans-serif">Max 800 tweets cached; older entries from MySQL</text>
+
+                    <!-- Earlybird Search box -->
+                    <rect x="406" y="242" width="210" height="82" rx="7" fill="#1e2230" stroke="#22d3ee" stroke-width="1.5"/>
+                    <text x="511" y="259" text-anchor="middle" fill="#67e8f9" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Earlybird Search</text>
+                    <line x1="416" y1="266" x2="606" y2="266" stroke="#2a3044" stroke-width="1"/>
+                    <text x="511" y="281" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Lucene inverted index</text>
+                    <text x="511" y="296" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Hourly segments (recency first)</text>
+                    <text x="511" y="311" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Trending: sliding-window</text>
+                    <text x="511" y="320" text-anchor="middle" fill="#64748b" font-size="8.5" font-family="system-ui,sans-serif">hashtag count over 24h</text>
+
+                    <!-- Notifications box -->
+                    <rect x="628" y="242" width="218" height="82" rx="7" fill="#1e2230" stroke="#fb923c" stroke-width="1.5"/>
+                    <text x="737" y="259" text-anchor="middle" fill="#fdba74" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Notification Service</text>
+                    <line x1="638" y1="266" x2="836" y2="266" stroke="#2a3044" stroke-width="1"/>
+                    <text x="737" y="281" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Kafka event → worker</text>
+                    <text x="737" y="296" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Push via APNs / FCM</text>
+                    <text x="737" y="311" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">In-app via SSE / WebSocket</text>
+                    <text x="737" y="320" text-anchor="middle" fill="#64748b" font-size="8.5" font-family="system-ui,sans-serif">Unread count: Redis INCR</text>
+
+                    <!-- ══ ROW 4: INFRA ══ -->
+                    <line x1="14" y1="338" x2="846" y2="338" stroke="#2a3044" stroke-width="1"/>
+                    <text x="14" y="355" fill="#94a3b8" font-size="10" font-weight="700" font-family="system-ui,sans-serif">INFRASTRUCTURE</text>
+
+                    <!-- Rate Limiting -->
+                    <rect x="14" y="360" width="270" height="62" rx="6" fill="#1e2230" stroke="#a78bfa" stroke-width="1.5"/>
+                    <text x="149" y="377" text-anchor="middle" fill="#c4b5fd" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Rate Limiting</text>
+                    <line x1="24" y1="383" x2="274" y2="383" stroke="#2a3044" stroke-width="1"/>
+                    <text x="149" y="398" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Token bucket per userId in Redis</text>
+                    <text x="149" y="413" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">HINCRBY + Lua script (atomic)</text>
+                    <text x="149" y="416" text-anchor="middle" fill="#475569" font-size="8.5" font-family="system-ui,sans-serif">1,500 reads / 15 min per user</text>
+
+                    <!-- Snowflake ID detail -->
+                    <rect x="296" y="360" width="270" height="62" rx="6" fill="#1e2230" stroke="#fbbf24" stroke-width="1.2"/>
+                    <text x="431" y="377" text-anchor="middle" fill="#fde68a" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Snowflake ID (64-bit)</text>
+                    <line x1="306" y1="383" x2="556" y2="383" stroke="#2a3044" stroke-width="1"/>
+                    <text x="431" y="398" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">41 bits timestamp (ms precision)</text>
+                    <text x="431" y="413" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">5 datacenter + 5 machine + 12 seq</text>
+                    <text x="431" y="417" text-anchor="middle" fill="#475569" font-size="8.5" font-family="system-ui,sans-serif">Global unique · sortable by time</text>
+
+                    <!-- Database Choices -->
+                    <rect x="578" y="360" width="268" height="62" rx="6" fill="#1e2230" stroke="#f87171" stroke-width="1.2"/>
+                    <text x="712" y="377" text-anchor="middle" fill="#fca5a5" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Database Choices</text>
+                    <line x1="588" y1="383" x2="836" y2="383" stroke="#2a3044" stroke-width="1"/>
+                    <text x="712" y="398" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Tweet metadata: MySQL (strong consistency)</text>
+                    <text x="712" y="413" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="system-ui,sans-serif">Timeline cache: Redis sorted sets</text>
+                    <text x="712" y="417" text-anchor="middle" fill="#475569" font-size="8.5" font-family="system-ui,sans-serif">Media: S3 + CDN</text>
+
+                    <!-- ══ KEY NUMBERS ══ -->
+                    <rect x="14" y="438" width="832" height="44" rx="6" fill="#1e2230" stroke="#2a3044" stroke-width="1"/>
+                    <text x="430" y="455" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="700" font-family="system-ui,sans-serif">KEY NUMBERS</text>
+                    <text x="430" y="470" text-anchor="middle" fill="#475569" font-size="9.5" font-family="system-ui,sans-serif">350M users · 500M tweets/day · 150M DAU · ~5,800 writes/sec · ~300K reads/sec</text>
+                    <text x="430" y="474" text-anchor="middle" fill="#475569" font-size="8.5" font-family="system-ui,sans-serif">avg 200 follows per user · avg 100 followers per user</text>
+
+                    <!-- ══ LEGEND ══ -->
+                    <circle cx="26" cy="504" r="5" fill="#68d391"/><text x="36" y="508" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">Write fan-out</text>
+                    <circle cx="126" cy="504" r="5" fill="#60a5fa"/><text x="136" y="508" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">Read fan-out</text>
+                    <circle cx="226" cy="504" r="5" fill="#fbbf24"/><text x="236" y="508" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">Hybrid model</text>
+                    <circle cx="336" cy="504" r="5" fill="#f87171"/><text x="346" y="508" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">Redis timeline</text>
+                    <circle cx="446" cy="504" r="5" fill="#22d3ee"/><text x="456" y="508" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">Earlybird search</text>
+                    <circle cx="566" cy="504" r="5" fill="#fb923c"/><text x="576" y="508" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">Notifications</text>
+                    <circle cx="676" cy="504" r="5" fill="#a78bfa"/><text x="686" y="508" fill="#94a3b8" font-size="10" font-family="system-ui,sans-serif">Rate limiting</text>
+                  </svg>
+
+                  <pre><code class="language-javascript">// ─── Scale: 350M users, 500M tweets/day, 150M DAU ───
+        // Home timeline: each user follows avg 200, each has avg 100 followers
+        // QPS: 500M / 86400 ≈ 5800 writes/sec; timeline reads ≈ 300K QPS
+        
+        // ─── The core challenge: fan-out on write vs fan-out on read ───
+        
+        // OPTION A: Fan-out on Write (push model)
+        // When user tweets → immediately copy tweet_id to each follower's timeline cache
+        // Read home timeline: O(1) — just read pre-built cache
+        // Write tweet: O(n) where n = followers count (50 for average user, 100M for celebrities)
+        // Twitter uses this for users with < ~100K followers
+        // Storage: Redis sorted set per user: ZADD timeline:userId score tweetId
+        //          score = tweet timestamp (for chronological ordering)
+        
+        // OPTION B: Fan-out on Read (pull model)
+        // When user reads timeline → fetch tweets from all followed users, merge, sort
+        // Read: O(n) where n = follows count — expensive for users following 10K accounts
+        // Write: O(1) — just store the tweet
+        // Twitter uses this for celebrity accounts (Lady Gaga, Barack Obama)
+        
+        // HYBRID: Twitter's actual approach
+        // Regular users (<= ~100K followers): fan-out on write → all followers' caches updated
+        // Celebrities (> threshold): excluded from fan-out; pulled and merged at read time
+        // Client sees: pre-built timeline cache + merge of celebrity tweets on the fly
+        
+        // ─── Tweet storage ───
+        // MySQL: tweet metadata (id, userId, text, mediaUrls, createdAt, likes, retweets)
+        // Tweet ID: Snowflake — 64-bit: timestamp(41) + datacenter(5) + machine(5) + sequence(12)
+        // Media: S3 + CDN (images, videos transcoded like Netflix)
+        
+        // ─── Timeline service ───
+        // Redis cluster: sorted set per user, keyed by timestamp
+        //   ZADD home:timeline:userId timestamp tweetId
+        //   ZREVRANGE home:timeline:userId 0 19 → last 20 tweet IDs
+        // Then: batch-fetch tweet content: MGET tweet:id1 tweet:id2 ...
+        // Limit timeline cache to 800 most recent tweets (cold storage = MySQL)
+        
+        // ─── Search ───
+        // Real-time tweet indexing via Earlybird (Lucene-based, custom inverted index)
+        // Optimized for recency: index segments rotated hourly, most recent searched first
+        // Trending topics: sliding-window count of hashtags over 24h, ranked by velocity
+        
+        // ─── Notification service ───
+        // Push: user tweets, followers with notifications on receive APNs/FCM push
+        // In-app: Kafka event → notification worker → write to notification table → SSE/WebSocket
+        // Unread counts: Redis INCR notif:count:userId on event; reset on page load
+        
+        // ─── Retweet / Like ───
+        // Like: INCR tweet:likes:tweetId in Redis + async write to MySQL
+        // Retweet: creates new tweet record with retweetOf = originalTweetId
+        //          triggers fan-out as normal tweet for retweeter's followers
+        
+        // ─── Rate limiting ───
+        // API: 1500 tweet reads per 15 min per user (sliding window in Redis)
+        // Token bucket per userId: HINCRBY ratelimit:userId window_key 1
+        // Check + decrement atomic via Lua script</code></pre>
+                </section>
+
+        <section class="section" id="design-interview">
+                  <div class="section-header">
+                    <span class="section-tag">Interview Q&A</span>
+                    <h2>HLD / LLD Interview Q&amp;A</h2>
+                  </div>
+                  <div class="qa-list">
+                    <div class="qa-item">
+                      <div class="qa-question">How do you choose between SQL and NoSQL for a new system?</div>
+                      <div class="qa-answer">Choose SQL (PostgreSQL/MySQL) when: you have complex relationships requiring JOINs, you need ACID transactions (financial, booking systems), your schema is stable, you need rich querying (aggregations, range queries), team is familiar with relational modeling. Choose NoSQL when: schema is flexible/evolving rapidly (document store), you need horizontal write scaling beyond what a single Postgres primary can handle (Cassandra), your access patterns are narrow and predictable (key-value: Redis, DynamoDB), you need geospatial queries (MongoDB), you need time-series at massive scale (InfluxDB, TimescaleDB). Most modern systems use both: Postgres for transactional data, Redis for caching, Elasticsearch for search, Cassandra for time-series. The question isn't which — it's right tool for each access pattern.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">Explain the CAP theorem with a real example.</div>
+                      <div class="qa-answer">CAP theorem states that a distributed system can guarantee at most two of: Consistency (all nodes see the same data at the same time), Availability (every request gets a response), Partition Tolerance (system continues operating despite network partitions). Network partitions are inevitable in distributed systems — so the real choice is between CP and AP during a partition. CP example (bank transfer): if two data centers can't communicate, block all writes until partition resolves. Stale data for a financial transaction is unacceptable. Systems: HBase, ZooKeeper, MongoDB with majority write concern. AP example (shopping cart): if data centers can't communicate, let users continue adding to cart. Reconcile conflicts when partition heals (CRDT/last-write-wins). Systems: Cassandra (eventual consistency), DynamoDB (tunable consistency), CouchDB. PACELC extends CAP: even when there's no partition, there's a latency/consistency trade-off. Cassandra optimizes for low latency (more replicas → slower writes to achieve consistency).</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">Design a URL shortener like bit.ly. Walk through the key design decisions.</div>
+                      <div class="qa-answer">Requirements: shorten URL, redirect, analytics. Scale: 100M new URLs/day, 10B redirects/day. Storage: 100M × 500 bytes = 50GB/day. Redirect QPS: 10B / 86400 ≈ 115K/sec. Short code generation: base62 (a-z, A-Z, 0-9). 7 characters = 62^7 = 3.5 trillion unique URLs. Options: (1) MD5 hash of long URL, take first 7 chars — risk of collision, check DB. (2) Auto-increment ID from DB, encode in base62 — deterministic, no collision, but ID sequence is guessable. (3) Pre-generate short codes using a Key Generation Service (KGS) that creates random codes in bulk and stores them in a "keys" table — checked out atomically to avoid races. Database: writes to MySQL (100M/day is manageable). Reads: heavily cached in Redis (hot URLs). Redirect flow: client hits bit.ly/abc123 → CDN edge → check Redis cache → if miss, query MySQL → 301 (permanent, browser caches) or 302 (temporary, analytics tracked). Analytics: Kafka event per redirect → stream processor → aggregated stats in ClickHouse. Custom URLs: allow users to specify slug, unique constraint on short_code column.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">Design a rate limiter. What algorithms exist and where would you deploy it?</div>
+                      <div class="qa-answer">Algorithms: (1) Token Bucket — bucket fills at rate r, each request consumes a token. Allows bursts up to bucket capacity. Implementation: (tokens, lastRefill) per user in Redis, compute available tokens on each request. (2) Sliding Window Counter — track request count in the current window using a weighted blend of previous and current fixed window counts. More accurate than fixed window. (3) Leaky Bucket — requests enter a queue (bucket) and are processed at a fixed rate. Smooths bursts but adds latency. (4) Fixed Window — simplest, but vulnerable to 2× spike at window boundary. Deployment layers: (A) API Gateway level (Kong, AWS API Gateway) — centralized, applies before requests reach services, cheapest to operate. (B) Application level — each service enforces its own limits, enables per-endpoint limits, but requires Redis for distributed state. (C) Client-side — request throttling in SDK, rate limit feedback via 429 + Retry-After header. Redis implementation: INCR ratelimit:{userId}:{window} EXPIRE ratelimit:{userId}:{window} 60 — atomic increment and set expiry. For sliding window: Redis sorted set with timestamp as score, count members in last 60 seconds.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">What are the differences between horizontal and vertical scaling? When does each break down?</div>
+                      <div class="qa-answer">Vertical scaling (scale up): add more CPU/RAM/disk to existing server. Simple — no code changes, no distributed coordination. Breaks down: hardware limits (largest EC2 instance has finite CPU/RAM), cost grows superlinearly at high tiers, single point of failure, zero-downtime upgrades are hard. Horizontal scaling (scale out): add more instances, distribute load. Enables near-linear throughput growth. Requires: stateless services (session state in Redis, not in-process), load balancer, distributed data access, coordination for distributed tasks. Breaks down: state synchronization complexity, network latency between nodes, distributed transactions are expensive, operational complexity grows with fleet size. In practice: vertical scale until you hit diminishing returns or >$5K/month on a single instance, then horizontal scale. Databases typically go vertical first (Postgres handles massive load on a single large instance), then read replicas, then sharding — each step adds massive complexity. Stateless application servers should be horizontal from the start.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">What is the difference between synchronous and asynchronous communication between microservices? When is each appropriate?</div>
+                      <div class="qa-answer">Synchronous (REST/gRPC): caller waits for response. Request-response contract, immediate consistency, simpler to reason about, natural error propagation. Downsides: tight coupling — if downstream is slow/down, upstream blocks and times out. Cascading failures: one slow service can saturate thread pools and bring down callers. Use for: read operations that need immediate results, user-facing operations requiring real-time response, simple request-response workflows. Asynchronous (Kafka, SQS, RabbitMQ): caller publishes event and continues. Downstream processes independently. Benefits: loose coupling — services can deploy independently, producer doesn't care if consumer is slow. Resilient to downstream failures — messages queue up. Natural load leveling — consumer processes at its own pace. Downsides: eventual consistency — caller doesn't know when processing completes, harder to debug (distributed tracing needed), harder to handle errors (DLQ, idempotency). Use for: long-running operations, notifications, fan-out to multiple consumers, write amplification (fanout on write), audit logs, cross-domain events. Guideline: if the user needs an immediate answer — synchronous. If you're notifying other systems of something that happened — asynchronous.</div>
+                    </div>
+                  </div>
+                </section>
+        <footer class="footer">
+          <p>Senior Full-Stack Interview Prep Guide</p>
+          <p><a href="index.html" style="color:#68d391;text-decoration:none;">← Back to Home</a></p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQ4n5wg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="app.js"></script>
+</body>
+</html>

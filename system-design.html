@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>System Design — Interview Prep</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" integrity="sha512-Jk4AqjWsdSzSWCSuQTfYRIF84Rq/eV0G2+tu07byYwHcbTGfdmLrHjUSwvzp5HvbiqK4ibmNwdcG49Y5RGYPg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <div id="progressBar" class="progress-bar"></div>
+  <button class="sidebar-float-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">🏗️</span>
+          <span class="logo-text">System Design</span>
+        </div>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search topics..." />
+        <span class="search-icon">🔍</span>
+      </div>
+      <nav class="nav" id="nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Navigation</div>
+          <a href="index.html" class="nav-link" style="color:#68d391;font-weight:600;">🏠 Back to Home</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">System Design</div>
+          <a href="#sd-fundamentals" class="nav-link" data-section="sd-fundamentals">Distributed Systems</a>
+          <a href="#sd-scalability" class="nav-link" data-section="sd-scalability">Scalability Patterns</a>
+          <a href="#sd-components" class="nav-link" data-section="sd-components">Advanced Components</a>
+          <a href="#sd-problems" class="nav-link" data-section="sd-problems">Classic Design Problems</a>
+          <a href="#sd-interview-deep" class="nav-link" data-section="sd-interview-deep">System Design Q&A</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Other Topics</div>
+          <a href="javascript.html" class="nav-link">JavaScript Fundamentals</a>
+          <a href="nodejs.html" class="nav-link">Node.js Mastery</a>
+          <a href="react.html" class="nav-link">React.js</a>
+          <a href="dsa.html" class="nav-link">DSA</a>
+          <a href="databases.html" class="nav-link">Databases</a>
+          <a href="kafka.html" class="nav-link">Kafka & Streaming</a>
+          <a href="hld-lld.html" class="nav-link">HLD / LLD</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="main" id="main">
+      <div class="content-wrapper">
+        <section class="section" id="sd-fundamentals">
+                  <div class="section-header">
+                    <span class="section-tag">System Design</span>
+                    <h2>Distributed Systems Fundamentals</h2>
+                  </div>
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">CAP Theorem — What It Really Means</h3>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:16px;">CAP: a distributed system can guarantee at most <strong style="color:#e2e8f0;">two of three</strong>: Consistency, Availability, Partition Tolerance. Critical nuance: <em>partition tolerance is not optional</em> — network partitions happen in any real distributed system. The real choice: during a partition, sacrifice C or A?</p>
+                  <div class="feature-grid" style="grid-template-columns:1fr 1fr;margin-bottom:24px;">
+                    <div class="feature-card" style="border-left:3px solid #3b82f6;">
+                      <h4 style="color:#60a5fa;margin-bottom:8px;">CP Systems — Consistent &amp; Partition Tolerant</h4>
+                      <p style="color:#94a3b8;font-size:14px;line-height:1.6;">During partition, refuse to respond rather than return stale data. Examples: ZooKeeper, HBase, etcd, Redis (w/ WAIT), MongoDB (majority write concern). Use when: financial transactions, inventory, leader election.</p>
+                    </div>
+                    <div class="feature-card" style="border-left:3px solid #10b981;">
+                      <h4 style="color:#34d399;margin-bottom:8px;">AP Systems — Available &amp; Partition Tolerant</h4>
+                      <p style="color:#94a3b8;font-size:14px;line-height:1.6;">During partition, keep serving with potentially stale data. Examples: Cassandra, DynamoDB (default), CouchDB, DNS. Use when: shopping carts, social feeds, metrics — serving stale data &gt; serving no data.</p>
+                    </div>
+                  </div>
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">PACELC + Consistency Models</h3>
+                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+                    <div class="feature-card"><h4 style="color:#f1f5f9;margin-bottom:6px;">Linearizability</h4><p style="color:#94a3b8;font-size:13px;">Strongest: after write completes, all reads see it. ZooKeeper, etcd. High latency.</p></div>
+                    <div class="feature-card"><h4 style="color:#f1f5f9;margin-bottom:6px;">Causal Consistency</h4><p style="color:#94a3b8;font-size:13px;">Causally related ops seen in order by all. Concurrent ops may differ. MongoDB causal sessions.</p></div>
+                    <div class="feature-card"><h4 style="color:#f1f5f9;margin-bottom:6px;">Eventual Consistency</h4><p style="color:#94a3b8;font-size:13px;">No new writes → replicas converge. No timing guarantee. DNS, Cassandra default.</p></div>
+                  </div>
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Latency Numbers Every Engineer Must Know</h3>
+                  <div style="overflow-x:auto;margin-bottom:24px;">
+                    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                      <thead><tr style="background:rgba(51,65,85,0.6);border-bottom:1px solid #334155;">
+                        <th style="padding:10px 16px;text-align:left;color:#94a3b8;font-weight:600;font-size:11px;">Operation</th>
+                        <th style="padding:10px 16px;text-align:right;color:#94a3b8;font-weight:600;font-size:11px;">Latency</th>
+                        <th style="padding:10px 16px;text-align:left;color:#94a3b8;font-weight:600;font-size:11px;">Key Insight</th>
+                      </tr></thead>
+                      <tbody>
+                        <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 16px;color:#e2e8f0;">L1 cache</td><td style="padding:8px 16px;text-align:right;color:#34d399;font-family:monospace;">0.5 ns</td><td style="padding:8px 16px;color:#64748b;">Fastest possible</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;background:rgba(30,41,59,0.3);"><td style="padding:8px 16px;color:#e2e8f0;">Main memory</td><td style="padding:8px 16px;text-align:right;color:#fbbf24;font-family:monospace;">100 ns</td><td style="padding:8px 16px;color:#64748b;">200× slower than L1</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 16px;color:#e2e8f0;">SSD random read</td><td style="padding:8px 16px;text-align:right;color:#fb923c;font-family:monospace;">150 µs</td><td style="padding:8px 16px;color:#64748b;">1,000× slower than RAM</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;background:rgba(30,41,59,0.3);"><td style="padding:8px 16px;color:#e2e8f0;">Same datacenter round-trip</td><td style="padding:8px 16px;text-align:right;color:#fb923c;font-family:monospace;">0.5 ms</td><td style="padding:8px 16px;color:#64748b;">Intra-DC calls cheap</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 16px;color:#e2e8f0;">HDD seek</td><td style="padding:8px 16px;text-align:right;color:#f87171;font-family:monospace;">10 ms</td><td style="padding:8px 16px;color:#64748b;">Avoid random HDD I/O</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;background:rgba(30,41,59,0.3);"><td style="padding:8px 16px;color:#e2e8f0;">Cross-region (CA → NL → CA)</td><td style="padding:8px 16px;text-align:right;color:#f87171;font-family:monospace;">150 ms</td><td style="padding:8px 16px;color:#64748b;">Cross-region is expensive</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="callout callout-warning">
+                    <strong>Key insight:</strong> A single HDD seek (10 ms) = 20 intra-DC round-trips (0.5 ms each). This is why databases use B-Trees (minimize seeks) and Redis (in-memory) is 1,000× faster for random lookups.
+                  </div>
+                </section>
+
+        <section class="section" id="sd-scalability">
+                  <div class="section-header">
+                    <span class="section-tag">System Design</span>
+                    <h2>Scalability Patterns</h2>
+                  </div>
+                  <div class="feature-grid" style="grid-template-columns:1fr 1fr;margin-bottom:24px;">
+                    <div class="feature-card" style="border-left:3px solid #3b82f6;">
+                      <h4 style="color:#60a5fa;margin-bottom:8px;">Vertical Scaling (Scale Up)</h4>
+                      <p style="color:#94a3b8;font-size:14px;line-height:1.6;">Add more CPU/RAM to existing machine. Simpler, no distributed coordination. Hard ceiling + single point of failure. Use for: databases, monoliths in early growth.</p>
+                    </div>
+                    <div class="feature-card" style="border-left:3px solid #10b981;">
+                      <h4 style="color:#34d399;margin-bottom:8px;">Horizontal Scaling (Scale Out)</h4>
+                      <p style="color:#94a3b8;font-size:14px;line-height:1.6;">Add more machines. Requires stateless app tier (session in Redis). Theoretically unbounded. Needs load balancing, service discovery. Use for: API servers, stateless microservices, Lambda workers.</p>
+                    </div>
+                  </div>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">Consistent Hashing</h3>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:16px;">Classic <code>key % N</code> requires remapping all keys when N changes. Consistent hashing maps keys AND nodes onto a hash ring. Adding/removing a node remaps only <code>K/N</code> keys on average. Virtual nodes (150 per physical node) ensure even distribution — without them, non-uniform arc sizes cause 2-5× traffic skew.</p>
+                  <pre><code class="language-javascript">class ConsistentHashRing {
+          constructor(virtualNodes = 150) {
+            this.ring = new Map();   // hash → node
+            this.sortedKeys = [];
+            this.virtualNodes = virtualNodes;
+          }
+          addNode(node) {
+            for (let i = 0; i < this.virtualNodes; i++) {
+              const hash = this._hash(`${node}#${i}`);
+              this.ring.set(hash, node);
+              this.sortedKeys.push(hash);
+            }
+            this.sortedKeys.sort((a, b) => a - b);
+          }
+          getNode(key) {
+            const hash = this._hash(key);
+            let lo = 0, hi = this.sortedKeys.length - 1;
+            while (lo < hi) {
+              const mid = (lo + hi) >> 1;
+              if (this.sortedKeys[mid] < hash) lo = mid + 1;
+              else hi = mid;
+            }
+            const nodeHash = this.sortedKeys[lo] >= hash ? this.sortedKeys[lo] : this.sortedKeys[0];
+            return this.ring.get(nodeHash);
+          }
+          _hash(str) {
+            let hash = 0;
+            for (const c of str) hash = ((hash << 5) - hash) + c.charCodeAt(0);
+            return hash >>> 0;
+          }
+        }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Caching Strategies</h3>
+                  <div class="qa-list">
+                    <div class="qa-item">
+                      <div class="qa-question">Cache-Aside (Lazy Loading)</div>
+                      <div class="qa-answer">Check cache first. Miss → fetch from DB, write to cache, return. Cache only holds requested data. Risk: cache stampede on cold start. Best general-purpose strategy.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">Write-Through</div>
+                      <div class="qa-answer">Every write goes to cache AND DB synchronously. Always fresh. Downside: write latency doubles; unused writes waste cache space.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">Write-Behind (Write-Back)</div>
+                      <div class="qa-answer">Write to cache immediately; DB write async/batched. Very low write latency. Risk: data loss if cache node fails before flush. Use for: metrics, counters.</div>
+                    </div>
+                  </div>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Rate Limiting Algorithms</h3>
+                  <pre><code class="language-javascript">// Redis sliding window counter — production implementation
+        async function isRateLimited(userId, limitPerMinute) {
+          const now = Date.now();
+          const currentWindow = Math.floor(now / 60000);
+          const prevWindow = currentWindow - 1;
+          const elapsed = (now % 60000) / 60000;
+        
+          const [prev, curr] = await redis.mget(`rl:${userId}:${prevWindow}`, `rl:${userId}:${currentWindow}`);
+          const estimatedRate = parseInt(prev || '0') * (1 - elapsed) + parseInt(curr || '0');
+        
+          if (estimatedRate >= limitPerMinute) {
+            return { limited: true, retryAfter: Math.ceil(60 - elapsed * 60) };
+          }
+          const pipe = redis.pipeline();
+          pipe.incr(`rl:${userId}:${currentWindow}`);
+          pipe.expire(`rl:${userId}:${currentWindow}`, 120);
+          await pipe.exec();
+          return { limited: false };
+        }</code></pre>
+                </section>
+
+        <section class="section" id="sd-components">
+                  <div class="section-header">
+                    <span class="section-tag">System Design</span>
+                    <h2>Advanced System Components</h2>
+                  </div>
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">API Gateway Responsibilities</h3>
+                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+                    <div class="feature-card"><div class="feature-icon">→</div><h4 style="color:#f1f5f9;margin-bottom:8px;">Request Routing</h4><p style="color:#94a3b8;font-size:14px;line-height:1.6;">Path/header-based routing to services. Versioning (/v1, /v2). Blue-green routing by percentage.</p></div>
+                    <div class="feature-card"><div class="feature-icon">🔒</div><h4 style="color:#f1f5f9;margin-bottom:8px;">Auth &amp; AuthZ</h4><p style="color:#94a3b8;font-size:14px;line-height:1.6;">JWT validation, API key management, OAuth2 token introspection. Offloads auth from every microservice.</p></div>
+                    <div class="feature-card"><div class="feature-icon">⚡</div><h4 style="color:#f1f5f9;margin-bottom:8px;">Rate Limiting</h4><p style="color:#94a3b8;font-size:14px;line-height:1.6;">Per-API-key or per-IP limits. Token bucket / sliding window. Returns 429.</p></div>
+                  </div>
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Distributed Transactions: 2PC vs Saga</h3>
+                  <div class="feature-grid" style="grid-template-columns:1fr 1fr;margin-bottom:20px;">
+                    <div class="feature-card" style="border-left:3px solid #f87171;">
+                      <h4 style="color:#fca5a5;margin-bottom:10px;">Two-Phase Commit (2PC)</h4>
+                      <p style="color:#94a3b8;font-size:14px;line-height:1.7;">Phase 1 (Prepare): coordinator asks all participants "can you commit?" Each locks resources. Phase 2 (Commit/Abort): if all say yes → commit, else abort. <strong style="color:#f87171;">Problems:</strong> Coordinator is SPOF. Locks held during Phase 1 = blocking. Not suitable for microservices across orgs.</p>
+                    </div>
+                    <div class="feature-card" style="border-left:3px solid #10b981;">
+                      <h4 style="color:#34d399;margin-bottom:10px;">Saga Pattern</h4>
+                      <p style="color:#94a3b8;font-size:14px;line-height:1.7;">Sequence of local transactions. Each step publishes event to trigger next. On failure: compensating transactions undo completed steps. <strong style="color:#e2e8f0;">Choreography:</strong> services react to events (decoupled). <strong style="color:#e2e8f0;">Orchestration:</strong> central orchestrator (Step Functions, Temporal) — easier to reason about. Achieves eventual consistency, not ACID atomicity.</p>
+                    </div>
+                  </div>
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">CQRS + Event Sourcing</h3>
+                  <div class="feature-grid" style="grid-template-columns:1fr 1fr;margin-bottom:20px;">
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:8px;">Event Sourcing</h4>
+                      <p style="color:#94a3b8;font-size:14px;line-height:1.7;">Store sequence of events, not current state. State = replay events. Immutable, append-only log. Benefits: full audit trail, time-travel debugging, replay for new read models. Drawbacks: replay of millions of events is slow (use snapshots); schema evolution of historical events is hard.</p>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:8px;">CQRS</h4>
+                      <p style="color:#94a3b8;font-size:14px;line-height:1.7;">Separate write model (Commands) from read model (Queries). Read model = denormalized projection (materialized view, Elasticsearch, Redis). Updated async from write events. Combined with Event Sourcing: new read model = replay all events. Avoid for CRUD apps — complexity cost is high.</p>
+                    </div>
+                  </div>
+                </section>
+
+        <section class="section" id="sd-problems">
+                  <div class="section-header">
+                    <span class="section-tag">System Design</span>
+                    <h2>Classic Design Problems — Walkthroughs</h2>
+                  </div>
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 16px;">URL Shortener</h3>
+                  <pre><code class="language-javascript">// Scale: Write QPS = 100M/86400 ≈ 1,200/sec; Read QPS = 10B/86400 ≈ 115,000/sec
+        // Storage: 100M/day × 365 × 5 = 182.5B records × 500B = ~91 TB total
+        
+        // Short code: Base62 encode a Snowflake-style ID → 7 chars = 62^7 = 3.5 trillion codes
+        const BASE62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        function toBase62(num) {
+          let result = '';
+          while (num > 0) { result = BASE62[num % 62] + result; num = Math.floor(num / 62); }
+          return result.padStart(7, '0');
+        }
+        
+        // Redirect: Redis-first lookup, DB fallback, async click increment
+        async function redirect(shortCode, redis, db) {
+          const cached = await redis.get(`url:${shortCode}`);
+          if (cached) {
+            redis.incr(`clicks:${shortCode}`); // fire-and-forget
+            return { status: 301, location: cached }; // 301=permanent (browser caches); 302 for tracking
+          }
+          const row = await db.findOne({ shortCode });
+          if (!row) return { status: 404 };
+          if (row.expires_at &amp;&amp; row.expires_at &lt; new Date()) return { status: 410 };
+          await redis.setex(`url:${shortCode}`, 86400, row.long_url);
+          return { status: 301, location: row.long_url };
+        }
+        // Scale decisions: shard DB by short_code hash; cache hit rate ~99%+ (Zipf distribution);
+        // CDN-level redirect for ultra-low latency; Bloom filter for non-existent codes</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 16px;">Twitter/Social Feed — Fanout Strategies</h3>
+                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px;">
+                    <div class="feature-card" style="border-left:3px solid #3b82f6;">
+                      <h4 style="color:#60a5fa;margin-bottom:8px;">Fanout on Write (Push)</h4>
+                      <p style="color:#94a3b8;font-size:14px;line-height:1.7;">On post, push tweet to all follower timeline caches. Read is O(1). <strong style="color:#f87171;">Celebrity problem:</strong> 10M followers = 10M writes per post.</p>
+                    </div>
+                    <div class="feature-card" style="border-left:3px solid #10b981;">
+                      <h4 style="color:#34d399;margin-bottom:8px;">Fanout on Read (Pull)</h4>
+                      <p style="color:#94a3b8;font-size:14px;line-height:1.7;">On timeline load, query tweets from all followees and merge. No write amplification. <strong style="color:#f87171;">Problem:</strong> following 1K accounts = 1K queries per page load.</p>
+                    </div>
+                    <div class="feature-card" style="border-left:3px solid #f59e0b;">
+                      <h4 style="color:#fbbf24;margin-bottom:8px;">Hybrid (Twitter's Actual)</h4>
+                      <p style="color:#94a3b8;font-size:14px;line-height:1.7;">Push for regular users (&lt;100K followers). Pull for celebrities. On read: merge pre-built feed with real-time celebrity tweets.</p>
+                    </div>
+                  </div>
+                </section>
+
+        <section class="section" id="sd-interview-deep">
+                  <div class="section-header">
+                    <span class="section-tag">Interview Prep</span>
+                    <h2>System Design Interview — Q&amp;A</h2>
+                  </div>
+                  <div class="qa-list">
+                    <div class="qa-item">
+                      <div class="qa-question">How do you approach a system design interview in the first 5 minutes?</div>
+                      <div class="qa-answer">Never jump to components. Structure: (1) Clarify requirements — functional (what it does) and non-functional (scale, latency SLA, consistency, availability). (2) Back-of-envelope — QPS, storage, bandwidth. State assumptions explicitly. (3) Define the API — endpoints, request/response shapes. (4) High-level design — clients, LB, services, DB, cache, queues. (5) Deep dive — DB schema, sharding, consistency, failure modes. (6) Bottlenecks and trade-offs — proactively call out SPOFs. Senior differentiator: you drive the conversation, raise trade-offs before being asked, connect decisions to requirements.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">CAP theorem in practice — how do you actually pick?</div>
+                      <div class="qa-answer">Ask: "What happens if a partition occurs — do I serve stale data or return an error?" If returning an error is worse (shopping cart, social feed, DNS) → AP. If stale data causes correctness violations (bank transfer, inventory deduction, leader election) → CP. In practice, most business logic is AP with application-level compensation: shopping cart merges on conflict, eventual inventory reconciliation. Lean AP and use idempotency + optimistic locking to handle edge cases rather than paying the latency cost of CP everywhere.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">How do you handle "design this for 1 billion users"?</div>
+                      <div class="qa-answer">Don't design for 1B users on the whiteboard — design for the stated QPS and show scaling levers. Walk through each tier: stateless API servers (horizontal scale trivially), DB (the hard part — read replicas first, then sharding), cache (reduces DB load by 90%+), CDN (offloads static assets). Then say: "Given these numbers, the bottleneck is the database. I'd start with read replicas for the 10:1 read/write ratio, and introduce sharding once we hit the single-master write limit around ~10K writes/sec for Postgres." Show you can identify the actual bottleneck.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">How do you communicate trade-offs effectively?</div>
+                      <div class="qa-answer">Use the format: "I'm choosing X over Y because [requirement Z]. The cost is [downside], which we can mitigate with [mitigation]." Example: "I'm choosing eventual consistency over strong consistency because our latency SLA is 50ms and strong consistency requires quorum reads which add ~20ms. The cost is users may briefly see stale data, which is acceptable for a social feed. We'll implement read-your-writes for the current user's own posts to prevent the jarring UX of posting and not seeing your own content."</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">How do you design for 99.99% uptime (four nines)?</div>
+                      <div class="qa-answer">99.99% = 52.6 minutes downtime/year. Requires: (1) Eliminate SPOFs — every component has redundancy (active-active or active-passive). (2) Multi-AZ deployment — AWS AZ failure must not take you down. (3) Circuit breakers — fail fast rather than queuing connections to a degraded service. (4) Graceful degradation — if recommendation service is down, show generic results, not 500. (5) Chaos engineering — regularly kill nodes in production to verify recovery. (6) Health checks + fast failover — LB removes unhealthy instances in &lt;30s. (7) Zero-downtime deploys — blue/green or rolling. Five nines requires active-active multi-region — fundamentally harder.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">How do you design idempotency at scale?</div>
+                      <div class="qa-answer">Idempotency key pattern: client generates UUID per logical operation, sends in Idempotency-Key header. Server: (1) check if key exists in idempotency store; (2) if exists, return cached response; (3) if not, process request, store (key → response) atomically with the operation; (4) expire keys after business-appropriate window. Atomicity is critical: store the idempotency record AND perform the operation in the same DB transaction — BEGIN; INSERT idempotency_records; do work; COMMIT. If INSERT fails (key already exists), return cached response. Hardest case: request times out, client retries with same key — idempotency record ensures second attempt returns same result, not duplicate.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">Database migration without downtime — how?</div>
+                      <div class="qa-answer">Expand-contract pattern: Phase 1 (Expand) — add new column as nullable, deploy code that writes to BOTH old and new. Phase 2 — background-migrate existing rows in batches (1K rows with sleep between to avoid locking). Phase 3 — switch reads to new column. Phase 4 (Contract) — remove old column in separate deploy. For index creation: CREATE INDEX CONCURRENTLY in Postgres (no table lock). For large table column adds: ALTER TABLE ... ADD COLUMN in Postgres 11+ is instant for DEFAULT values. For table rewrites: use gh-ost (GitHub) or pg-osc — shadow table + incremental copy + atomic rename with ~1s lock.</div>
+                    </div>
+                  </div>
+                </section>
+        <footer class="footer">
+          <p>Senior Full-Stack Interview Prep Guide</p>
+          <p><a href="index.html" style="color:#68d391;text-decoration:none;">← Back to Home</a></p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQ4n5wg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="app.js"></script>
+</body>
+</html>

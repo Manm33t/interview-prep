@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kafka & Streaming — Interview Prep</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" integrity="sha512-Jk4AqjWsdSzSWCSuQTfYRIF84Rq/eV0G2+tu07byYwHcbTGfdmLrHjUSwvzp5HvbiqK4ibmNwdcG49Y5RGYPg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <div id="progressBar" class="progress-bar"></div>
+  <button class="sidebar-float-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">📨</span>
+          <span class="logo-text">Kafka & Streaming</span>
+        </div>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search topics..." />
+        <span class="search-icon">🔍</span>
+      </div>
+      <nav class="nav" id="nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Navigation</div>
+          <a href="index.html" class="nav-link" style="color:#68d391;font-weight:600;">🏠 Back to Home</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Kafka & Streaming</div>
+          <a href="#kafka-fundamentals" class="nav-link" data-section="kafka-fundamentals">Kafka Fundamentals</a>
+          <a href="#kafka-internals" class="nav-link" data-section="kafka-internals">Kafka Internals</a>
+          <a href="#kafka-patterns" class="nav-link" data-section="kafka-patterns">Kafka Patterns</a>
+          <a href="#kafka-interview" class="nav-link" data-section="kafka-interview">Kafka Interview Q&A</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Other Topics</div>
+          <a href="javascript.html" class="nav-link">JavaScript Fundamentals</a>
+          <a href="nodejs.html" class="nav-link">Node.js Mastery</a>
+          <a href="react.html" class="nav-link">React.js</a>
+          <a href="dsa.html" class="nav-link">DSA</a>
+          <a href="system-design.html" class="nav-link">System Design</a>
+          <a href="databases.html" class="nav-link">Databases</a>
+          <a href="hld-lld.html" class="nav-link">HLD / LLD</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="main" id="main">
+      <div class="content-wrapper">
+        <section class="section" id="kafka-fundamentals">
+                  <div class="section-header">
+                    <span class="section-tag">Kafka</span>
+                    <h2>Kafka Fundamentals</h2>
+                  </div>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:20px;">Apache Kafka is a distributed, fault-tolerant, high-throughput event streaming platform. It decouples producers from consumers, persists events durably, and enables replay — unlike traditional message queues. Understanding Kafka internals is expected for senior distributed systems roles.</p>
+        
+                  <!-- SVG: Kafka architecture -->
+                  <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:20px;margin-bottom:20px;overflow-x:auto;">
+                    <svg viewBox="0 0 720 200" style="width:100%;max-width:720px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="0" y="0" width="720" height="200" fill="#0f172a"/>
+                      <!-- Producers -->
+                      <rect x="10" y="40" width="110" height="30" rx="5" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="65" y="60" text-anchor="middle" fill="#93c5fd" font-size="11" font-family="monospace">Producer A</text>
+                      <rect x="10" y="85" width="110" height="30" rx="5" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="65" y="105" text-anchor="middle" fill="#93c5fd" font-size="11" font-family="monospace">Producer B</text>
+                      <rect x="10" y="130" width="110" height="30" rx="5" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="65" y="150" text-anchor="middle" fill="#93c5fd" font-size="11" font-family="monospace">Producer C</text>
+                      <!-- Arrows to broker -->
+                      <path d="M120 55 L180 75" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#ak)"/>
+                      <path d="M120 100 L180 100" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#ak)"/>
+                      <path d="M120 145 L180 125" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#ak)"/>
+                      <!-- Broker / Topic -->
+                      <rect x="180" y="20" width="340" height="160" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+                      <text x="350" y="40" text-anchor="middle" fill="#fcd34d" font-size="12" font-family="monospace" font-weight="bold">Kafka Broker — Topic: payments</text>
+                      <!-- Partitions -->
+                      <rect x="195" y="50" width="300" height="35" rx="4" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+                      <text x="230" y="64" fill="#94a3b8" font-size="10" font-family="monospace">P0:</text>
+                      <rect x="250" y="53" width="35" height="26" rx="2" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1"/>
+                      <text x="267" y="70" text-anchor="middle" fill="#e2e8f0" font-size="9" font-family="monospace">0</text>
+                      <rect x="290" y="53" width="35" height="26" rx="2" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1"/>
+                      <text x="307" y="70" text-anchor="middle" fill="#e2e8f0" font-size="9" font-family="monospace">1</text>
+                      <rect x="330" y="53" width="35" height="26" rx="2" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1"/>
+                      <text x="347" y="70" text-anchor="middle" fill="#e2e8f0" font-size="9" font-family="monospace">2</text>
+                      <rect x="370" y="53" width="35" height="26" rx="2" fill="#334155" stroke="#475569" stroke-width="1" stroke-dasharray="3,2"/>
+                      <text x="387" y="70" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">...</text>
+                      <text x="450" y="70" fill="#64748b" font-size="9" font-family="monospace">offset →</text>
+        
+                      <rect x="195" y="93" width="300" height="35" rx="4" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+                      <text x="230" y="107" fill="#94a3b8" font-size="10" font-family="monospace">P1:</text>
+                      <rect x="250" y="96" width="35" height="26" rx="2" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1"/>
+                      <text x="267" y="113" text-anchor="middle" fill="#e2e8f0" font-size="9" font-family="monospace">0</text>
+                      <rect x="290" y="96" width="35" height="26" rx="2" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1"/>
+                      <text x="307" y="113" text-anchor="middle" fill="#e2e8f0" font-size="9" font-family="monospace">1</text>
+        
+                      <rect x="195" y="136" width="300" height="35" rx="4" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+                      <text x="230" y="150" fill="#94a3b8" font-size="10" font-family="monospace">P2:</text>
+                      <rect x="250" y="139" width="35" height="26" rx="2" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1"/>
+                      <text x="267" y="156" text-anchor="middle" fill="#e2e8f0" font-size="9" font-family="monospace">0</text>
+        
+                      <!-- Arrows to consumers -->
+                      <path d="M520 75 L580 55" stroke="#4ade80" stroke-width="1.5" marker-end="url(#akc)"/>
+                      <path d="M520 110 L580 110" stroke="#4ade80" stroke-width="1.5" marker-end="url(#akc)"/>
+                      <path d="M520 145 L580 165" stroke="#4ade80" stroke-width="1.5" marker-end="url(#akc)"/>
+        
+                      <!-- Consumers -->
+                      <rect x="580" y="40" width="130" height="30" rx="5" fill="#1a2e1a" stroke="#4ade80" stroke-width="1.5"/>
+                      <text x="645" y="60" text-anchor="middle" fill="#86efac" font-size="10" font-family="monospace">Consumer Group A</text>
+                      <text x="645" y="72" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">consumer 1 → P0, P1</text>
+                      <rect x="580" y="95" width="130" height="30" rx="5" fill="#1a2e1a" stroke="#4ade80" stroke-width="1.5"/>
+                      <text x="645" y="115" text-anchor="middle" fill="#86efac" font-size="10" font-family="monospace">Consumer Group B</text>
+                      <text x="645" y="127" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">independent offset</text>
+                      <rect x="580" y="150" width="130" height="30" rx="5" fill="#1a2e1a" stroke="#4ade80" stroke-width="1.5"/>
+                      <text x="645" y="170" text-anchor="middle" fill="#86efac" font-size="10" font-family="monospace">Consumer Group C</text>
+                      <defs>
+                        <marker id="ak" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#60a5fa"/></marker>
+                        <marker id="akc" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#4ade80"/></marker>
+                      </defs>
+                    </svg>
+                  </div>
+        
+                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+                    <div class="feature-card"><h4 style="color:#fbbf24;margin-bottom:6px;">Topic &amp; Partition</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">A topic is a named stream. Partitions enable parallelism — each partition is an ordered, immutable log. More partitions = more consumer parallelism, but more overhead.</p></div>
+                    <div class="feature-card"><h4 style="color:#fbbf24;margin-bottom:6px;">Offset</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Each message has a monotonically increasing offset per partition. Consumers track their offset — they can replay from any point. Kafka retains messages by time or size, not until consumed.</p></div>
+                    <div class="feature-card"><h4 style="color:#fbbf24;margin-bottom:6px;">Consumer Group</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Multiple consumer groups can read the same topic independently. Within a group, each partition is assigned to exactly one consumer — enables horizontal scaling. Max parallelism = num partitions.</p></div>
+                    <div class="feature-card"><h4 style="color:#a78bfa;margin-bottom:6px;">Replication</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Each partition has one leader and N-1 followers. Producers write to leader; followers replicate. ISR (In-Sync Replicas) — replicas fully caught up. acks=all → wait for all ISR to acknowledge.</p></div>
+                    <div class="feature-card"><h4 style="color:#a78bfa;margin-bottom:6px;">Retention</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Default: 7 days or 1GB per partition. Compacted topics: retain only the last value per key (useful for maintaining current state). Events are not deleted on consumption.</p></div>
+                    <div class="feature-card"><h4 style="color:#a78bfa;margin-bottom:6px;">ZooKeeper → KRaft</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Pre-3.0: ZooKeeper managed cluster metadata. Post-3.0: KRaft mode — Kafka manages its own metadata via Raft consensus. No ZooKeeper dependency in new deployments.</p></div>
+                  </div>
+                </section>
+
+        <section class="section" id="kafka-internals">
+                  <div class="section-header">
+                    <span class="section-tag">Kafka</span>
+                    <h2>Kafka Internals — Why It's Fast</h2>
+                  </div>
+                  <pre><code class="language-javascript">// Kafka's speed comes from 4 design decisions:
+        
+        // 1. Sequential disk I/O — append-only log
+        //    Random disk I/O: ~100 ops/sec (seek time dominates)
+        //    Sequential disk I/O: ~1M ops/sec (no seek, OS prefetch)
+        //    Kafka always appends to the end of a partition file → sequential writes
+        
+        // 2. Zero-copy — sendfile() syscall
+        //    Normal path: disk → kernel buffer → user buffer → socket buffer → NIC (4 copies)
+        //    Zero-copy:   disk → kernel buffer → socket buffer (2 copies, no user-space)
+        //    Kafka uses Java NIO FileChannel.transferTo() → OS-level zero-copy
+        
+        // 3. Batching — amortizes network round-trips
+        //    Producers batch messages before sending (linger.ms, batch.size)
+        //    Consumers fetch in batches (fetch.min.bytes, fetch.max.wait.ms)
+        //    Compression applied to entire batch (gzip, snappy, lz4, zstd)
+        
+        // 4. Page cache — OS-managed, not JVM heap
+        //    Kafka stores data on disk but relies on OS page cache for hot data
+        //    Avoids JVM GC pressure on large in-memory caches
+        //    Consumers often read from page cache (recently produced data)
+        
+        // ─── Producer configuration — tuning for reliability vs throughput ───
+        const producer = new Kafka({ brokers: ['kafka:9092'] }).producer({
+          // Reliability settings
+          acks: 'all',           // wait for all ISR to acknowledge (strongest durability)
+          retries: 5,            // retry on transient failures
+          idempotent: true,      // exactly-once within a single producer session (dedup)
+        
+          // Throughput settings
+          batchSize: 16384,      // 16KB batch before sending
+          lingerMs: 5,           // wait up to 5ms to accumulate more messages in a batch
+          compressionType: 'gzip',
+        });
+        
+        // ─── Consumer configuration ───
+        const consumer = kafka.consumer({
+          groupId: 'payment-processor',
+          sessionTimeout: 30000,     // coordinator marks consumer dead after 30s with no heartbeat
+          heartbeatInterval: 3000,   // send heartbeat every 3s
+          maxPollIntervalMs: 300000, // max time between poll() calls before rebalance triggered
+          autoOffsetReset: 'earliest', // 'earliest' or 'latest' for new groups
+        
+          // IMPORTANT: disable auto-commit for at-least-once semantics
+          autoCommit: false,
+        });
+        
+        await consumer.run({
+          eachBatch: async ({ batch, resolveOffset, heartbeat, commitOffsetsIfNecessary }) => {
+            for (const message of batch.messages) {
+              await processMessage(message);
+              resolveOffset(message.offset);
+              await heartbeat(); // prevent session timeout during long processing
+            }
+            await commitOffsetsIfNecessary();
+          }
+        });</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:24px 0 12px;">Delivery Semantics</h3>
+                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);">
+                    <div class="feature-card" style="border-left:3px solid #fbbf24;"><h4 style="color:#fcd34d;margin-bottom:6px;">At Most Once</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Commit offset before processing. If consumer crashes mid-processing, message is lost. Use when: losing some events is acceptable (metrics, analytics).</p></div>
+                    <div class="feature-card" style="border-left:3px solid #4ade80;"><h4 style="color:#86efac;margin-bottom:6px;">At Least Once</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Process then commit offset. If crash after processing but before commit, message is redelivered. Consumer must be idempotent. Default for most systems.</p></div>
+                    <div class="feature-card" style="border-left:3px solid #a78bfa;"><h4 style="color:#c4b5fd;margin-bottom:6px;">Exactly Once</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Kafka Transactions: idempotent producer + transactional.id + read-process-write in one atomic transaction. High overhead. Use for financial systems.</p></div>
+                  </div>
+                </section>
+
+        <section class="section" id="kafka-patterns">
+                  <div class="section-header">
+                    <span class="section-tag">Kafka</span>
+                    <h2>Kafka Patterns &amp; Use Cases</h2>
+                  </div>
+                  <pre><code class="language-javascript">// ─── Pattern 1: Event Sourcing with Kafka ───
+        // Store all state changes as events in Kafka (compacted topic)
+        // Replay the log to rebuild any state at any point in time
+        // topic: user-events (compacted, key = userId)
+        // Each event: { userId, type: 'USER_CREATED' | 'EMAIL_CHANGED', payload, ts }
+        // Consumer rebuilds current state by replaying all events for a userId
+        
+        // ─── Pattern 2: CDC (Change Data Capture) with Debezium ───
+        // Debezium reads PostgreSQL WAL (Write-Ahead Log) and publishes changes to Kafka
+        // Topics: postgres.public.users, postgres.public.orders, etc.
+        // Each message: { op: 'c'|'u'|'d'|'r', before: {...}, after: {...}, ts_ms }
+        // Use case: keep Elasticsearch, Redis, data warehouse in sync with RDBMS
+        
+        // ─── Pattern 3: CQRS (Command Query Responsibility Segregation) ───
+        // Commands go to Kafka → consumers update write model (Postgres)
+        //                       → other consumers update read model (Elasticsearch)
+        // Queries hit the read model directly (denormalized, fast)
+        // Eventual consistency: read model may lag by milliseconds
+        
+        // ─── Pattern 4: Saga Pattern (distributed transactions) ───
+        // Replace 2PC with a sequence of local transactions + compensating events
+        // Order service publishes 'ORDER_CREATED'
+        //   → Payment service subscribes, charges card, publishes 'PAYMENT_COMPLETED'
+        //     → Inventory service reserves stock, publishes 'STOCK_RESERVED'
+        //       → Order service marks ORDER_CONFIRMED
+        // On failure: compensating events trigger rollback chain
+        // Choreography (above) vs Orchestration (Saga orchestrator directs steps)
+        
+        // ─── Pattern 5: Fan-out ───
+        // One producer, multiple consumer groups — each gets full stream independently
+        // E.g.: order-events topic consumed by:
+        //   - notification-service (sends email/SMS)
+        //   - analytics-service (aggregates metrics)
+        //   - fraud-detection-service (real-time scoring)
+        // No producer changes needed to add new consumers
+        
+        // ─── Kafka Streams — stream processing on the JVM ───
+        // KStream: unbounded stream of records
+        // KTable: changelog stream — current value per key (like a materialized view)
+        // Join KStream with KTable: enrich events with current state
+        // Windowed aggregations: count events per 5-minute tumbling windows
+        
+        // ─── Node.js: kafkajs ───
+        // npm install kafkajs
+        const { Kafka, Partitioners } = require('kafkajs');
+        const kafka = new Kafka({
+          clientId: 'my-app',
+          brokers: process.env.KAFKA_BROKERS.split(','),
+          ssl: true,
+          sasl: { mechanism: 'scram-sha-512', username: process.env.KAFKA_USER, password: process.env.KAFKA_PASS },
+        });
+        
+        // Transactional producer (exactly-once)
+        const producer = kafka.producer({ transactionalId: 'order-producer-1', idempotent: true });
+        await producer.connect();
+        const transaction = await producer.transaction();
+        try {
+          await transaction.send({ topic: 'orders', messages: [{ key: orderId, value: JSON.stringify(order) }] });
+          await transaction.sendOffsets({ consumerGroupId: 'order-consumer', topics: [{ ... }] });
+          await transaction.commit();
+        } catch (e) {
+          await transaction.abort();
+        }</code></pre>
+                </section>
+
+        <section class="section" id="kafka-interview">
+                  <div class="section-header">
+                    <span class="section-tag">Kafka Interview Q&A</span>
+                    <h2>Kafka Interview Q&amp;A</h2>
+                  </div>
+                  <div class="qa-list">
+                    <div class="qa-item">
+                      <div class="qa-question">What is the difference between Kafka and a traditional message queue (like RabbitMQ or SQS)?</div>
+                      <div class="qa-answer">Traditional queues: messages are deleted once consumed. Each message delivered to one consumer. Good for task queues and work distribution. Kafka: messages are persisted to disk for a configurable retention period (days/weeks). Multiple consumer groups can read the same message independently. Consumers control their own offset — can replay from any point. This makes Kafka suitable for event sourcing, CDC, audit logs, and feeding multiple downstream systems from one event stream. RabbitMQ supports complex routing (exchanges, bindings, topics) and is better for routing-heavy use cases. Kafka is better for high-throughput append-only streams, event replay, and fan-out to multiple consumers. SQS is fully managed, simpler, but no replay and per-message billing.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">How does Kafka guarantee message ordering? What are the limitations?</div>
+                      <div class="qa-answer">Kafka guarantees ordering only within a single partition. Messages with the same key are always routed to the same partition (via key hash), so all events for a given entity (e.g., one user, one order) are ordered. Across partitions, there is no ordering guarantee. This means: if you need strict global ordering across all messages, you must use a single partition (sacrificing throughput). If you need per-entity ordering, use the entity ID as the message key. Limitation: partition rebalance during consumer group changes can cause brief out-of-order delivery if not handled carefully. Idempotent consumers handle duplicate delivery; sequence numbers handle out-of-order delivery within the same partition.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">Explain consumer group rebalancing. What causes it and what are the consequences?</div>
+                      <div class="qa-answer">A rebalance is triggered when: a new consumer joins the group, an existing consumer leaves or crashes, a new partition is added to the subscribed topic, or maxPollIntervalMs is exceeded (consumer is considered dead). During a rebalance, all consumers stop processing (stop-the-world), partitions are revoked and redistributed. This pause can last seconds to minutes depending on the number of partitions and consumers. Consequences: processing lag increases, at-least-once semantics mean messages may be reprocessed by the new consumer for un-committed offsets. Mitigation: use Cooperative Sticky Assignor (Kafka 2.4+) — only affected partitions are revoked and reassigned, other consumers keep their partitions and continue processing. Tune sessionTimeout and heartbeatInterval to avoid spurious rebalances. Ensure eachMessage/eachBatch processing is fast enough to call poll() within maxPollIntervalMs.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">Design a system to process 1 million payment events per second using Kafka.</div>
+                      <div class="qa-answer">Partitioning: Create the topic with 100+ partitions (rule of thumb: 1 partition handles ~10K msgs/sec for simple processing). Partition by payment_id or user_id to ensure per-entity ordering. Producer: Use batching (batchSize=512KB, lingerMs=5), compression (lz4 is fastest), acks=all + idempotent=true for durability without duplicates. Consumer: Deploy 100 consumer instances (one per partition). Use eachBatch for bulk processing. Process in parallel within each batch using Promise.all for I/O-bound work. Async commit after batch. Downstream: If writing to Postgres, use COPY or bulk INSERT (not one INSERT per event). Use a write buffer with 100ms flush windows. Dead Letter Queue: any message that fails 3 retries goes to a DLQ topic for manual inspection. Monitoring: Consumer lag per partition (alert if lag > 10K and growing), broker disk usage, ISR shrinking alerts.</div>
+                    </div>
+                  </div>
+                </section>
+        <footer class="footer">
+          <p>Senior Full-Stack Interview Prep Guide</p>
+          <p><a href="index.html" style="color:#68d391;text-decoration:none;">← Back to Home</a></p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQ4n5wg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="app.js"></script>
+</body>
+</html>

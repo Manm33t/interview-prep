@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Node.js Event Loop Visualizer</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e28;--surface:#1e2230;--surface2:#252a3a;
+  --border:#2a3044;--border2:#353b52;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --green:#68d391;--blue:#60a5fa;--purple:#a78bfa;--orange:#fb923c;--yellow:#fbbf24;
+  --red:#f87171;--pink:#f472b6;--cyan:#22d3ee;
+  --glow-green:rgba(104,211,145,0.18);--glow-blue:rgba(96,165,250,0.18);
+  --glow-purple:rgba(167,139,250,0.18);--glow-orange:rgba(251,146,60,0.18);
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --mono:'Fira Code','JetBrains Mono','Consolas',monospace;
+}
+html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px}
+
+/* ── Layout ── */
+.app{display:grid;grid-template-rows:56px 1fr 130px 110px;height:100vh}
+header{display:flex;align-items:center;gap:12px;padding:0 18px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0}
+.logo{font-weight:800;font-size:16px;color:var(--green);white-space:nowrap}
+.logo span{color:var(--text);font-weight:400;font-size:13px;margin-left:4px}
+.example-select{background:var(--surface);border:1px solid var(--border2);color:var(--text);padding:6px 10px;border-radius:8px;font-size:13px;outline:none;cursor:pointer;flex-shrink:0}
+.example-select:focus{border-color:var(--green)}
+.controls{display:flex;align-items:center;gap:8px;margin-left:auto}
+.btn{background:var(--surface);border:1px solid var(--border2);color:var(--text2);padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.btn:hover{background:var(--surface2);color:var(--text);border-color:var(--border2)}
+.btn.primary{background:var(--green);color:#0d1117;border-color:var(--green);font-weight:700}
+.btn.primary:hover{filter:brightness(1.1)}
+.btn.danger{background:rgba(248,113,113,.12);border-color:var(--red);color:var(--red)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.speed-wrap{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)}
+.speed-wrap input{width:70px;accent-color:var(--green)}
+.step-counter{font-size:12px;color:var(--text3);white-space:nowrap;min-width:70px;text-align:right}
+
+/* ── Middle: code + viz ── */
+.middle{display:grid;grid-template-columns:300px 1fr;overflow:hidden;border-bottom:1px solid var(--border)}
+
+/* Code panel */
+.code-panel{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.panel-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);padding:10px 16px 8px;border-bottom:1px solid var(--border)}
+.code-view{flex:1;overflow-y:auto;padding:12px 0;font-family:var(--mono);font-size:12.5px;line-height:1.75}
+.code-line{display:flex;gap:0;min-height:22px;transition:background .15s}
+.code-line.active{background:rgba(104,211,145,.1)}
+.code-line.active .line-content{color:var(--green)}
+.line-num{width:36px;min-width:36px;text-align:right;padding-right:12px;color:var(--text3);user-select:none;font-size:11px;padding-top:1px}
+.line-content{color:var(--text2);padding-right:12px;white-space:pre}
+.code-line.active .line-num{color:var(--green)}
+
+/* Viz panel */
+.viz-panel{overflow-y:auto;overflow-x:hidden;background:var(--bg);padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+
+/* Phase indicator */
+.phases{display:flex;gap:6px;flex-wrap:wrap}
+.phase-pill{padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;border:1px solid var(--border2);color:var(--text3);background:var(--surface);transition:.2s;cursor:default;white-space:nowrap}
+.phase-pill.active{background:var(--green);color:#0d1117;border-color:var(--green);box-shadow:0 0 12px var(--glow-green)}
+.phase-pill.active.timer{background:var(--orange);border-color:var(--orange);box-shadow:0 0 12px var(--glow-orange)}
+.phase-pill.active.check{background:var(--purple);border-color:var(--purple);box-shadow:0 0 12px var(--glow-purple)}
+.phase-pill.active.micro{background:var(--blue);border-color:var(--blue);box-shadow:0 0 12px var(--glow-blue)}
+.phase-pill.active.script{background:var(--cyan);border-color:var(--cyan)}
+
+/* Queue grid */
+.queues-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+.queue-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;min-height:90px}
+.queue-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:7px 10px 5px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.queue-items{padding:6px 8px;display:flex;flex-direction:column;gap:4px;min-height:60px}
+.queue-item{padding:4px 8px;border-radius:6px;font-family:var(--mono);font-size:11.5px;border:1px solid;transition:all .25s;animation:popIn .25s ease}
+@keyframes popIn{from{opacity:0;transform:scale(.85) translateY(-4px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.queue-item.removing{animation:popOut .25s ease forwards}
+@keyframes popOut{to{opacity:0;transform:scale(.85) translateY(4px)}}
+
+/* Item colors by type */
+.item-sync{background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.25);color:var(--green)}
+.item-timer{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.25);color:var(--orange)}
+.item-immediate{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.25);color:var(--purple)}
+.item-tick{background:rgba(96,165,250,.12);border-color:rgba(96,165,250,.3);color:var(--blue)}
+.item-promise{background:rgba(244,114,182,.1);border-color:rgba(244,114,182,.25);color:var(--pink)}
+.item-api{background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.25);color:var(--cyan)}
+.item-io{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.25);color:var(--yellow)}
+
+/* Queue header accent lines */
+.queue-box.call-stack .queue-header{border-top:2px solid var(--green)}
+.queue-box.node-apis .queue-header{border-top:2px solid var(--cyan)}
+.queue-box.tick-q .queue-header{border-top:2px solid var(--blue)}
+.queue-box.promise-q .queue-header{border-top:2px solid var(--pink)}
+.queue-box.timer-q .queue-header{border-top:2px solid var(--orange)}
+.queue-box.immediate-q .queue-header{border-top:2px solid var(--purple)}
+.queue-box.io-q .queue-header{border-top:2px solid var(--yellow)}
+.empty-msg{font-size:11px;color:var(--text3);font-style:italic;padding:4px 2px}
+
+.tag{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700}
+.tag-micro{background:rgba(96,165,250,.2);color:var(--blue)}
+.tag-macro{background:rgba(251,146,60,.2);color:var(--orange)}
+.tag-stack{background:rgba(104,211,145,.2);color:var(--green)}
+.tag-api{background:rgba(34,211,238,.2);color:var(--cyan)}
+
+/* ── Explanation ── */
+.explanation-panel{border-top:1px solid var(--border);background:var(--bg2);padding:10px 18px;display:flex;flex-direction:column;gap:4px;overflow:hidden}
+.exp-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)}
+.exp-text{font-size:13px;color:var(--text2);line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+
+/* ── Console ── */
+.console-panel{border-top:1px solid var(--border);background:#0a0c10;display:flex;flex-direction:column;overflow:hidden}
+.console-header{display:flex;align-items:center;gap:8px;padding:6px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.console-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)}
+.console-clear{background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;margin-left:auto}
+.console-clear:hover{color:var(--text2)}
+.console-output{flex:1;overflow-y:auto;padding:4px 0;font-family:var(--mono);font-size:12.5px;line-height:1.8}
+.console-line{display:flex;align-items:baseline;gap:10px;padding:1px 14px;transition:background .1s}
+.console-line:hover{background:rgba(255,255,255,.02)}
+.console-badge{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700;flex-shrink:0;margin-top:2px}
+.badge-sync{background:rgba(104,211,145,.2);color:var(--green)}
+.badge-timer{background:rgba(251,146,60,.2);color:var(--orange)}
+.badge-immediate{background:rgba(167,139,250,.2);color:var(--purple)}
+.badge-tick{background:rgba(96,165,250,.2);color:var(--blue)}
+.badge-promise{background:rgba(244,114,182,.2);color:var(--pink)}
+.badge-io{background:rgba(251,191,36,.2);color:var(--yellow)}
+.console-value{color:var(--text)}
+
+/* Call stack shows newest on top */
+.queue-box.call-stack .queue-items{flex-direction:column-reverse}
+
+.tooltip{position:relative}
+.tooltip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#000;color:var(--text2);font-size:11px;padding:4px 8px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:.15s;z-index:100}
+.tooltip:hover::after{opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Header -->
+  <header>
+    <div class="logo">⬡ Node.js <span>Event Loop Visualizer</span></div>
+    <select class="example-select" id="exampleSelect">
+      <option value="0">① Basic: setTimeout vs Sync</option>
+      <option value="1">② nextTick vs Promise.then</option>
+      <option value="2">③ setTimeout vs setImmediate (outside I/O)</option>
+      <option value="3">④ setImmediate inside I/O callback</option>
+      <option value="4">⑤ Promise chain (microtask queue)</option>
+      <option value="5">⑥ async / await internals</option>
+      <option value="6">⑦ process.nextTick starvation ⚠️</option>
+      <option value="7">⑧ Full complex mix (all types)</option>
+    </select>
+    <div class="controls">
+      <button class="btn danger tooltip" id="btnReset" data-tip="Reset to start">↺ Reset</button>
+      <button class="btn tooltip" id="btnPrev" data-tip="Previous step">◀ Prev</button>
+      <button class="btn primary" id="btnPlay">▶ Play</button>
+      <button class="btn tooltip" id="btnNext" data-tip="Next step">Next ▶</button>
+      <div class="speed-wrap">
+        <span>Speed</span>
+        <input type="range" id="speedRange" min="1" max="5" value="2" step="1"/>
+        <span id="speedLabel">1×</span>
+      </div>
+      <div class="step-counter" id="stepCounter">Step 0 / 0</div>
+    </div>
+  </header>
+
+  <!-- Middle -->
+  <div class="middle">
+    <!-- Code -->
+    <div class="code-panel">
+      <div class="panel-title">Source Code</div>
+      <div class="code-view" id="codeView"></div>
+    </div>
+
+    <!-- Viz -->
+    <div class="viz-panel" id="vizPanel">
+      <!-- Phase pills -->
+      <div class="phases">
+        <span style="font-size:11px;color:var(--text3);align-self:center;white-space:nowrap">Event Loop Phase:</span>
+        <span class="phase-pill script" data-phase="script">📜 Script (sync)</span>
+        <span class="phase-pill timer" data-phase="timers">① Timers</span>
+        <span class="phase-pill" data-phase="pending">② Pending I/O</span>
+        <span class="phase-pill" data-phase="poll">③ Poll</span>
+        <span class="phase-pill check" data-phase="check">④ Check (setImmediate)</span>
+        <span class="phase-pill" data-phase="close">⑤ Close</span>
+        <span class="phase-pill micro" data-phase="microtasks">⚡ Microtasks</span>
+        <span class="phase-pill" data-phase="idle">💤 Idle</span>
+      </div>
+
+      <!-- Queues grid -->
+      <div class="queues-grid">
+        <!-- Call Stack -->
+        <div class="queue-box call-stack">
+          <div class="queue-header"><span class="tag tag-stack">STACK</span> Call Stack</div>
+          <div class="queue-items" id="q-callstack"></div>
+        </div>
+        <!-- Node APIs -->
+        <div class="queue-box node-apis">
+          <div class="queue-header"><span class="tag tag-api">API</span> Node.js APIs</div>
+          <div class="queue-items" id="q-nodeapis"></div>
+        </div>
+        <!-- nextTick -->
+        <div class="queue-box tick-q">
+          <div class="queue-header"><span class="tag tag-micro">MICRO</span> nextTick Queue</div>
+          <div class="queue-items" id="q-nexttick"></div>
+        </div>
+        <!-- Promise -->
+        <div class="queue-box promise-q">
+          <div class="queue-header"><span class="tag tag-micro">MICRO</span> Promise Queue</div>
+          <div class="queue-items" id="q-promise"></div>
+        </div>
+        <!-- Timer -->
+        <div class="queue-box timer-q">
+          <div class="queue-header"><span class="tag tag-macro">MACRO</span> Timer Queue</div>
+          <div class="queue-items" id="q-timer"></div>
+        </div>
+        <!-- Immediate -->
+        <div class="queue-box immediate-q">
+          <div class="queue-header"><span class="tag tag-macro">MACRO</span> setImmediate Queue</div>
+          <div class="queue-items" id="q-immediate"></div>
+        </div>
+        <!-- I/O -->
+        <div class="queue-box io-q" style="display:none" id="ioBox">
+          <div class="queue-header"><span class="tag" style="background:rgba(251,191,36,.2);color:var(--yellow)">I/O</span> I/O Callbacks</div>
+          <div class="queue-items" id="q-io"></div>
+        </div>
+      </div>
+
+      <!-- Priority legend -->
+      <div style="display:flex;gap:16px;flex-wrap:wrap;padding:2px 0">
+        <span style="font-size:11px;color:var(--text3)">Execution priority (highest → lowest):</span>
+        <span style="font-size:11px;color:var(--blue)">① nextTick</span>
+        <span style="font-size:11px;color:var(--pink)">② Promise.then</span>
+        <span style="font-size:11px;color:var(--orange)">③ setTimeout/setInterval</span>
+        <span style="font-size:11px;color:var(--purple)">④ setImmediate</span>
+        <span style="font-size:11px;color:var(--yellow)">⑤ I/O callbacks</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Explanation -->
+  <div class="explanation-panel">
+    <div class="exp-label">What's happening</div>
+    <div class="exp-text" id="explanation">Select an example and press Play to start the visualization.</div>
+  </div>
+
+  <!-- Console -->
+  <div class="console-panel">
+    <div class="console-header">
+      <span class="console-title">Console Output</span>
+      <button class="console-clear" id="btnClearConsole">clear</button>
+    </div>
+    <div class="console-output" id="consoleOutput">
+      <div class="console-line"><span class="console-value" style="color:var(--text3)">// output appears here as code executes</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Step builder ──────────────────────────────────────────────────
+function buildSteps(actions){
+  const s={callStack:[],nodeApis:[],nextTick:[],promise:[],timer:[],immediate:[],io:[],
+            phase:'idle',activeLine:null,output:[],explanation:'Starting...'};
+  const snap=()=>JSON.parse(JSON.stringify(s));
+  const steps=[snap()];
+  for(const a of actions){
+    const[t,...r]=a;
+    if(t==='push'){s.callStack.push(r[0]);if(r[1]!==undefined)s.activeLine=r[1];}
+    else if(t==='pop'){s.callStack.pop();}
+    else if(t==='log'){s.output=[...s.output,{text:r[0],type:r[1]||'sync'}];}
+    else if(t==='A+'){s.nodeApis=[...s.nodeApis,r[0]];}
+    else if(t==='A-'){s.nodeApis=s.nodeApis.filter(x=>x!==r[0]);}
+    else if(t==='Q+'){s[r[0]]=[...s[r[0]],r[1]];}
+    else if(t==='Q-'){s[r[0]]=s[r[0]].slice(1);}
+    else if(t==='PH'){s.phase=r[0];}
+    else if(t==='LN'){s.activeLine=r[0];}
+    else if(t==='E'){s.explanation=r[0];}
+    steps.push(snap());
+  }
+  return steps;
+}
+
+// ── Examples ───────────────────────────────────────────────────────
+const EXAMPLES=[
+
+// 0: Basic setTimeout
+{name:'Basic: setTimeout vs Sync',
+code:`console.log('1 — sync');
+
+setTimeout(() => {
+  console.log('3 — timeout cb');
+}, 0);
+
+console.log('2 — sync');`,
+steps:buildSteps([
+['E','Script begins. JS is single-threaded — execution starts from the top synchronously.'],
+['push','main()',null],['PH','script'],
+['E','Line 1: console.log("1") is synchronous. It is pushed directly onto the Call Stack.'],
+['push','console.log("1")',1],
+['log','1 — sync','sync'],
+['E','console.log("1") executes immediately — "1" appears in the console.'],
+['pop'],
+['E','Line 3: setTimeout() is called. The callback is NOT executed now — it\'s handed to the Node.js Timer API with a 0ms delay.'],
+['push','setTimeout(cb, 0)',3],['A+','Timer: cb [delay=0ms]'],
+['pop'],
+['E','setTimeout() itself returns immediately. The event loop will deliver the callback AFTER the current synchronous code finishes and the delay expires.'],
+['E','Line 7: console.log("2") is synchronous. Pushed directly onto the Call Stack.'],
+['push','console.log("2")',7],
+['log','2 — sync','sync'],
+['E','console.log("2") executes — "2" in console. Notice: this runs BEFORE the timeout callback!'],
+['pop'],
+['pop'],// main
+['E','main() completes. Call Stack is empty! The event loop now takes over.'],
+['PH','timers'],
+['E','Event Loop — TIMERS phase: Checks if any setTimeout/setInterval thresholds have expired. Our 0ms timer has expired — callback moves from Timer API → Timer Queue.'],
+['A-','Timer: cb [delay=0ms]'],['Q+','timer','cb()'],
+['E','Event loop picks up the callback from the Timer Queue. Since the Call Stack is empty, it pushes the callback onto the stack.'],
+['Q-','timer'],['push','cb()',null],
+['E','Inside the callback: console.log("3") executes.'],
+['push','console.log("3")',4],
+['log','3 — timeout cb','timer'],
+['pop'],
+['pop'],// cb
+['PH','idle'],
+['E','✅ Done! Output: 1 → 2 → 3. Key insight: even setTimeout(0) runs AFTER all synchronous code, because async callbacks can only run when the Call Stack is empty.'],
+])},
+
+// 1: nextTick vs Promise
+{name:'nextTick vs Promise.then',
+code:`console.log('1 — sync');
+
+process.nextTick(() => {
+  console.log('3 — nextTick');
+});
+
+Promise.resolve().then(() => {
+  console.log('4 — Promise.then');
+});
+
+process.nextTick(() => {
+  console.log('5 — nextTick 2');
+});
+
+console.log('2 — sync');`,
+steps:buildSteps([
+['E','We\'ll compare process.nextTick (highest priority microtask) vs Promise.then (normal microtask).'],
+['push','main()',null],['PH','script'],
+['push','console.log("1")',1],['log','1 — sync','sync'],['pop'],
+['E','Line 3: process.nextTick() registers a callback in the nextTick Queue. It does NOT run yet.'],
+['push','process.nextTick(cb1)',3],['Q+','nextTick','cb1: nextTick'],['pop'],
+['E','Line 7: Promise.resolve().then() registers a callback in the Promise (microtask) Queue.'],
+['push','Promise.resolve().then(cb2)',7],['Q+','promise','cb2: Promise.then'],['pop'],
+['E','Line 11: Another process.nextTick() — second callback added to nextTick Queue.'],
+['push','process.nextTick(cb3)',11],['Q+','nextTick','cb3: nextTick 2'],['pop'],
+['push','console.log("2")',15],['log','2 — sync','sync'],['pop'],
+['pop'],// main
+['E','Call Stack is empty. Before advancing event loop phases, ALL microtasks must drain. nextTick Queue is drained FIRST, then Promise Queue.'],
+['PH','microtasks'],
+['E','MICROTASKS: nextTick Queue goes first. Picking up cb1...'],
+['Q-','nextTick'],['push','cb1()',null],
+['push','console.log("3")',4],['log','3 — nextTick','tick'],['pop'],['pop'],
+['E','nextTick Queue still has cb3. It runs next (nextTick fully drains before moving to Promise Queue).'],
+['Q-','nextTick'],['push','cb3()',null],
+['push','console.log("5")',12],['log','5 — nextTick 2','tick'],['pop'],['pop'],
+['E','nextTick Queue is now empty. Now the Promise Queue runs.'],
+['Q-','promise'],['push','cb2()',null],
+['push','console.log("4")',8],['log','4 — Promise.then','promise'],['pop'],['pop'],
+['PH','idle'],
+['E','✅ Output: 1 → 2 → 3 → 5 → 4. Priority: sync → nextTick (ALL) → Promise.then (ALL) → macrotasks. nextTick ALWAYS beats Promise.then!'],
+])},
+
+// 2: setTimeout vs setImmediate
+{name:'setTimeout vs setImmediate (outside I/O)',
+code:`// Called outside an I/O callback
+// Order is NON-DETERMINISTIC!
+
+setTimeout(() => {
+  console.log('setTimeout');
+}, 0);
+
+setImmediate(() => {
+  console.log('setImmediate');
+});
+
+// May print either order on each run`,
+steps:buildSteps([
+['E','Classic interview question: setTimeout(fn, 0) vs setImmediate(fn) — when called at the top level (outside I/O), the order is NON-DETERMINISTIC.'],
+['push','main()',null],['PH','script'],
+['E','Line 4: setTimeout(cb, 0) — callback registered with Timer API. Whether it\'s ready by the time the event loop starts the Timers phase depends on OS/process startup timing.'],
+['push','setTimeout(cb1, 0)',4],['A+','Timer: cb1 [0ms]'],['pop'],
+['E','Line 8: setImmediate(cb2) — callback registered in the Immediate Queue. It will run in the CHECK phase, which comes after the POLL phase.'],
+['push','setImmediate(cb2)',8],['Q+','immediate','cb2: setImmediate'],['pop'],
+['pop'],// main
+['E','Call Stack empty. Event loop begins. Which comes first — Timers phase or Check phase?'],
+['PH','timers'],
+['E','TIMERS phase: If the 0ms timer has already expired (depends on how fast Node started), cb1 moves to the Timer Queue now. If it hasn\'t expired yet, this phase is skipped.'],
+['A-','Timer: cb1 [0ms]'],['Q+','timer','cb1: setTimeout'],
+['E','[Scenario A] Timer expired in time → Timer Queue has cb1. Event loop picks it up.'],
+['Q-','timer'],['push','cb1()',null],
+['push','console.log("setTimeout")',5],['log','setTimeout','timer'],['pop'],['pop'],
+['PH','check'],
+['E','CHECK phase (setImmediate): cb2 runs now.'],
+['Q-','immediate'],['push','cb2()',null],
+['push','console.log("setImmediate")',9],['log','setImmediate','immediate'],['pop'],['pop'],
+['PH','idle'],
+['E','✅ In Scenario A: setTimeout ran first. In Scenario B (timer not yet expired when Timers phase checked), setImmediate would run first in Check phase, then setTimeout on the next loop iteration. The order is truly non-deterministic at the top level!'],
+])},
+
+// 3: setImmediate inside I/O
+{name:'setImmediate inside I/O callback',
+code:`const fs = require('fs');
+
+fs.readFile('file.txt', (err, data) => {
+  // Inside an I/O callback:
+  // setImmediate ALWAYS runs before setTimeout!
+
+  setTimeout(() => {
+    console.log('setTimeout');
+  }, 0);
+
+  setImmediate(() => {
+    console.log('setImmediate ← always first!');
+  });
+});`,
+steps:buildSteps([
+['E','Inside an I/O callback, the order becomes DETERMINISTIC. setImmediate ALWAYS runs before setTimeout(0). Here\'s why...'],
+['push','main()',null],['PH','script'],
+['E','fs.readFile() is called — an async I/O operation. It\'s handed to the OS via libuv. The callback will run when the file is read.'],
+['push','fs.readFile(cb)',3],['A+','I/O: readFile [pending]'],['pop'],
+['pop'],// main
+['E','Call Stack empty. Event loop begins cycling through phases. I/O hasn\'t completed yet...'],
+['PH','poll'],
+['E','POLL phase: Event loop blocks here waiting for I/O events. File read completes! The I/O callback is moved to the I/O queue.'],
+['A-','I/O: readFile [pending]'],['Q+','io','readFile cb'],
+['E','The I/O callback runs during the POLL phase.'],
+['Q-','io'],['push','readFileCb()',null],['LN',3],
+['E','Inside the I/O callback: setTimeout() is registered. Timer starts from THIS moment.'],
+['push','setTimeout(cb1, 0)',7],['A+','Timer: cb1 [0ms]'],['pop'],
+['E','setImmediate() is registered — callback goes into the Immediate Queue immediately.'],
+['push','setImmediate(cb2)',11],['Q+','immediate','cb2: setImmediate'],['pop'],
+['pop'],// readFileCb
+['E','I/O callback done. Event loop continues. Next phase after POLL is CHECK. At this point, the setTimeout timer may NOT have expired yet (it was just registered!).'],
+['PH','check'],
+['E','CHECK phase: setImmediate queue runs. cb2 executes NOW — before the timer has a chance to be checked.'],
+['Q-','immediate'],['push','cb2()',null],
+['push','console.log("setImmediate")',12],['log','setImmediate ← always first!','immediate'],['pop'],['pop'],
+['PH','timers'],
+['E','Next iteration — TIMERS phase: The 0ms timer has now expired. cb1 moves to Timer Queue.'],
+['A-','Timer: cb1 [0ms]'],['Q+','timer','cb1: setTimeout'],
+['Q-','timer'],['push','cb1()',null],
+['push','console.log("setTimeout")',8],['log','setTimeout','timer'],['pop'],['pop'],
+['PH','idle'],
+['E','✅ Inside I/O: setImmediate ALWAYS before setTimeout(0). Why? The CHECK phase comes right after POLL (where I/O runs). The Timers phase only comes in the NEXT loop iteration, by which time setImmediate has already run.'],
+])},
+
+// 4: Promise chain
+{name:'Promise chain (microtask queue)',
+code:`console.log('1 — sync');
+
+Promise.resolve('data')
+  .then(val => {
+    console.log('3 — then 1:', val);
+    return 'processed';
+  })
+  .then(val => {
+    console.log('5 — then 2:', val);
+  });
+
+Promise.resolve()
+  .then(() => {
+    console.log('4 — other promise');
+  });
+
+console.log('2 — sync');`,
+steps:buildSteps([
+['E','Promise chains show how microtasks queue up. Each .then() schedules a NEW microtask when the previous one resolves.'],
+['push','main()',null],['PH','script'],
+['push','console.log("1")',1],['log','1 — sync','sync'],['pop'],
+['E','Promise.resolve("data").then(cb1) — the Promise is already resolved, so cb1 is immediately scheduled in the Promise (microtask) Queue.'],
+['push','Promise.resolve().then(cb1)',3],['Q+','promise','cb1: then1'],['pop'],
+['E','The second .then(cb2) is NOT queued yet — it waits for cb1 to run and resolve first.'],
+['E','Line 12: Another Promise.resolve().then(cb3) — cb3 goes into the Promise Queue alongside cb1.'],
+['push','Promise.resolve().then(cb3)',12],['Q+','promise','cb3: other promise'],['pop'],
+['push','console.log("2")',16],['log','2 — sync','sync'],['pop'],
+['pop'],// main
+['E','Call Stack empty. Microtask queue drains. Two callbacks are waiting: cb1 and cb3. They run in FIFO order.'],
+['PH','microtasks'],
+['E','First microtask: cb1 (then1). It was queued first.'],
+['Q-','promise'],['push','cb1()',null],
+['push','console.log("3 — then 1")',4],['log','3 — then 1: data','promise'],['pop'],
+['E','cb1 returns "processed". This resolves the next .then(), so cb2 is NOW scheduled in the Promise Queue.'],
+['Q+','promise','cb2: then2'],
+['pop'],// cb1
+['E','Next microtask: cb3 (the other promise\'s .then). Note: cb2 was just added, but cb3 was already in the queue, so cb3 runs next.'],
+['Q-','promise'],['push','cb3()',null],
+['push','console.log("4 — other")',13],['log','4 — other promise','promise'],['pop'],['pop'],
+['E','Now cb2 runs — it was added after cb3 but cb3 already ran. Microtasks run in FIFO order.'],
+['Q-','promise'],['push','cb2()',null],
+['push','console.log("5 — then 2")',8],['log','5 — then 2: processed','promise'],['pop'],['pop'],
+['PH','idle'],
+['E','✅ Output: 1→2→3→4→5. Key: .then() callbacks from DIFFERENT promise chains interleave. Each .then() resolution queues the NEXT .then() — it\'s not all queued at once!'],
+])},
+
+// 5: async/await
+{name:'async / await internals',
+code:`console.log('1 — sync');
+
+async function fetchData() {
+  console.log('3 — inside async fn (sync)');
+
+  const result = await Promise.resolve('value');
+  // Everything after await is a microtask!
+  console.log('5 — after await:', result);
+}
+
+fetchData();
+console.log('2 — sync (after calling fetchData)');
+
+Promise.resolve().then(() => {
+  console.log('4 — plain Promise.then');
+});`,
+steps:buildSteps([
+['E','async/await is syntactic sugar over Promises. Code after "await" becomes a .then() callback — a microtask. Let\'s see exactly when things run.'],
+['push','main()',null],['PH','script'],
+['push','console.log("1")',1],['log','1 — sync','sync'],['pop'],
+['E','fetchData() is called. An async function runs synchronously until it hits the first "await".'],
+['push','fetchData()',10],
+['push','console.log("3")',4],['log','3 — inside async fn (sync)','sync'],['pop'],
+['E','Line 6: "await Promise.resolve(...)". The Promise is resolved, but the code AFTER await is suspended and scheduled as a microtask (like .then()). fetchData() returns a pending Promise.'],
+['Q+','promise','resumeFetchData (after await)'],
+['pop'],// fetchData
+['E','Execution returns to main(). fetchData() returned its pending Promise — main() continues synchronously.'],
+['push','console.log("2")',11],['log','2 — sync (after calling fetchData)','sync'],['pop'],
+['E','Line 13: Promise.resolve().then(cb) — schedules another microtask. Notice it was registered AFTER the await resumes, but...'],
+['push','Promise.resolve().then(cb)',13],['Q+','promise','cb: plain Promise.then'],['pop'],
+['pop'],// main
+['E','Call Stack empty. Microtask queue has 2 items: [resumeFetchData, cb]. They run in FIFO order.'],
+['PH','microtasks'],
+['E','First: resumeFetchData — the code after "await" in fetchData() continues. The awaited value ("value") is assigned to "result".'],
+['Q-','promise'],['push','fetchData (resumed)',null],
+['push','console.log("5 — after await")',8],['log','5 — after await: value','promise'],['pop'],['pop'],
+['E','Next: the plain Promise.then callback runs.'],
+['Q-','promise'],['push','cb()',null],
+['push','console.log("4")',14],['log','4 — plain Promise.then','promise'],['pop'],['pop'],
+['PH','idle'],
+['E','✅ Output: 1→3→2→5→4. async functions run synchronously until the first "await". After await, they resume as microtasks — AFTER all current sync code, but BEFORE any macrotasks (setTimeout, setImmediate).'],
+])},
+
+// 6: nextTick starvation
+{name:'process.nextTick starvation ⚠️',
+code:`let count = 0;
+
+function recursiveNextTick() {
+  if (count >= 4) return;
+  count++;
+  console.log('nextTick #' + count);
+
+  // Danger! Schedules ANOTHER nextTick
+  // before Promise queue or timers can run
+  process.nextTick(recursiveNextTick);
+}
+
+setTimeout(() => {
+  console.log('setTimeout — was I starved?');
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log('Promise.then — was I starved?');
+});
+
+process.nextTick(recursiveNextTick);
+console.log('sync done');`,
+steps:buildSteps([
+['E','⚠️ DANGER: process.nextTick can starve the rest of the event loop! If a nextTick callback keeps scheduling MORE nextTick callbacks, the event loop can never advance. This is the starvation problem.'],
+['push','main()',null],['PH','script'],
+['push','setTimeout(cb)',13],['A+','Timer: setTimeout cb [0ms]'],['pop'],
+['push','Promise.resolve().then(pCb)',17],['Q+','promise','pCb: Promise.then'],['pop'],
+['E','process.nextTick(recursiveNextTick) — first call queued.'],
+['push','process.nextTick(r)',21],['Q+','nextTick','recursiveNextTick #1'],['pop'],
+['push','console.log("sync done")',22],['log','sync done','sync'],['pop'],
+['pop'],// main
+['E','Call Stack empty. Now microtasks run. nextTick queue goes FIRST. Watch how each nextTick call adds ANOTHER nextTick before Promise.then or setTimeout can run!'],
+['PH','microtasks'],
+['Q-','nextTick'],['push','recursiveNextTick()',null],
+['Q+','nextTick','recursiveNextTick #2'],
+['push','console.log("nextTick #1")',6],['log','nextTick #1','tick'],['pop'],['pop'],
+['E','nextTick #1 ran and scheduled nextTick #2. The Promise.then callback is STILL waiting. nextTick queue drains completely before Promise queue!'],
+['Q-','nextTick'],['push','recursiveNextTick()',null],
+['Q+','nextTick','recursiveNextTick #3'],
+['push','console.log("nextTick #2")',6],['log','nextTick #2','tick'],['pop'],['pop'],
+['Q-','nextTick'],['push','recursiveNextTick()',null],
+['Q+','nextTick','recursiveNextTick #4'],
+['push','console.log("nextTick #3")',6],['log','nextTick #3','tick'],['pop'],['pop'],
+['Q-','nextTick'],['push','recursiveNextTick()',null],
+['push','console.log("nextTick #4")',6],['log','nextTick #4','tick'],['pop'],['pop'],
+['E','count=4, recursiveNextTick stops. nextTick queue is finally empty. NOW Promise queue runs.'],
+['Q-','promise'],['push','pCb()',null],
+['push','console.log("Promise.then")',18],['log','Promise.then — was I starved?','promise'],['pop'],['pop'],
+['PH','timers'],['A-','Timer: setTimeout cb [0ms]'],['Q+','timer','setTimeout cb'],
+['Q-','timer'],['push','setTimeout cb()',null],
+['push','console.log("setTimeout")',14],['log','setTimeout — was I starved?','timer'],['pop'],['pop'],
+['PH','idle'],
+['E','✅ Output shows all nextTicks ran before Promise.then, and Promise.then before setTimeout. If recursiveNextTick had no base case, setTimeout and Promise.then would NEVER run — total starvation! Use setImmediate instead of nextTick for recursive patterns.'],
+])},
+
+// 7: Full complex mix
+{name:'Full complex mix (all types)',
+code:`console.log('1 — sync');
+
+setTimeout(() => console.log('8 — setTimeout'), 0);
+
+setImmediate(() => console.log('7 — setImmediate'));
+
+Promise.resolve()
+  .then(() => {
+    console.log('4 — Promise 1');
+    process.nextTick(() =>
+      console.log('5 — nextTick inside Promise')
+    );
+  })
+  .then(() => console.log('6 — Promise 2'));
+
+process.nextTick(() => console.log('3 — nextTick'));
+
+console.log('2 — sync');`,
+steps:buildSteps([
+['E','The ultimate event loop challenge! Can you predict the output? Let\'s step through every detail.'],
+['push','main()',null],['PH','script'],
+['push','console.log("1")',1],['log','1 — sync','sync'],['pop'],
+['push','setTimeout(cb1,0)',3],['A+','Timer: cb1 [0ms]'],['pop'],
+['push','setImmediate(cb2)',5],['Q+','immediate','cb2: setImmediate'],['pop'],
+['E','Promise.resolve().then(pCb1).then(pCb2) — pCb1 is immediately queued (resolved promise). pCb2 waits for pCb1 to resolve first.'],
+['push','Promise.resolve().then(pCb1).then(pCb2)',7],['Q+','promise','pCb1: Promise 1'],['pop'],
+['push','process.nextTick(tCb)',15],['Q+','nextTick','tCb: nextTick'],['pop'],
+['push','console.log("2")',17],['log','2 — sync','sync'],['pop'],
+['pop'],// main
+['E','Call Stack empty! Microtask queues drain first: nextTick queue has tCb, Promise queue has pCb1.'],
+['PH','microtasks'],
+['E','nextTick queue goes first. tCb runs.'],
+['Q-','nextTick'],['push','tCb()',null],
+['push','console.log("3")',15],['log','3 — nextTick','tick'],['pop'],['pop'],
+['E','nextTick empty. Promise queue: pCb1 runs.'],
+['Q-','promise'],['push','pCb1()',null],
+['push','console.log("4")',9],['log','4 — Promise 1','promise'],
+['E','pCb1 schedules a nextTick inside itself! This goes to the nextTick queue. Also pCb1 resolves, queueing pCb2.'],
+['Q+','nextTick','innerTick: nextTick inside Promise'],
+['Q+','promise','pCb2: Promise 2'],
+['pop'],['pop'],// console.log + pCb1
+['E','After EACH microtask, nextTick queue is checked again! The inner nextTick runs before pCb2.'],
+['Q-','nextTick'],['push','innerTick()',null],
+['push','console.log("5")',11],['log','5 — nextTick inside Promise','tick'],['pop'],['pop'],
+['E','nextTick empty again. Now pCb2 runs.'],
+['Q-','promise'],['push','pCb2()',null],
+['push','console.log("6")',13],['log','6 — Promise 2','promise'],['pop'],['pop'],
+['E','All microtasks done! Now event loop advances to macrotasks. Timer status is non-deterministic, but CHECK phase (setImmediate) typically runs before TIMERS in this case since we\'re inside the same loop iteration.'],
+['PH','check'],
+['Q-','immediate'],['push','cb2()',null],
+['push','console.log("7")',5],['log','7 — setImmediate','immediate'],['pop'],['pop'],
+['PH','timers'],
+['A-','Timer: cb1 [0ms]'],['Q+','timer','cb1: setTimeout'],
+['Q-','timer'],['push','cb1()',null],
+['push','console.log("8")',3],['log','8 — setTimeout','timer'],['pop'],['pop'],
+['PH','idle'],
+['E','✅ Final output: 1→2→3→4→5→6→7→8. Key rules: (1) nextTick ALWAYS before Promise; (2) nextTick is checked after EVERY microtask; (3) All microtasks before any macrotask; (4) setImmediate before setTimeout when already in event loop.'],
+]),
+},
+];
+
+// ── Renderer ───────────────────────────────────────────────────────
+let currentExample=0, currentStep=0, playing=false, playTimer=null;
+const speedMs=[1200,800,500,300,150];
+
+function renderCode(code,activeLine){
+  const lines=code.split('\n');
+  const div=document.getElementById('codeView');
+  div.innerHTML=lines.map((line,i)=>{
+    const active=activeLine===i+1?' active':'';
+    return `<div class="code-line${active}"><span class="line-num">${i+1}</span><span class="line-content">${escHtml(line)||' '}</span></div>`;
+  }).join('');
+  if(activeLine){
+    const el=div.querySelector(`.code-line:nth-child(${activeLine})`);
+    if(el)el.scrollIntoView({block:'nearest',behavior:'smooth'});
+  }
+}
+
+function renderQueueBox(id,items,itemClass){
+  const box=document.getElementById(id);
+  if(!items||items.length===0){box.innerHTML='<div class="empty-msg">empty</div>';return;}
+  box.innerHTML=items.map(it=>`<div class="queue-item ${itemClass}">${escHtml(it)}</div>`).join('');
+}
+
+function renderStep(step){
+  const ex=EXAMPLES[currentExample];
+  renderCode(ex.code,step.activeLine);
+  // Queues
+  renderQueueBox('q-callstack',step.callStack,'item-sync');
+  renderQueueBox('q-nodeapis',step.nodeApis,'item-api');
+  renderQueueBox('q-nexttick',step.nextTick,'item-tick');
+  renderQueueBox('q-promise',step.promise,'item-promise');
+  renderQueueBox('q-timer',step.timer,'item-timer');
+  renderQueueBox('q-immediate',step.immediate,'item-immediate');
+  renderQueueBox('q-io',step.io,'item-io');
+  // Show I/O box if needed
+  document.getElementById('ioBox').style.display=step.io&&step.io.length?'block':'none';
+  // Phase
+  document.querySelectorAll('.phase-pill').forEach(p=>{
+    p.classList.toggle('active',p.dataset.phase===step.phase);
+  });
+  // Explanation
+  document.getElementById('explanation').textContent=step.explanation;
+  // Console
+  renderConsole(step.output);
+  // Counter
+  document.getElementById('stepCounter').textContent=`Step ${currentStep} / ${ex.steps.length-1}`;
+  // Button states
+  document.getElementById('btnPrev').disabled=currentStep===0;
+  document.getElementById('btnNext').disabled=currentStep>=ex.steps.length-1;
+}
+
+function renderConsole(output){
+  const div=document.getElementById('consoleOutput');
+  if(!output||output.length===0){
+    div.innerHTML='<div class="console-line"><span class="console-value" style="color:var(--text3)">// output appears here</span></div>';
+    return;
+  }
+  div.innerHTML=output.map(o=>
+    `<div class="console-line"><span class="console-badge badge-${o.type}">${o.type.toUpperCase()}</span><span class="console-value">${escHtml(String(o.text))}</span></div>`
+  ).join('');
+  div.scrollTop=div.scrollHeight;
+}
+
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function loadExample(idx){
+  currentExample=idx;
+  currentStep=0;
+  stopPlay();
+  renderStep(EXAMPLES[idx].steps[0]);
+}
+
+function goToStep(n){
+  const ex=EXAMPLES[currentExample];
+  if(n<0||n>=ex.steps.length)return;
+  currentStep=n;
+  renderStep(ex.steps[n]);
+}
+
+function startPlay(){
+  if(playing)return;
+  playing=true;
+  document.getElementById('btnPlay').textContent='⏸ Pause';
+  document.getElementById('btnPlay').classList.add('danger');
+  document.getElementById('btnPlay').classList.remove('primary');
+  tick();
+}
+
+function stopPlay(){
+  playing=false;
+  clearTimeout(playTimer);
+  document.getElementById('btnPlay').textContent='▶ Play';
+  document.getElementById('btnPlay').classList.remove('danger');
+  document.getElementById('btnPlay').classList.add('primary');
+}
+
+function tick(){
+  if(!playing)return;
+  const ex=EXAMPLES[currentExample];
+  if(currentStep>=ex.steps.length-1){stopPlay();return;}
+  goToStep(currentStep+1);
+  const speed=parseInt(document.getElementById('speedRange').value);
+  playTimer=setTimeout(tick,speedMs[speed-1]);
+}
+
+// ── Events ─────────────────────────────────────────────────────────
+document.getElementById('exampleSelect').addEventListener('change',e=>{loadExample(parseInt(e.target.value));});
+document.getElementById('btnPlay').addEventListener('click',()=>{playing?stopPlay():startPlay();});
+document.getElementById('btnNext').addEventListener('click',()=>{stopPlay();goToStep(currentStep+1);});
+document.getElementById('btnPrev').addEventListener('click',()=>{stopPlay();goToStep(currentStep-1);});
+document.getElementById('btnReset').addEventListener('click',()=>{stopPlay();goToStep(0);});
+document.getElementById('btnClearConsole').addEventListener('click',()=>{renderConsole([]);});
+
+const speedLabels=['0.5×','1×','1.5×','2×','3×'];
+document.getElementById('speedRange').addEventListener('input',e=>{
+  document.getElementById('speedLabel').textContent=speedLabels[parseInt(e.target.value)-1];
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+  if(e.key==='ArrowRight'||e.key==='.'){ stopPlay();goToStep(currentStep+1); }
+  else if(e.key==='ArrowLeft'||e.key===','){ stopPlay();goToStep(currentStep-1); }
+  else if(e.key===' '){ e.preventDefault(); playing?stopPlay():startPlay(); }
+  else if(e.key==='r'||e.key==='R'){ stopPlay();goToStep(0); }
+});
+
+// ── Init ───────────────────────────────────────────────────────────
+loadExample(0);
+</script>
+</body>
+</html>

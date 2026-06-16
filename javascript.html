@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaScript Fundamentals — Interview Prep</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" integrity="sha512-Jk4AqjWsdSzSWCSuQTfYRIF84Rq/eV0G2+tu07byYwHcbTGfdmLrHjUSwvzp5HvbiqK4ibmNwdcG49Y5RGYPg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <div id="progressBar" class="progress-bar"></div>
+  <button class="sidebar-float-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">⚡</span>
+          <span class="logo-text">JavaScript Fundamentals</span>
+        </div>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search topics..." />
+        <span class="search-icon">🔍</span>
+      </div>
+      <nav class="nav" id="nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Navigation</div>
+          <a href="index.html" class="nav-link" style="color:#68d391;font-weight:600;">🏠 Back to Home</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">JavaScript Fundamentals</div>
+          <a href="#js-basics" class="nav-link" data-section="js-basics">JS Basics Refresher</a>
+          <a href="#closures" class="nav-link" data-section="closures">Closures & Scope</a>
+          <a href="#prototypes" class="nav-link" data-section="prototypes">Prototypes & Inheritance</a>
+          <a href="#async-js" class="nav-link" data-section="async-js">Async JS</a>
+          <a href="#es6" class="nav-link" data-section="es6">ES6+ Features</a>
+          <a href="#interview-js" class="nav-link" data-section="interview-js">JS Interview Q&A</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Other Topics</div>
+          <a href="nodejs.html" class="nav-link">Node.js Mastery</a>
+          <a href="react.html" class="nav-link">React.js</a>
+          <a href="dsa.html" class="nav-link">DSA</a>
+          <a href="system-design.html" class="nav-link">System Design</a>
+          <a href="databases.html" class="nav-link">Databases</a>
+          <a href="kafka.html" class="nav-link">Kafka & Streaming</a>
+          <a href="hld-lld.html" class="nav-link">HLD / LLD</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="main" id="main">
+      <div class="content-wrapper">
+        <section class="section" id="js-basics">
+                  <div class="section-header">
+                    <span class="section-tag">JavaScript</span>
+                    <h2>JS Basics Refresher</h2>
+                  </div>
+                  <p>Node.js is built on JavaScript — mastering JS fundamentals is essential before diving into Node-specific concepts.</p>
+        
+                  <h3>Variables & Data Types</h3>
+                  <pre><code class="language-javascript">// var (function-scoped, hoisted) — avoid in modern JS
+        var x = 10;
+        
+        // let (block-scoped, not hoisted)
+        let name = "Alice";
+        
+        // const (block-scoped, immutable binding)
+        const PI = 3.14159;
+        
+        // Primitive types
+        let num = 42;            // number
+        let str = "hello";       // string
+        let bool = true;         // boolean
+        let nothing = null;      // null
+        let undef = undefined;   // undefined
+        let sym = Symbol("id");  // symbol
+        let big = 9007199254740993n; // bigint
+        
+        // Reference types
+        let arr = [1, 2, 3];
+        let obj = { key: "value" };
+        let fn = function() {};</code></pre>
+        
+                  <h3>Type Coercion & Equality</h3>
+                  <pre><code class="language-javascript">// == (loose equality — coerces types)
+        0 == false    // true
+        "" == false   // true
+        null == undefined // true
+        
+        // === (strict equality — no coercion)
+        0 === false   // false
+        "1" === 1     // false
+        
+        // Common gotchas
+        typeof null   // "object" (historical bug)
+        typeof NaN    // "number"
+        NaN === NaN   // false — use Number.isNaN(x)
+        
+        // Truthy / Falsy
+        // Falsy: false, 0, "", null, undefined, NaN, 0n
+        // Truthy: everything else (including [], {}, "0")</code></pre>
+        
+                  <h3>Functions</h3>
+                  <pre><code class="language-javascript">// Function declaration (hoisted)
+        function greet(name) {
+          return `Hello, ${name}!`;
+        }
+        
+        // Function expression (not hoisted)
+        const add = function(a, b) {
+          return a + b;
+        };
+        
+        // Arrow function (no own `this`, no `arguments`)
+        const multiply = (a, b) => a * b;
+        
+        // Default parameters
+        function connect(host = "localhost", port = 3000) {
+          return `${host}:${port}`;
+        }
+        
+        // Rest parameters
+        function sum(...nums) {
+          return nums.reduce((a, b) => a + b, 0);
+        }
+        
+        // Spread operator
+        const nums = [1, 2, 3];
+        console.log(Math.max(...nums)); // 3</code></pre>
+        
+                  <div class="callout callout-info">
+                    <strong>Key Rule:</strong> Arrow functions inherit <code>this</code> from their enclosing lexical scope. Regular functions get their own <code>this</code> bound at call time.
+                  </div>
+                </section>
+
+        <section class="section" id="closures">
+                  <div class="section-header">
+                    <span class="section-tag">JavaScript</span>
+                    <h2>Closures & Scope</h2>
+                  </div>
+                  <p>A closure is a function that retains access to its lexical scope even when invoked outside that scope.</p>
+        
+                  <h3>Closure in Action</h3>
+                  <pre><code class="language-javascript">function makeCounter(start = 0) {
+          let count = start; // enclosed variable
+        
+          return {
+            increment() { return ++count; },
+            decrement() { return --count; },
+            value()     { return count; },
+          };
+        }
+        
+        const counter = makeCounter(10);
+        counter.increment(); // 11
+        counter.increment(); // 12
+        counter.decrement(); // 11
+        counter.value();     // 11
+        
+        // `count` is NOT accessible from outside
+        console.log(counter.count); // undefined</code></pre>
+        
+                  <h3>Classic var-in-loop Bug</h3>
+                  <pre><code class="language-javascript">// BUG: all callbacks share the same `i`
+        for (var i = 0; i < 3; i++) {
+          setTimeout(() => console.log(i), 100); // 3, 3, 3
+        }
+        
+        // FIX 1: use let (block-scoped per iteration)
+        for (let i = 0; i < 3; i++) {
+          setTimeout(() => console.log(i), 100); // 0, 1, 2
+        }
+        
+        // FIX 2: IIFE to capture current value
+        for (var i = 0; i < 3; i++) {
+          (function(j) {
+            setTimeout(() => console.log(j), 100); // 0, 1, 2
+          })(i);
+        }</code></pre>
+        
+                  <h3>Practical Closure Patterns</h3>
+                  <pre><code class="language-javascript">// Module pattern (pre-ES6)
+        const cache = (function() {
+          const store = {};
+          return {
+            get: (key) => store[key],
+            set: (key, val) => { store[key] = val; },
+            has: (key) => key in store,
+          };
+        })();
+        
+        // Memoization
+        function memoize(fn) {
+          const cache = new Map();
+          return function(...args) {
+            const key = JSON.stringify(args);
+            if (cache.has(key)) return cache.get(key);
+            const result = fn.apply(this, args);
+            cache.set(key, result);
+            return result;
+          };
+        }
+        
+        const expensiveCalc = memoize((n) => {
+          // simulate expensive computation
+          return n * n;
+        });
+        expensiveCalc(5); // computed
+        expensiveCalc(5); // cached</code></pre>
+                </section>
+
+        <section class="section" id="prototypes">
+                  <div class="section-header">
+                    <span class="section-tag">JavaScript</span>
+                    <h2>Prototypes & Inheritance</h2>
+                  </div>
+        
+                  <h3>Prototype Chain</h3>
+                  <pre><code class="language-javascript">// Every object has a [[Prototype]] (accessible via __proto__ or Object.getPrototypeOf)
+        const animal = {
+          speak() { return `${this.name} makes a sound`; }
+        };
+        
+        const dog = Object.create(animal);
+        dog.name = "Rex";
+        dog.speak(); // "Rex makes a sound" — found on prototype
+        
+        // Prototype chain: dog → animal → Object.prototype → null</code></pre>
+        
+                  <h3>Classes (ES6 Syntactic Sugar)</h3>
+                  <pre><code class="language-javascript">class Shape {
+          constructor(color) {
+            this.color = color;
+          }
+        
+          describe() {
+            return `A ${this.color} shape`;
+          }
+        
+          static create(color) {        // static method — called on class, not instance
+            return new Shape(color);
+          }
+        }
+        
+        class Circle extends Shape {
+          #radius; // private field (ES2022)
+        
+          constructor(color, radius) {
+            super(color);
+            this.#radius = radius;
+          }
+        
+          area() {
+            return Math.PI * this.#radius ** 2;
+          }
+        
+          get radius() { return this.#radius; }
+          set radius(r) {
+            if (r <= 0) throw new Error("Radius must be positive");
+            this.#radius = r;
+          }
+        
+          describe() {
+            return `${super.describe()} (circle, r=${this.#radius})`;
+          }
+        }
+        
+        const c = new Circle("red", 5);
+        c.area();     // 78.53...
+        c.describe(); // "A red shape (circle, r=5)"</code></pre>
+        
+                  <div class="callout callout-warning">
+                    <strong>Interview Point:</strong> Classes in JS are NOT like Java classes. They are syntactic sugar over the prototype chain. <code>typeof Circle === "function"</code> is true.
+                  </div>
+                </section>
+
+        <section class="section" id="async-js">
+                  <div class="section-header">
+                    <span class="section-tag">JavaScript</span>
+                    <h2>Async JS: Callbacks → Promises → Async/Await</h2>
+                  </div>
+        
+                  <h3>Callbacks (Oldest Pattern)</h3>
+                  <pre><code class="language-javascript">const fs = require("fs");
+        
+        // Error-first callback convention (Node.js style)
+        fs.readFile("data.txt", "utf8", (err, data) => {
+          if (err) return console.error("Error:", err);
+          console.log(data);
+        });
+        
+        // Callback hell — deeply nested, hard to read
+        getUser(id, (err, user) => {
+          if (err) return handleError(err);
+          getOrders(user.id, (err, orders) => {
+            if (err) return handleError(err);
+            getOrderDetails(orders[0].id, (err, details) => {
+              // pyramid of doom...
+            });
+          });
+        });</code></pre>
+        
+                  <h3>Promises (ES6)</h3>
+                  <pre><code class="language-javascript">// Creating a promise
+        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        
+        // Promise chaining (flat, readable)
+        fetchUser(id)
+          .then((user) => fetchOrders(user.id))
+          .then((orders) => fetchDetails(orders[0].id))
+          .then((details) => console.log(details))
+          .catch((err) => console.error(err))
+          .finally(() => console.log("done"));
+        
+        // Promise combinators
+        Promise.all([p1, p2, p3])      // resolves when ALL resolve; rejects on first rejection
+        Promise.allSettled([p1, p2])   // waits for ALL; returns [{status, value/reason}]
+        Promise.race([p1, p2])         // settles with the FIRST settled promise
+        Promise.any([p1, p2])          // resolves with FIRST resolved; rejects if ALL reject
+        
+        // Example: parallel fetch with timeout
+        const withTimeout = (promise, ms) =>
+          Promise.race([promise, delay(ms).then(() => { throw new Error("Timeout"); })]);
+        
+        const results = await Promise.all([
+          withTimeout(fetch("/api/users"), 5000),
+          withTimeout(fetch("/api/orders"), 5000),
+        ]);</code></pre>
+        
+                  <h3>Async/Await (ES2017)</h3>
+                  <pre><code class="language-javascript">// async functions always return a Promise
+        async function fetchUserData(id) {
+          try {
+            const user = await fetchUser(id);      // suspends here
+            const orders = await fetchOrders(user.id);
+            return { user, orders };
+          } catch (err) {
+            throw new Error(`Failed to fetch user data: ${err.message}`);
+          }
+        }
+        
+        // Parallel execution — DON'T await sequentially if independent
+        // ❌ Sequential (slow — waits for each before starting next)
+        const user = await fetchUser(1);
+        const settings = await fetchSettings(1);
+        
+        // ✅ Parallel (fast — both kick off simultaneously)
+        const [user, settings] = await Promise.all([fetchUser(1), fetchSettings(1)]);
+        
+        // Top-level await (ES2022, ESM only)
+        const config = await loadConfig(); // valid at module top level in .mjs</code></pre>
+        
+                  <div class="callout callout-info">
+                    <strong>Important:</strong> <code>async/await</code> is syntactic sugar over Promises. Under the hood, the JS engine converts <code>await</code> into <code>.then()</code> chains. Understanding Promises is essential for debugging async code.
+                  </div>
+                </section>
+
+        <section class="section" id="es6">
+                  <div class="section-header">
+                    <span class="section-tag">JavaScript</span>
+                    <h2>ES6+ Features Every Node.js Dev Must Know</h2>
+                  </div>
+        
+                  <pre><code class="language-javascript">// Destructuring
+        const { name, age = 25 } = user;           // object (with default)
+        const [first, second, ...rest] = array;    // array
+        
+        // Computed property names
+        const key = "dynamic";
+        const obj = { [key]: "value" };            // { dynamic: "value" }
+        
+        // Optional chaining (?.)
+        const city = user?.address?.city;          // undefined instead of TypeError
+        
+        // Nullish coalescing (??)
+        const port = config.port ?? 3000;          // only falls back on null/undefined (not 0 or "")
+        
+        // Logical assignment
+        x ??= defaultVal;   // assign if x is null/undefined
+        x ||= defaultVal;   // assign if x is falsy
+        x &&= transform(x); // assign if x is truthy
+        
+        // Template literals with tagged templates
+        const query = gql`
+          query GetUser($id: ID!) {
+            user(id: $id) { name email }
+          }
+        `;
+        
+        // Symbols as unique keys
+        const ID = Symbol("id");
+        const obj2 = { [ID]: 42 };   // not enumerable by for...in
+        
+        // Iterators & Generators
+        function* fibonacci() {
+          let [a, b] = [0, 1];
+          while (true) {
+            yield a;
+            [a, b] = [b, a + b];
+          }
+        }
+        const fib = fibonacci();
+        fib.next().value; // 0
+        fib.next().value; // 1
+        fib.next().value; // 1
+        
+        // WeakMap / WeakSet (GC-friendly maps for object keys)
+        const cache = new WeakMap();
+        function process(obj) {
+          if (cache.has(obj)) return cache.get(obj);
+          const result = expensiveOp(obj);
+          cache.set(obj, result);
+          return result;
+        }</code></pre>
+                </section>
+
+        <section class="section" id="interview-js">
+                  <div class="section-header">
+                    <span class="section-tag">Interview Prep</span>
+                    <h2>JavaScript Interview Q&A</h2>
+                  </div>
+        
+                  <div class="qa-list">
+                    <div class="qa-item">
+                      <div class="qa-question">Q: What is the difference between <code>==</code> and <code>===</code>?</div>
+                      <div class="qa-answer">
+                        <code>==</code> (loose equality) performs type coercion before comparing. <code>===</code> (strict equality) compares both value AND type without coercion. Always prefer <code>===</code> to avoid unexpected coercion bugs (e.g., <code>0 == false</code> is <code>true</code> but <code>0 === false</code> is <code>false</code>).
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q: Explain hoisting in JavaScript.</div>
+                      <div class="qa-answer">
+                        Hoisting is JavaScript's behavior of moving declarations to the top of their scope before execution. <strong>var</strong> is hoisted and initialized to <code>undefined</code>. <strong>function declarations</strong> are fully hoisted (both declaration and body). <strong>let/const</strong> are hoisted but NOT initialized — accessing them before declaration throws a <code>ReferenceError</code> (Temporal Dead Zone). <code>class</code> declarations are also in the TDZ.
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q: What is the Temporal Dead Zone (TDZ)?</div>
+                      <div class="qa-answer">
+                        The period between entering a scope and the <code>let</code>/<code>const</code> declaration being evaluated. Accessing a variable in the TDZ throws a <code>ReferenceError</code>. This prevents the "use before initialization" bugs that <code>var</code> allows.
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q: What is a closure? Provide a real-world use case.</div>
+                      <div class="qa-answer">
+                        A closure is a function that retains access to variables from its outer scope even after that scope has finished executing. Real use cases: (1) data encapsulation / module pattern — hide private state; (2) function factories — <code>makeMultiplier(3)</code> returns a function that always multiplies by 3; (3) memoization — cache results using an enclosed Map; (4) event handlers that need context from when they were created.
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q: Explain <code>this</code> in JavaScript — when does it change?</div>
+                      <div class="qa-answer">
+                        <code>this</code> depends on how a function is called: (1) <strong>Global context</strong>: <code>window</code> in browser, <code>global</code> in Node (or <code>undefined</code> in strict mode). (2) <strong>Method call</strong>: <code>obj.fn()</code> — <code>this</code> is <code>obj</code>. (3) <strong>Constructor</strong>: <code>new Fn()</code> — <code>this</code> is the new instance. (4) <strong>Explicit binding</strong>: <code>fn.call(ctx)</code>, <code>fn.apply(ctx)</code>, <code>fn.bind(ctx)</code>. (5) <strong>Arrow functions</strong>: inherit <code>this</code> lexically from enclosing scope, cannot be rebound.
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q: What is the difference between <code>null</code> and <code>undefined</code>?</div>
+                      <div class="qa-answer">
+                        <code>undefined</code> means a variable has been declared but not assigned. <code>null</code> is an intentional absence of value — it must be explicitly assigned. <code>typeof undefined === "undefined"</code>, <code>typeof null === "object"</code> (historical bug). Use <code>?? </code> (nullish coalescing) to handle both: <code>val ?? "default"</code>.
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q: Explain prototypal inheritance vs classical inheritance.</div>
+                      <div class="qa-answer">
+                        Classical inheritance (Java, C++) uses classes as blueprints — objects are instances of classes, hierarchy is fixed at compile time. Prototypal inheritance (JavaScript) uses objects directly — every object has a <code>[[Prototype]]</code> link to another object. Property lookup traverses this chain at runtime. ES6 <code>class</code> syntax is purely syntactic sugar over the prototype chain — <code>typeof MyClass === "function"</code>. This makes JS more flexible: you can modify prototypes at runtime, use mixins, or compose objects directly with <code>Object.create()</code>.
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q: What is event delegation?</div>
+                      <div class="qa-answer">
+                        Instead of attaching event listeners to each child element, attach one listener to a parent and use <code>event.target</code> to determine which child was clicked. Benefits: (1) fewer listeners = better memory performance; (2) works for dynamically added children; (3) simplifies listener management. Used heavily in virtual DOM frameworks and large lists.
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q: How does <code>Promise.all</code> differ from <code>Promise.allSettled</code>?</div>
+                      <div class="qa-answer">
+                        <code>Promise.all</code> rejects immediately when ANY promise rejects (fail-fast). <code>Promise.allSettled</code> waits for ALL promises to settle (resolve or reject) and returns an array of <code>&#123; status: 'fulfilled', value &#125;</code> or <code>&#123; status: 'rejected', reason &#125;</code> objects. Use <code>allSettled</code> when you need results from all operations even if some fail (e.g., batch operations where partial failure is acceptable).
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q: What is the difference between <code>call</code>, <code>apply</code>, and <code>bind</code>?</div>
+                      <div class="qa-answer">
+                        All three set <code>this</code> explicitly. <code>fn.call(ctx, arg1, arg2)</code> invokes immediately with individual args. <code>fn.apply(ctx, [arg1, arg2])</code> invokes immediately with an array of args. <code>fn.bind(ctx, arg1)</code> returns a NEW function with <code>this</code> permanently bound — doesn't invoke. Useful for partial application and creating callbacks with correct context.
+                      </div>
+                    </div>
+                  </div>
+                </section>
+        <footer class="footer">
+          <p>Senior Full-Stack Interview Prep Guide</p>
+          <p><a href="index.html" style="color:#68d391;text-decoration:none;">← Back to Home</a></p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQ4n5wg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="app.js"></script>
+</body>
+</html>

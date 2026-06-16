@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Databases — Interview Prep</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" integrity="sha512-Jk4AqjWsdSzSWCSuQTfYRIF84Rq/eV0G2+tu07byYwHcbTGfdmLrHjUSwvzp5HvbiqK4ibmNwdcG49Y5RGYPg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <div id="progressBar" class="progress-bar"></div>
+  <button class="sidebar-float-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">🗄️</span>
+          <span class="logo-text">Databases</span>
+        </div>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search topics..." />
+        <span class="search-icon">🔍</span>
+      </div>
+      <nav class="nav" id="nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Navigation</div>
+          <a href="index.html" class="nav-link" style="color:#68d391;font-weight:600;">🏠 Back to Home</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Databases</div>
+          <a href="#db-indexing" class="nav-link" data-section="db-indexing">Indexing Internals</a>
+          <a href="#db-design" class="nav-link" data-section="db-design">Database Design</a>
+          <a href="#db-transactions" class="nav-link" data-section="db-transactions">Transactions & MVCC</a>
+          <a href="#db-interview" class="nav-link" data-section="db-interview">DB Interview Q&A</a>
+          <a href="#db-deep-postgres" class="nav-link" data-section="db-deep-postgres">PostgreSQL Internals</a>
+          <a href="#db-deep-query" class="nav-link" data-section="db-deep-query">Query Planning & EXPLAIN</a>
+          <a href="#db-deep-mongo" class="nav-link" data-section="db-deep-mongo">MongoDB Deep Dive</a>
+          <a href="#db-deep-interview" class="nav-link" data-section="db-deep-interview">DB Expert Q&A</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Other Topics</div>
+          <a href="javascript.html" class="nav-link">JavaScript Fundamentals</a>
+          <a href="nodejs.html" class="nav-link">Node.js Mastery</a>
+          <a href="react.html" class="nav-link">React.js</a>
+          <a href="dsa.html" class="nav-link">DSA</a>
+          <a href="system-design.html" class="nav-link">System Design</a>
+          <a href="kafka.html" class="nav-link">Kafka & Streaming</a>
+          <a href="hld-lld.html" class="nav-link">HLD / LLD</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="main" id="main">
+      <div class="content-wrapper">
+        <section class="section" id="db-indexing">
+                  <div class="section-header">
+                    <span class="section-tag">Databases</span>
+                    <h2>Indexing — Internals &amp; Strategies</h2>
+                  </div>
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">B-Tree Index Internals</h3>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:16px;">B-Trees (B+-Trees in most DBs) are the default index structure. All data rows are in <em>leaf nodes</em> linked in a doubly-linked list for range scans. Node size = one disk page (8 KB) = hundreds of keys. Depth = 3-4 levels for 1M rows. With OS page cache, hot pages stay in RAM = ~0.5ms total.</p>
+                  <pre><code class="language-sql">-- Composite index: column order is EVERYTHING
+        CREATE INDEX idx_orders ON orders (user_id, status, created_at);
+        -- Uses index: WHERE user_id = 5; WHERE user_id = 5 AND status = 'pending'
+        -- Cannot use: WHERE status = 'pending' (no leading column)
+        -- Rule: equality columns first, range column last, highest cardinality first
+        
+        -- Covering index: query satisfied entirely from index (no heap access = Index Only Scan)
+        CREATE INDEX idx_orders_covering ON orders (user_id) INCLUDE (order_id, total, status);
+        -- INCLUDE adds columns to leaf nodes only — not part of tree structure
+        
+        -- Partial index: only indexes rows matching WHERE clause
+        CREATE INDEX idx_pending ON jobs (created_at) WHERE status = 'pending';
+        -- Tiny index (0.1% of rows) — query MUST include the partial condition
+        
+        -- Expression index: index on function result
+        CREATE INDEX idx_lower_email ON users (LOWER(email));
+        -- Enables case-insensitive lookup via index: WHERE LOWER(email) = 'user@example.com'
+        
+        -- When indexes hurt:
+        -- Write overhead: INSERT/UPDATE/DELETE updates ALL indexes → 10 indexes = 10× write amplification
+        -- Low cardinality: boolean column has 2 values → planner prefers seq scan (50% match rate)
+        -- Bloat: MVCC dead tuples accumulate → monitor with pgstattuple, REINDEX CONCURRENTLY
+        
+        -- Reading EXPLAIN ANALYZE:
+        -- Seq Scan on large table = missing index
+        -- "Rows Removed by Filter" = wasted I/O
+        -- Buffers: hit=X read=Y → want high hit ratio (X / (X+Y))
+        -- actual rows vs estimate divergence → run ANALYZE to update statistics</code></pre>
+                </section>
+
+        <section class="section" id="db-design">
+                  <div class="section-header">
+                    <span class="section-tag">Databases</span>
+                    <h2>Database Design — Normalization, Sharding &amp; Replication</h2>
+                  </div>
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">Normalization Forms</h3>
+                  <div class="qa-list">
+                    <div class="qa-item">
+                      <div class="qa-question">1NF — Atomic values, no repeating groups, unique rows</div>
+                      <div class="qa-answer">Each column contains atomic (indivisible) values. No arrays stored in a single column. Fix: separate rows with a composite PK.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">2NF — No partial dependencies on composite PK</div>
+                      <div class="qa-answer">Must be in 1NF. Every non-key column depends on the ENTIRE primary key. If product_name only depends on product_id (not the full composite PK of order_id + product_id), extract to a separate products table.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">3NF — No transitive dependencies</div>
+                      <div class="qa-answer">Must be in 2NF. Non-key columns must depend on the key, not on other non-key columns. Classic example: city/state determined by zip_code (not by customer_id) → extract zip_codes table.</div>
+                    </div>
+                  </div>
+                  <div class="callout callout-warning" style="margin:20px 0;">Denormalization trade-offs: write anomalies (must update all copies), storage cost, consistency risk. Always normalize first, denormalize only when EXPLAIN ANALYZE reveals the JOIN as the actual bottleneck.</div>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Sharding Strategies</h3>
+                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+                    <div class="feature-card"><h4 style="color:#f1f5f9;margin-bottom:8px;">Range Sharding</h4><p style="color:#94a3b8;font-size:14px;">Shard by key range. Supports range scans. <strong style="color:#f87171;">Hotspot risk:</strong> new writes always hit latest shard.</p></div>
+                    <div class="feature-card"><h4 style="color:#f1f5f9;margin-bottom:8px;">Hash Sharding</h4><p style="color:#94a3b8;font-size:14px;">hash(key) % N. Even distribution. <strong style="color:#f87171;">Resharding problem:</strong> adding a shard requires rehashing ~1/N of all data. Use consistent hashing.</p></div>
+                    <div class="feature-card"><h4 style="color:#f1f5f9;margin-bottom:8px;">Directory Sharding</h4><p style="color:#94a3b8;font-size:14px;">Lookup service maps entity → shard. Most flexible. <strong style="color:#f87171;">SPOF:</strong> directory service must be cached aggressively.</p></div>
+                  </div>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">OLTP vs OLAP</h3>
+                  <div style="overflow-x:auto;margin-bottom:20px;">
+                    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                      <thead><tr style="background:rgba(51,65,85,0.6);border-bottom:1px solid #334155;">
+                        <th style="padding:10px 16px;text-align:left;color:#94a3b8;font-size:11px;">Dimension</th>
+                        <th style="padding:10px 16px;text-align:left;color:#94a3b8;font-size:11px;">OLTP</th>
+                        <th style="padding:10px 16px;text-align:left;color:#94a3b8;font-size:11px;">OLAP</th>
+                      </tr></thead>
+                      <tbody>
+                        <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 16px;color:#e2e8f0;">Query pattern</td><td style="padding:8px 16px;color:#94a3b8;">Point reads/writes, small row sets</td><td style="padding:8px 16px;color:#94a3b8;">Full scans, aggregations, GROUP BY</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;background:rgba(30,41,59,0.3);"><td style="padding:8px 16px;color:#e2e8f0;">Schema</td><td style="padding:8px 16px;color:#94a3b8;">Normalized (3NF)</td><td style="padding:8px 16px;color:#94a3b8;">Star/snowflake schema — denormalized</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 16px;color:#e2e8f0;">Storage</td><td style="padding:8px 16px;color:#94a3b8;">Row-oriented (Postgres, MySQL)</td><td style="padding:8px 16px;color:#94a3b8;">Column-oriented (Redshift, BigQuery, Snowflake)</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;background:rgba(30,41,59,0.3);"><td style="padding:8px 16px;color:#e2e8f0;">Examples</td><td style="padding:8px 16px;color:#94a3b8;">Postgres, MySQL, MongoDB, DynamoDB</td><td style="padding:8px 16px;color:#94a3b8;">Redshift, BigQuery, ClickHouse, Athena</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+
+        <section class="section" id="db-transactions">
+                  <div class="section-header">
+                    <span class="section-tag">Databases</span>
+                    <h2>Transactions, Isolation Levels &amp; Concurrency</h2>
+                  </div>
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">ACID Deep Dive</h3>
+                  <div class="feature-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:24px;">
+                    <div class="feature-card"><h4 style="color:#60a5fa;margin-bottom:8px;">Atomicity</h4><p style="color:#94a3b8;font-size:14px;line-height:1.7;">All-or-nothing. Implemented via Write-Ahead Log (WAL) — changes written to WAL first; on crash, incomplete transactions rolled back on recovery.</p></div>
+                    <div class="feature-card"><h4 style="color:#34d399;margin-bottom:8px;">Isolation</h4><p style="color:#94a3b8;font-size:14px;line-height:1.7;">Concurrent transactions execute as if serial. Tunable via isolation levels. Full isolation (Serializable) is expensive — most apps use Read Committed or Repeatable Read.</p></div>
+                    <div class="feature-card"><h4 style="color:#f59e0b;margin-bottom:8px;">Durability</h4><p style="color:#94a3b8;font-size:14px;line-height:1.7;">Committed data persists after crash. WAL fsync to durable storage. Never use fsync=off in production.</p></div>
+                    <div class="feature-card"><h4 style="color:#a78bfa;margin-bottom:8px;">Consistency (ACID vs CAP)</h4><p style="color:#94a3b8;font-size:14px;line-height:1.7;">ACID consistency = constraint enforcement (FK, unique, check). CAP consistency = replication freshness. These are different concepts — don't conflate them in interviews.</p></div>
+                  </div>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Isolation Levels</h3>
+                  <div style="overflow-x:auto;margin-bottom:20px;">
+                    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                      <thead><tr style="background:rgba(51,65,85,0.6);border-bottom:1px solid #334155;">
+                        <th style="padding:10px 16px;text-align:left;color:#94a3b8;font-size:11px;">Level</th>
+                        <th style="padding:10px 16px;text-align:center;color:#94a3b8;font-size:11px;">Dirty Read</th>
+                        <th style="padding:10px 16px;text-align:center;color:#94a3b8;font-size:11px;">Non-Repeatable</th>
+                        <th style="padding:10px 16px;text-align:center;color:#94a3b8;font-size:11px;">Phantom</th>
+                        <th style="padding:10px 16px;text-align:left;color:#94a3b8;font-size:11px;">Use When</th>
+                      </tr></thead>
+                      <tbody>
+                        <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 16px;color:#f87171;font-weight:600;">READ UNCOMMITTED</td><td style="padding:8px 16px;text-align:center;color:#f87171;">✗</td><td style="padding:8px 16px;text-align:center;color:#f87171;">✗</td><td style="padding:8px 16px;text-align:center;color:#f87171;">✗</td><td style="padding:8px 16px;color:#64748b;">Almost never. Postgres ignores it.</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;background:rgba(30,41,59,0.3);"><td style="padding:8px 16px;color:#fbbf24;font-weight:600;">READ COMMITTED</td><td style="padding:8px 16px;text-align:center;color:#34d399;">✓</td><td style="padding:8px 16px;text-align:center;color:#f87171;">✗</td><td style="padding:8px 16px;text-align:center;color:#f87171;">✗</td><td style="padding:8px 16px;color:#64748b;">Default in Postgres, Oracle. Most OLTP.</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;"><td style="padding:8px 16px;color:#34d399;font-weight:600;">REPEATABLE READ</td><td style="padding:8px 16px;text-align:center;color:#34d399;">✓</td><td style="padding:8px 16px;text-align:center;color:#34d399;">✓</td><td style="padding:8px 16px;text-align:center;color:#fbbf24;">~*</td><td style="padding:8px 16px;color:#64748b;">Default MySQL InnoDB. Financial reporting.</td></tr>
+                        <tr style="border-bottom:1px solid #1e293b;background:rgba(30,41,59,0.3);"><td style="padding:8px 16px;color:#60a5fa;font-weight:600;">SERIALIZABLE</td><td style="padding:8px 16px;text-align:center;color:#34d399;">✓</td><td style="padding:8px 16px;text-align:center;color:#34d399;">✓</td><td style="padding:8px 16px;text-align:center;color:#34d399;">✓</td><td style="padding:8px 16px;color:#64748b;">Bank transfers, inventory, write-skew risk.</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p style="color:#64748b;font-size:13px;margin-bottom:20px;">* Postgres Repeatable Read uses MVCC snapshots and prevents phantom reads in practice.</p>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Optimistic vs Pessimistic Locking + MVCC</h3>
+                  <pre><code class="language-sql">-- Pessimistic: lock the row on read
+        SELECT * FROM inventory WHERE product_id = 99 FOR UPDATE;
+        UPDATE inventory SET quantity = quantity - 1 WHERE product_id = 99;
+        COMMIT;
+        
+        -- Optimistic: version column — detect conflict on write
+        UPDATE inventory
+        SET quantity = quantity - 1, version = version + 1
+        WHERE product_id = 99 AND version = 3;  -- 0 rows = conflict → retry
+        -- Better when: conflicts are rare, read-heavy workloads, long read operations
+        
+        -- Deadlock prevention: always acquire locks in the same order
+        SELECT * FROM accounts WHERE id IN (100, 200) ORDER BY id FOR UPDATE;
+        -- ORDER BY ensures consistent lock order → deadlock eliminated
+        
+        -- MVCC (Postgres): each row has xmin/xmax (creating/deleting transaction IDs)
+        -- Readers never block writers; writers never block readers.
+        -- Dead rows accumulate → VACUUM reclaims space. Monitor: pg_stat_user_tables.n_dead_tup
+        -- autovacuum must run regularly on high-churn tables or indexes bloat</code></pre>
+                </section>
+
+        <section class="section" id="db-interview">
+                  <div class="section-header">
+                    <span class="section-tag">Interview Prep</span>
+                    <h2>Database Interview — Deep Q&amp;A</h2>
+                  </div>
+                  <div class="qa-list">
+                    <div class="qa-item">
+                      <div class="qa-question">When do you choose SQL vs NoSQL?</div>
+                      <div class="qa-answer">Start with the data model. Relational with referential integrity, multi-entity transactions, ad-hoc query flexibility → SQL (Postgres). NoSQL when: (1) Document model — data is hierarchical, load whole document at once → MongoDB. (2) Key-value / session data — simple fast lookups → Redis, DynamoDB. (3) Write-heavy time-series — millions of writes/sec, append-only → Cassandra. (4) Graph traversal → Neo4j. The trap: "NoSQL scales better." Postgres with read replicas + connection pooling + proper indexing handles enormous scale. NoSQL trades ACID and query flexibility for specific performance characteristics.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">What is the N+1 query problem and how do you fix it?</div>
+                      <div class="qa-answer">N+1 occurs when you fetch N parent records then make 1 additional query per parent — N+1 total instead of 2. Classic ORM lazy loading anti-pattern: fetch 100 orders, then for each fetch the user = 101 queries instead of 1 JOIN. Fixes: (1) SQL JOIN; (2) ORM eager loading (Prisma: include: { user: true }, TypeORM: relations: ['user']); (3) DataLoader pattern — collect all user_ids, single batch query SELECT * FROM users WHERE id = ANY($1). DataLoader is the standard GraphQL solution — batches and caches per request cycle.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">How does connection pooling work and why is it critical?</div>
+                      <div class="qa-answer">Opening a new DB connection costs 20-100ms and ~5-10MB RAM on the DB server. Lambda at 1,000 req/sec creates 1,000 simultaneous connections — Postgres max_connections=100, so 900 requests get "connection refused." Connection pooling maintains idle connections and reuses them. For Lambda/serverless: use RDS Proxy or PgBouncer (transaction mode — DB connection held only during transaction, then returned). Pool sizing: (num_cores × 2) + effective_spindle_count per DB server. Monitor pool wait time and connection saturation separately.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">How do you optimize a slow query?</div>
+                      <div class="qa-answer">Systematic: (1) EXPLAIN (ANALYZE, BUFFERS) — look for Seq Scans on large tables, high "Rows Removed by Filter", row estimate divergence (stale stats → run ANALYZE). (2) Missing indexes — WHERE clause columns without indexes on large tables. (3) Index usage — is planner choosing the right index? Stale stats can mislead it. (4) Implicit type casts — WHERE int_col = '5' may not use index. (5) JOIN type — Hash Join good for large datasets; Nested Loop good when inner set is small and indexed. (6) Large OFFSET — OFFSET 50000 scans 50K rows to skip; use keyset pagination: WHERE id &gt; last_seen_id ORDER BY id LIMIT 20. (7) SELECT * — prevents covering indexes.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">ACID vs BASE — and which NoSQL databases support which?</div>
+                      <div class="qa-answer">ACID: all-or-nothing transactions, constraint enforcement, full isolation, durable writes. Traditional relational DBs. MongoDB (single-document ACID; multi-doc transactions in v4+), DynamoDB (single-item ACID, transactions added). BASE: Basically Available, Soft state, Eventually consistent. Cassandra is BASE by design — tune consistency per query (ONE, QUORUM, ALL). DynamoDB default reads are eventually consistent but strongly consistent reads available at higher cost. Modern trend: many "NoSQL" DBs now offer optional transactions — the line is blurring.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">Sharding vs partitioning vs replication — explain the difference.</div>
+                      <div class="qa-answer">Partitioning: divide a table into smaller pieces within the SAME DB server. Improves query performance (partition pruning), simplifies archival. No distribution. Sharding: horizontal partitioning across MULTIPLE database servers. Provides write and storage scalability. Introduces cross-shard query complexity and shard rebalancing. Replication: copies of the SAME data on multiple servers. Not about splitting data — about redundancy and read scaling. Primary handles writes, replicas serve reads. Provides HA (failover) and read scalability but NOT write scalability. They compose: sharded DB typically uses replication within each shard.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">PostgreSQL vs MongoDB — trade-offs a senior engineer must know.</div>
+                      <div class="qa-answer">Postgres strengths: full ACID, rich SQL (CTEs, window functions, lateral joins), enforced schema, PostGIS, JSONB for semi-structured data. Well-understood scaling path. MongoDB strengths: flexible schema (no migrations for field additions), native document model avoids impedance mismatch, horizontal scale via sharding built-in, Atlas Search (full-text without Elasticsearch). Postgres JSONB vs MongoDB: Postgres JSONB supports GIN indexes + full SQL alongside document. For truly document-centric data with high write volume and schema churn, MongoDB's change streams and TTL indexes are genuine advantages. Real answer: start with Postgres, migrate to MongoDB only when you hit a specific limitation it can't solve.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">How do you perform schema migration with zero downtime?</div>
+                      <div class="qa-answer">Expand-contract across multiple deployments: Step 1 (Expand) — add new column as nullable, deploy code writing to both old and new. Step 2 — backfill existing rows in batches (1K rows at a time + sleep to avoid locking). Step 3 — switch reads to new column after backfill. Step 4 (Contract) — remove old column. For index creation: CREATE INDEX CONCURRENTLY (no table lock, takes longer). For large table column adds in Postgres 11+: ADD COLUMN with DEFAULT is instant. For table rewrites: gh-ost (GitHub) or pg-osc — shadow table, incremental copy, atomic rename with ~1s lock.</div>
+                    </div>
+                  </div>
+                </section>
+
+        <section class="section" id="db-deep-postgres">
+                  <div class="section-header">
+                    <span class="section-tag">DB Deep Dive</span>
+                    <h2>PostgreSQL Internals</h2>
+                  </div>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:20px;">PostgreSQL is the most interview-relevant RDBMS for senior roles. Understanding its internals — heap files, B-tree index structure, MVCC, VACUUM, WAL — puts you in the top 5% of candidates at companies like DEEL, Stripe, and Shopify.</p>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">How PostgreSQL Stores Data</h3>
+                  <!-- SVG: PostgreSQL storage diagram -->
+                  <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:20px;margin-bottom:20px;overflow-x:auto;">
+                    <svg viewBox="0 0 700 200" style="width:100%;max-width:700px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="0" y="0" width="700" height="200" fill="#0f172a"/>
+                      <!-- Table -->
+                      <rect x="10" y="20" width="120" height="40" rx="6" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="70" y="45" text-anchor="middle" fill="#93c5fd" font-size="12" font-family="monospace">Table (Relation)</text>
+                      <!-- Arrow -->
+                      <path d="M 130 40 L 160 40" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+                      <!-- Heap File -->
+                      <rect x="160" y="10" width="160" height="60" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                      <text x="240" y="30" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="monospace">Heap File (8KB pages)</text>
+                      <rect x="170" y="38" width="50" height="22" rx="3" fill="#334155" stroke="#64748b" stroke-width="1"/>
+                      <text x="195" y="53" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">Page 0</text>
+                      <rect x="228" y="38" width="50" height="22" rx="3" fill="#334155" stroke="#64748b" stroke-width="1"/>
+                      <text x="253" y="53" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">Page 1</text>
+                      <rect x="286" y="38" width="28" height="22" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1" stroke-dasharray="3,2"/>
+                      <text x="300" y="53" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">...</text>
+                      <!-- Arrow down -->
+                      <path d="M 240 70 L 240 100" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+                      <!-- Tuple -->
+                      <rect x="160" y="100" width="160" height="50" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                      <text x="240" y="118" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="monospace">Tuple (Row)</text>
+                      <text x="240" y="135" text-anchor="middle" fill="#64748b" font-size="10" font-family="monospace">ctid | xmin | xmax | data</text>
+                      <!-- Index -->
+                      <rect x="370" y="10" width="150" height="60" rx="6" fill="#1e3a5f" stroke="#a78bfa" stroke-width="1.5"/>
+                      <text x="445" y="30" text-anchor="middle" fill="#c4b5fd" font-size="11" font-family="monospace">B-Tree Index</text>
+                      <text x="445" y="48" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace">Internal pages → leaf</text>
+                      <text x="445" y="62" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace">pages → ctid pointers</text>
+                      <!-- Arrow index to heap -->
+                      <path d="M 445 70 L 340 120" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrd)"/>
+                      <!-- WAL -->
+                      <rect x="560" y="10" width="130" height="40" rx="6" fill="#1a2e1a" stroke="#4ade80" stroke-width="1.5"/>
+                      <text x="625" y="25" text-anchor="middle" fill="#86efac" font-size="11" font-family="monospace">WAL (Write-Ahead</text>
+                      <text x="625" y="40" text-anchor="middle" fill="#86efac" font-size="11" font-family="monospace">Log)</text>
+                      <!-- VACUUM -->
+                      <rect x="370" y="110" width="150" height="40" rx="6" fill="#2d1b1b" stroke="#f87171" stroke-width="1.5"/>
+                      <text x="445" y="128" text-anchor="middle" fill="#fca5a5" font-size="11" font-family="monospace">VACUUM / autovacuum</text>
+                      <text x="445" y="143" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">reclaims dead tuples</text>
+                      <!-- Arrow definitions -->
+                      <defs>
+                        <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                          <path d="M0,0 L0,6 L8,3 z" fill="#475569"/>
+                        </marker>
+                        <marker id="arrd" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                          <path d="M0,0 L0,6 L8,3 z" fill="#a78bfa"/>
+                        </marker>
+                      </defs>
+                    </svg>
+                  </div>
+        
+                  <pre><code class="language-sql">-- MVCC: each row has xmin (created by) and xmax (deleted by) transaction IDs
+        -- A row is visible if: xmin committed AND (xmax is null OR xmax not committed)
+        -- This allows readers and writers to never block each other
+        
+        -- Dead tuples: after UPDATE, old version lingers until VACUUM reclaims it
+        -- High UPDATE/DELETE rate → table bloat → slow seq scans
+        -- Monitor bloat:
+        SELECT schemaname, tablename,
+          n_live_tup, n_dead_tup,
+          round(n_dead_tup::numeric / NULLIF(n_live_tup + n_dead_tup, 0) * 100, 2) AS dead_pct,
+          last_autovacuum, last_autoanalyze
+        FROM pg_stat_user_tables
+        ORDER BY n_dead_tup DESC;
+        
+        -- WAL (Write-Ahead Log): every change is first written to WAL before the heap
+        -- This enables: crash recovery, replication (streaming + logical), point-in-time recovery
+        -- wal_level = logical → required for logical replication / CDC (Debezium, etc.)
+        
+        -- Connection pooling is critical: Postgres spawns a process per connection
+        -- 200 connections × 5MB/process = 1GB RAM just for idle connections
+        -- Use PgBouncer (transaction mode) for serverless/high-concurrency workloads
+        
+        -- Check connection usage:
+        SELECT count(*), state FROM pg_stat_activity GROUP BY state;
+        
+        -- Replication lag (for read replicas):
+        SELECT now() - pg_last_xact_replay_timestamp() AS replication_lag;</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:24px 0 12px;">Index Types & When to Use Each</h3>
+                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);">
+                    <div class="feature-card"><h4 style="color:#60a5fa;margin-bottom:6px;">B-Tree (default)</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Equality, range (&lt;, &gt;, BETWEEN), ORDER BY, LIKE 'prefix%'. 99% of use cases. Supports multi-column (composite) indexes.</p></div>
+                    <div class="feature-card"><h4 style="color:#60a5fa;margin-bottom:6px;">Hash</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Equality only (=). O(1) lookup vs B-tree's O(log n). Not replicated before PG10. Rarely worth switching from B-tree.</p></div>
+                    <div class="feature-card"><h4 style="color:#60a5fa;margin-bottom:6px;">GIN (Generalized Inverted)</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Full-text search (tsvector), JSONB containment (@&gt;), array overlap (&&). Slower to build, fast to query many keys per row.</p></div>
+                    <div class="feature-card"><h4 style="color:#60a5fa;margin-bottom:6px;">GiST</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Geometric/geographic data (PostGIS), range types, fuzzy string search (pg_trgm). Lossy — may return false positives, rechecked.</p></div>
+                    <div class="feature-card"><h4 style="color:#a78bfa;margin-bottom:6px;">Partial Index</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;"><code style="color:#e2e8f0;">WHERE status = 'pending'</code> — indexes only matching rows. Tiny, fast, avoids indexing large cold data.</p></div>
+                    <div class="feature-card"><h4 style="color:#a78bfa;margin-bottom:6px;">Covering Index (INCLUDE)</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;"><code style="color:#e2e8f0;">CREATE INDEX ON t(a) INCLUDE (b,c)</code> — stores extra cols in leaf pages. Enables index-only scans — zero heap access.</p></div>
+                  </div>
+                </section>
+
+        <section class="section" id="db-deep-query">
+                  <div class="section-header">
+                    <span class="section-tag">DB Deep Dive</span>
+                    <h2>Query Planning &amp; EXPLAIN ANALYZE</h2>
+                  </div>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:20px;">Reading query plans is a non-negotiable skill at DEEL and Stripe-level companies. Every slow query in production has a plan that explains why it's slow.</p>
+                  <!-- SVG: Query plan tree -->
+                  <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:20px;margin-bottom:20px;overflow-x:auto;">
+                    <svg viewBox="0 0 700 240" style="width:100%;max-width:700px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="0" y="0" width="700" height="240" fill="#0f172a"/>
+                      <text x="350" y="22" text-anchor="middle" fill="#64748b" font-size="12" font-family="monospace">EXPLAIN ANALYZE — Bottom-up execution (leaf nodes run first)</text>
+                      <!-- Root -->
+                      <rect x="270" y="35" width="160" height="38" rx="6" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="350" y="52" text-anchor="middle" fill="#93c5fd" font-size="11" font-family="monospace">Aggregate</text>
+                      <text x="350" y="66" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">actual time=120ms</text>
+                      <!-- Line -->
+                      <line x1="350" y1="73" x2="350" y2="95" stroke="#475569" stroke-width="1.5"/>
+                      <!-- Hash Join -->
+                      <rect x="240" y="95" width="220" height="38" rx="6" fill="#1e2d1e" stroke="#4ade80" stroke-width="1.5"/>
+                      <text x="350" y="112" text-anchor="middle" fill="#86efac" font-size="11" font-family="monospace">Hash Join</text>
+                      <text x="350" y="126" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">Hash Cond: (o.user_id = u.id)</text>
+                      <!-- Lines to children -->
+                      <line x1="290" y1="133" x2="190" y2="155" stroke="#475569" stroke-width="1.5"/>
+                      <line x1="410" y1="133" x2="510" y2="155" stroke="#475569" stroke-width="1.5"/>
+                      <!-- Seq Scan -->
+                      <rect x="90" y="155" width="200" height="50" rx="6" fill="#2d1b1b" stroke="#f87171" stroke-width="1.5"/>
+                      <text x="190" y="172" text-anchor="middle" fill="#fca5a5" font-size="11" font-family="monospace">Seq Scan on orders</text>
+                      <text x="190" y="187" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">Filter: status='active'</text>
+                      <text x="190" y="200" text-anchor="middle" fill="#f87171" font-size="9" font-family="monospace">⚠ rows=1M → 50K (98% filtered)</text>
+                      <!-- Index Scan -->
+                      <rect x="410" y="155" width="200" height="50" rx="6" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1.5"/>
+                      <text x="510" y="172" text-anchor="middle" fill="#93c5fd" font-size="11" font-family="monospace">Index Scan on users</text>
+                      <text x="510" y="187" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">Index: users_pkey</text>
+                      <text x="510" y="200" text-anchor="middle" fill="#4ade80" font-size="9" font-family="monospace">✓ rows=50K, cost=0.43</text>
+                      <!-- Legend -->
+                      <rect x="10" y="220" width="12" height="10" fill="#2d1b1b" stroke="#f87171" stroke-width="1"/>
+                      <text x="26" y="230" fill="#fca5a5" font-size="10" font-family="sans-serif">Seq scan on large table = missing index</text>
+                      <rect x="360" y="220" width="12" height="10" fill="#1e3a5f" stroke="#60a5fa" stroke-width="1"/>
+                      <text x="376" y="230" fill="#93c5fd" font-size="10" font-family="sans-serif">Index scan = good</text>
+                    </svg>
+                  </div>
+                  <pre><code class="language-sql">-- Always use EXPLAIN (ANALYZE, BUFFERS) — not just EXPLAIN
+        -- EXPLAIN shows estimated plan; ANALYZE actually runs it and shows actual times
+        EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
+        SELECT u.name, count(o.id)
+        FROM orders o JOIN users u ON o.user_id = u.id
+        WHERE o.status = 'active'
+        GROUP BY u.name;
+        
+        -- Key plan nodes to recognize:
+        -- Seq Scan     → reading entire table. BAD on large tables. Fix: add index.
+        -- Index Scan   → B-tree traversal + heap fetch per row. Good for selective queries.
+        -- Index Only Scan → no heap fetch (covering index). BEST for read-heavy.
+        -- Bitmap Heap Scan → batches ctids, sorts by physical location, one heap pass. Good for 1-5% selectivity.
+        -- Hash Join    → build hash table from smaller relation, probe with larger. Good for equi-joins.
+        -- Nested Loop  → for each outer row, scan inner. O(n*m). Good only when inner is indexed.
+        -- Merge Join   → both inputs sorted on join key. O(n+m). Good with sorted inputs.
+        
+        -- Reading cost: (start_cost..total_cost) — planner units, not seconds
+        -- rows= is the planner ESTIMATE; actual rows= is measured
+        -- LARGE difference between estimated and actual rows → stale statistics → run ANALYZE
+        
+        -- Fix slow queries checklist:
+        -- 1. Is the filter column indexed?
+        -- 2. Is the index being used? (EXPLAIN output)
+        -- 3. Is the index selective enough? (e.g., boolean index rarely helps)
+        -- 4. Composite index column order correct? (equality cols first, then range)
+        -- 5. Are statistics fresh? (last_analyze in pg_stat_user_tables)
+        -- 6. Is the query doing a LIKE '%suffix%'? (needs pg_trgm GIN index)
+        -- 7. Does JOIN order matter? (use SET enable_nestloop=off to test)
+        
+        -- Force index use (testing only — let planner decide in production):
+        SET enable_seqscan = off;
+        
+        -- Update statistics after large data loads:
+        ANALYZE orders;
+        VACUUM ANALYZE orders;  -- also reclaims dead tuples</code></pre>
+                </section>
+
+        <section class="section" id="db-deep-mongo">
+                  <div class="section-header">
+                    <span class="section-tag">DB Deep Dive</span>
+                    <h2>MongoDB Deep Dive</h2>
+                  </div>
+                  <pre><code class="language-javascript">// MongoDB storage engine: WiredTiger (default since 3.2)
+        // Document model: BSON — Binary JSON with additional types (ObjectId, Date, Decimal128)
+        // B-tree indexes — same as Postgres, different query planner
+        
+        // ─── Aggregation Pipeline — MongoDB's power tool ───
+        db.orders.aggregate([
+          // Stage 1: filter (uses index if available)
+          { $match: { status: "active", createdAt: { $gte: new Date("2024-01-01") } } },
+          // Stage 2: join (like SQL LEFT JOIN)
+          { $lookup: {
+              from: "users",
+              localField: "userId",
+              foreignField: "_id",
+              as: "user"
+          }},
+          { $unwind: "$user" },
+          // Stage 3: compute fields
+          { $addFields: { totalWithTax: { $multiply: ["$total", 1.1] } } },
+          // Stage 4: group
+          { $group: { _id: "$user.region", total: { $sum: "$totalWithTax" }, count: { $sum: 1 } } },
+          // Stage 5: sort
+          { $sort: { total: -1 } },
+          // Stage 6: limit
+          { $limit: 10 }
+        ]);
+        
+        // ─── Index strategy for MongoDB ───
+        // Compound index field order: equality → sort → range (ESR rule)
+        db.orders.createIndex({ userId: 1, status: 1, createdAt: -1 });
+        
+        // Partial index (only index active orders)
+        db.orders.createIndex({ userId: 1 }, { partialFilterExpression: { status: "active" } });
+        
+        // Text index for full-text search
+        db.products.createIndex({ name: "text", description: "text" });
+        db.products.find({ $text: { $search: "wireless headphones" } }, { score: { $meta: "textScore" } })
+                   .sort({ score: { $meta: "textScore" } });
+        
+        // ─── EXPLAIN for MongoDB ───
+        db.orders.find({ userId: ObjectId("..."), status: "active" })
+                 .explain("executionStats");
+        // Look for: winningPlan, COLLSCAN (bad) vs IXSCAN (good), totalDocsExamined vs nReturned
+        
+        // ─── Transactions (replica sets / sharded clusters) ───
+        const session = client.startSession();
+        session.startTransaction({ readConcern: { level: "snapshot" }, writeConcern: { w: "majority" } });
+        try {
+          await accounts.updateOne({ _id: fromId }, { $inc: { balance: -amount } }, { session });
+          await accounts.updateOne({ _id: toId },   { $inc: { balance: +amount } }, { session });
+          await session.commitTransaction();
+        } catch (e) {
+          await session.abortTransaction();
+          throw e;
+        }
+        
+        // ─── Schema design patterns (critical for senior interviews) ───
+        // 1. Embedding vs referencing
+        //    Embed when: data accessed together, small sub-documents, 1:few relationship
+        //    Reference when: 1:many (unbounded), large sub-documents, independently queried
+        
+        // 2. Bucket pattern — for time-series / IoT
+        // Instead of one doc per event (millions of docs), bucket 1 hour of events per doc
+        { deviceId: "sensor-1", hour: ISODate("2024-01-15T10:00:00Z"),
+          readings: [{ ts: ISODate("10:00:01"), val: 23.1 }, ...],  // up to 60 per doc
+          count: 60, sum: 1387, min: 22.8, max: 23.5 }
+        
+        // 3. Outlier pattern — most docs small, rare docs large
+        // Add a flag for "outlier" docs that have overflow documents
+        
+        // 4. Computed pattern — pre-compute aggregations on write, read instantly
+        // E.g., store movieRatingAvg in movie doc, update on every review write</code></pre>
+                </section>
+
+        <section class="section" id="db-deep-interview">
+                  <div class="section-header">
+                    <span class="section-tag">DB Expert Q&A</span>
+                    <h2>Database Expert Interview Q&amp;A</h2>
+                  </div>
+                  <div class="qa-list">
+                    <div class="qa-item">
+                      <div class="qa-question">DEEL asks: "You have a table with 100M rows. A query that runs in 5ms starts taking 30 seconds. What do you do?"</div>
+                      <div class="qa-answer">Step 1: Run EXPLAIN (ANALYZE, BUFFERS) on the slow query. Look for Seq Scan where there should be an Index Scan, high "rows removed by filter" (low selectivity), or large difference between estimated and actual rows (stale stats). Step 2: Check pg_stat_user_tables for last_autovacuum and n_dead_tup — table bloat from dead tuples forces Seq Scan even with indexes. Run VACUUM ANALYZE. Step 3: Check for lock contention with pg_stat_activity — the query might be waiting, not running slowly. Step 4: Look for the trigger: was there a schema change, a new deployment that changed the query, a data skew (e.g., one user_id now has 10M rows breaking index selectivity), or table statistics that failed to update after a large bulk import? Step 5: For the fix: add missing index, fix composite index column order (ESR rule), run ANALYZE to refresh statistics, or rewrite the query to avoid non-SARGable predicates like WHERE LOWER(email) = ? (use a functional index instead).</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">Explain MVCC in PostgreSQL. Why can a long-running transaction hurt performance?</div>
+                      <div class="qa-answer">MVCC (Multi-Version Concurrency Control) means every UPDATE creates a new row version — the old version is kept as a "dead tuple" until VACUUM reclaims it. This allows readers and writers to never block each other: readers see a consistent snapshot based on their transaction start time, writers write new versions. A long-running transaction holds back the "oldest transaction" horizon — VACUUM cannot reclaim dead tuples that might still be visible to that transaction. The result: table bloat grows unboundedly during that transaction. A single idle transaction open for hours can cause every other UPDATE/DELETE to accumulate dead tuples, leading to Seq Scans overtaking Index Scans and 10×-100× query slowdowns. Fix: set statement_timeout and idle_in_transaction_session_timeout, monitor pg_stat_activity for long-running transactions, use connection pooling (PgBouncer) to detect idle connections.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">When would you use a partial index, and how does it differ from a composite index?</div>
+                      <div class="qa-answer">A partial index has a WHERE clause that limits which rows are indexed. Use it when: (1) You query a small subset of rows frequently (e.g., WHERE status = 'pending' — only 1% of the table). The index is tiny, fits in memory, and is faster than indexing all rows. (2) You want a unique constraint on a subset: CREATE UNIQUE INDEX ON orders(email) WHERE deleted_at IS NULL. A composite (multi-column) index covers multiple columns in the predicate. Column order matters — put equality conditions first, then range. Example: (user_id, created_at) efficiently handles WHERE user_id = ? AND created_at > ? because the index first narrows to user_id (equality, high cardinality) then range-scans created_at. They can be combined: CREATE INDEX ON orders(user_id, created_at) WHERE status = 'active' — a partial composite index that's both selective and multi-column.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">What is the N+1 problem and how do you solve it in both SQL and MongoDB contexts?</div>
+                      <div class="qa-answer">N+1 occurs when you fetch N parent records and then issue N individual queries for related records — total: N+1 queries. In SQL: you query for 100 users, then for each user issue SELECT * FROM posts WHERE user_id = ? — 101 queries instead of 1. Fix: eager loading with JOIN or ORM-level includes (Sequelize: include, TypeORM: relations eager loading). In MongoDB/Node (Mongoose): you fetch 100 orders, then for each do User.findById(order.userId) — 101 queries. Fix: populate (Mongoose), $lookup aggregation, or manual batch lookup using $in: User.find({ _id: { $in: orderUserIds } }) then merge in application code — 2 queries total. In GraphQL: the N+1 problem is endemic because each resolver is independent. Fix: DataLoader (Facebook) — batches all individual lookups within a single event-loop tick into one batch query, then distributes results back to individual resolvers.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">Explain database sharding. What are the pitfalls?</div>
+                      <div class="qa-answer">Sharding horizontally partitions data across multiple database instances (shards). Three strategies: (1) Range sharding — shard by date or ID range. Simple, but leads to hot spots (all recent writes go to one shard). (2) Hash sharding — shard_id = hash(key) % N. Uniform distribution, but range queries span all shards. (3) Directory-based sharding — lookup table maps key to shard. Most flexible, but lookup table becomes a bottleneck/single point of failure. Pitfalls: Cross-shard JOINs require scatter-gather (query all shards, merge in app layer) — expensive. Cross-shard transactions require distributed 2PC — complex and slow. Re-sharding when a shard fills up is operationally complex. Hotspot shards (e.g., a large tenant in a multi-tenant SaaS). Application code must be shard-aware unless using middleware (Vitess, Citus). Most teams should exhaust vertical scaling, read replicas, and caching before sharding.</div>
+                    </div>
+                  </div>
+                </section>
+        <footer class="footer">
+          <p>Senior Full-Stack Interview Prep Guide</p>
+          <p><a href="index.html" style="color:#68d391;text-decoration:none;">← Back to Home</a></p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQ4n5wg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="app.js"></script>
+</body>
+</html>

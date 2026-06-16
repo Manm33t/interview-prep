@@ -1,0 +1,2242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Structures & Algorithms — Interview Prep</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" integrity="sha512-Jk4AqjWsdSzSWCSuQTfYRIF84Rq/eV0G2+tu07byYwHcbTGfdmLrHjUSwvzp5HvbiqK4ibmNwdcG49Y5RGYPg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <div id="progressBar" class="progress-bar"></div>
+  <button class="sidebar-float-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">🧮</span>
+          <span class="logo-text">Data Structures & Algorithms</span>
+        </div>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search topics..." />
+        <span class="search-icon">🔍</span>
+      </div>
+      <nav class="nav" id="nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Navigation</div>
+          <a href="index.html" class="nav-link" style="color:#68d391;font-weight:600;">🏠 Back to Home</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Data Structures & Algorithms</div>
+          <a href="#dsa-complexity" class="nav-link" data-section="dsa-complexity">Big O Complexity</a>
+          <a href="#dsa-arrays" class="nav-link" data-section="dsa-arrays">Arrays & Strings</a>
+          <a href="#dsa-linked-lists" class="nav-link" data-section="dsa-linked-lists">Linked Lists</a>
+          <a href="#dsa-stacks-queues" class="nav-link" data-section="dsa-stacks-queues">Stacks & Queues</a>
+          <a href="#dsa-trees" class="nav-link" data-section="dsa-trees">Trees & Tries</a>
+          <a href="#dsa-graphs" class="nav-link" data-section="dsa-graphs">Graphs & Union-Find</a>
+          <a href="#dsa-dynamic-programming" class="nav-link" data-section="dsa-dynamic-programming">Dynamic Programming</a>
+          <a href="#dsa-sorting" class="nav-link" data-section="dsa-sorting">Sorting Algorithms</a>
+          <a href="#dsa-interview" class="nav-link" data-section="dsa-interview">DSA Interview Q&A</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Other Topics</div>
+          <a href="javascript.html" class="nav-link">JavaScript Fundamentals</a>
+          <a href="nodejs.html" class="nav-link">Node.js Mastery</a>
+          <a href="react.html" class="nav-link">React.js</a>
+          <a href="system-design.html" class="nav-link">System Design</a>
+          <a href="databases.html" class="nav-link">Databases</a>
+          <a href="kafka.html" class="nav-link">Kafka & Streaming</a>
+          <a href="hld-lld.html" class="nav-link">HLD / LLD</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="main" id="main">
+      <div class="content-wrapper">
+        <section class="section" id="dsa-complexity">
+                  <div class="section-header">
+                    <span class="section-tag">DSA</span>
+                    <h2>Big O Complexity Analysis</h2>
+                  </div>
+        
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:24px;">
+                    Big O notation describes the <strong style="color:#e2e8f0;">upper bound</strong> of an algorithm's growth rate — how runtime or memory scales as input size <em>n</em> grows toward infinity. FAANG interviewers expect you to state complexity unprompted, justify it, and identify optimization opportunities. Memorizing tables is insufficient; you must reason from code structure.
+                  </p>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">Complexity Hierarchy — From Best to Worst</h3>
+                  <div class="feature-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px;">
+                    <div class="feature-card" style="border-left:3px solid #68d391;">
+                      <div style="font-size:22px;font-weight:800;color:#68d391;margin-bottom:8px;">O(1)</div>
+                      <h4 style="color:#f1f5f9;margin-bottom:6px;">Constant</h4>
+                      <p style="color:#94a3b8;font-size:13px;line-height:1.6;">Array index access, hash map get/set, stack push/pop, math operations. Runtime does not change with input size.</p>
+                    </div>
+                    <div class="feature-card" style="border-left:3px solid #68d391;">
+                      <div style="font-size:22px;font-weight:800;color:#68d391;margin-bottom:8px;">O(log n)</div>
+                      <h4 style="color:#f1f5f9;margin-bottom:6px;">Logarithmic</h4>
+                      <p style="color:#94a3b8;font-size:13px;line-height:1.6;">Binary search, balanced BST operations, divide-and-conquer where half the input is eliminated each step.</p>
+                    </div>
+                    <div class="feature-card" style="border-left:3px solid #f6e05e;">
+                      <div style="font-size:22px;font-weight:800;color:#f6e05e;margin-bottom:8px;">O(n)</div>
+                      <h4 style="color:#f1f5f9;margin-bottom:6px;">Linear</h4>
+                      <p style="color:#94a3b8;font-size:13px;line-height:1.6;">Single-pass array scan, linear search, tree traversal visiting every node, building a frequency map.</p>
+                    </div>
+                    <div class="feature-card" style="border-left:3px solid #f6e05e;">
+                      <div style="font-size:22px;font-weight:800;color:#f6e05e;margin-bottom:8px;">O(n log n)</div>
+                      <h4 style="color:#f1f5f9;margin-bottom:6px;">Linearithmic</h4>
+                      <p style="color:#94a3b8;font-size:13px;line-height:1.6;">Merge sort, heap sort, quicksort (avg), sorting-based algorithms. Optimal for comparison-based sorts.</p>
+                    </div>
+                    <div class="feature-card" style="border-left:3px solid #f6ad55;">
+                      <div style="font-size:22px;font-weight:800;color:#f6ad55;margin-bottom:8px;">O(n²)</div>
+                      <h4 style="color:#f1f5f9;margin-bottom:6px;">Quadratic</h4>
+                      <p style="color:#94a3b8;font-size:13px;line-height:1.6;">Nested loops over same array, bubble/insertion/selection sort, naive string matching. Avoid for n &gt; 10⁴.</p>
+                    </div>
+                    <div class="feature-card" style="border-left:3px solid #f6ad55;">
+                      <div style="font-size:22px;font-weight:800;color:#f6ad55;margin-bottom:8px;">O(n³)</div>
+                      <h4 style="color:#f1f5f9;margin-bottom:6px;">Cubic</h4>
+                      <p style="color:#94a3b8;font-size:13px;line-height:1.6;">Triple nested loops, naive matrix multiplication, Floyd-Warshall all-pairs shortest path. Only feasible for small n.</p>
+                    </div>
+                    <div class="feature-card" style="border-left:3px solid #fc8181;">
+                      <div style="font-size:22px;font-weight:800;color:#fc8181;margin-bottom:8px;">O(2ⁿ)</div>
+                      <h4 style="color:#f1f5f9;margin-bottom:6px;">Exponential</h4>
+                      <p style="color:#94a3b8;font-size:13px;line-height:1.6;">Brute-force subset enumeration, naive recursive Fibonacci, backtracking without pruning. n=20 already means 1M ops.</p>
+                    </div>
+                    <div class="feature-card" style="border-left:3px solid #fc8181;">
+                      <div style="font-size:22px;font-weight:800;color:#fc8181;margin-bottom:8px;">O(n!)</div>
+                      <h4 style="color:#f1f5f9;margin-bottom:6px;">Factorial</h4>
+                      <p style="color:#94a3b8;font-size:13px;line-height:1.6;">Generating all permutations, brute-force TSP. n=12 is ~479M. Always requires pruning or DP.</p>
+                    </div>
+                  </div>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Best / Average / Worst Case</h3>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:16px;">
+                    These are three distinct measures. <strong style="color:#e2e8f0;">Big O</strong> (worst-case upper bound), <strong style="color:#e2e8f0;">Big Ω (Omega)</strong> (best-case lower bound), and <strong style="color:#e2e8f0;">Big Θ (Theta)</strong> (tight bound — both upper and lower). When interviewers say "Big O" they almost always mean worst-case Big O.
+                  </p>
+                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+                    <div class="feature-card">
+                      <h4 style="color:#60a5fa;margin-bottom:8px;">Quick Sort Example</h4>
+                      <ul style="color:#94a3b8;font-size:14px;line-height:1.8;padding-left:18px;">
+                        <li><strong style="color:#68d391;">Best:</strong> O(n log n) — balanced pivots</li>
+                        <li><strong style="color:#f6e05e;">Average:</strong> O(n log n) — random data</li>
+                        <li><strong style="color:#fc8181;">Worst:</strong> O(n²) — sorted array, bad pivot</li>
+                      </ul>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#60a5fa;margin-bottom:8px;">Hash Map Lookup</h4>
+                      <ul style="color:#94a3b8;font-size:14px;line-height:1.8;padding-left:18px;">
+                        <li><strong style="color:#68d391;">Best:</strong> O(1) — no collision</li>
+                        <li><strong style="color:#f6e05e;">Average:</strong> O(1) — good hash function</li>
+                        <li><strong style="color:#fc8181;">Worst:</strong> O(n) — all keys collide</li>
+                      </ul>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#60a5fa;margin-bottom:8px;">Binary Search</h4>
+                      <ul style="color:#94a3b8;font-size:14px;line-height:1.8;padding-left:18px;">
+                        <li><strong style="color:#68d391;">Best:</strong> O(1) — target is midpoint</li>
+                        <li><strong style="color:#f6e05e;">Average:</strong> O(log n)</li>
+                        <li><strong style="color:#fc8181;">Worst:</strong> O(log n) — target absent</li>
+                      </ul>
+                    </div>
+                  </div>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Amortized Analysis</h3>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:16px;">
+                    Amortized analysis averages the cost over a sequence of operations. A single operation may be expensive, but if it happens rarely, the <em>amortized</em> cost per operation is low. The classic example is a <strong style="color:#68d391;">dynamic array (JavaScript Array / ArrayList)</strong>:
+                  </p>
+                  <pre><code class="language-javascript">// Dynamic Array — Amortized O(1) push
+                // When the array doubles in size, it copies n elements.
+                // But this happens log(n) times over n pushes.
+                // Total work: n + n/2 + n/4 + ... = 2n  →  amortized O(1) per push
+        
+                class DynamicArray {
+                  constructor() {
+                    this.data = new Array(1);  // initial capacity = 1
+                    this.size = 0;
+                    this.capacity = 1;
+                  }
+        
+                  push(val) {
+                    if (this.size === this.capacity) {
+                      // Double the capacity — O(n) copy, but amortized O(1)
+                      this.capacity *= 2;
+                      const newData = new Array(this.capacity);
+                      for (let i = 0; i &lt; this.size; i++) newData[i] = this.data[i];
+                      this.data = newData;
+                    }
+                    this.data[this.size++] = val;
+                  }
+        
+                  get(i) { return this.data[i]; }  // O(1)
+                }
+        
+                // Other amortized O(1) examples:
+                // - Union-Find with path compression: nearly O(1) per operation
+                // - Splay tree: O(log n) amortized per operation
+                // - Queue implemented with two stacks: O(1) amortized dequeue</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Space Complexity — Often Overlooked</h3>
+                  <pre><code class="language-javascript">// O(1) space — iterative in-place
+                function reverseArray(arr) {
+                  let left = 0, right = arr.length - 1;
+                  while (left &lt; right) {
+                    [arr[left], arr[right]] = [arr[right], arr[left]];
+                    left++; right--;
+                  }
+                }
+        
+                // O(n) space — recursive call stack (n frames)
+                function reverseArrayRecursive(arr, left = 0, right = arr.length - 1) {
+                  if (left >= right) return;
+                  [arr[left], arr[right]] = [arr[right], arr[left]];
+                  reverseArrayRecursive(arr, left + 1, right - 1);
+                }
+        
+                // O(n) space — new array
+                function reverseArrayNew(arr) {
+                  return [...arr].reverse();  // creates a copy
+                }
+        
+                // Common space complexities to know:
+                // - Recursive DFS on tree of depth h: O(h) call stack — O(log n) balanced, O(n) skewed
+                // - BFS with queue: O(w) where w = max width of tree — O(n) in worst case
+                // - Merge sort: O(n) auxiliary space for merge step
+                // - In-place sort (heap sort): O(1) auxiliary
+                // - Memoization DP: O(n) or O(n*m) for 2D problems</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Practical Complexity Reading from Code</h3>
+                  <pre><code class="language-javascript">// Rule 1: Count loops
+                for (let i = 0; i &lt; n; i++) { ... }         // O(n)
+                for (let i = 0; i &lt; n; i++)
+                  for (let j = 0; j &lt; n; j++) { ... }       // O(n²)
+                for (let i = 0; i &lt; n; i++)
+                  for (let j = i+1; j &lt; n; j++) { ... }     // O(n²) — still n(n-1)/2
+        
+                // Rule 2: Halving = logarithmic
+                while (n &gt; 1) { n = Math.floor(n / 2); }    // O(log n)
+        
+                // Rule 3: Drop constants and lower-order terms
+                // O(3n + n² + 100) = O(n²)
+        
+                // Rule 4: Different inputs = different variables
+                // Don't say O(n²) for two arrays of different sizes a and b
+                for (let i = 0; i &lt; a.length; i++)
+                  for (let j = 0; j &lt; b.length; j++) { ... }  // O(a * b), NOT O(n²)
+        
+                // Rule 5: Recursive complexity — use recurrence relations
+                // T(n) = 2T(n/2) + O(n)  → Master Theorem case 2 → O(n log n)  [Merge Sort]
+                // T(n) = T(n-1) + O(1)   → O(n)  [Linear recursion]
+                // T(n) = 2T(n-1) + O(1)  → O(2ⁿ)  [Exponential — naive subsets]
+        
+                // Rule 6: String operations in loops are deceptive
+                const result = [];
+                for (let i = 0; i &lt; n; i++) {
+                  result.push(arr[i]);                    // O(1) each, O(n) total
+                }
+                result.join('');                          // O(n) — not free!
+        
+                // Using string concatenation in a loop:
+                let s = '';
+                for (let i = 0; i &lt; n; i++) s += arr[i]; // O(n²) in worst case (string copy)
+                // Use array + join instead!</code></pre>
+        
+                  <div class="callout callout-info">
+                    <strong style="color:#f1f5f9;">Interview tip:</strong> State complexity before writing code, verify after. Say: <em>"This will be O(n) time and O(1) space — I'll use two pointers in place."</em> If you realize mid-solution it's worse, acknowledge it and discuss trade-offs. Never claim O(1) space if your recursion has O(n) call depth.
+                  </div>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Complexity Cheat Sheet — Common Data Structures</h3>
+                  <div class="feature-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:24px;">
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:12px;">Array / Dynamic Array</h4>
+                      <ul style="color:#94a3b8;font-size:13px;line-height:1.9;padding-left:18px;">
+                        <li>Access by index: <span style="color:#68d391;">O(1)</span></li>
+                        <li>Search (unsorted): <span style="color:#f6e05e;">O(n)</span></li>
+                        <li>Search (sorted, binary): <span style="color:#68d391;">O(log n)</span></li>
+                        <li>Insert/delete at end: <span style="color:#68d391;">O(1) amortized</span></li>
+                        <li>Insert/delete at front/middle: <span style="color:#f6e05e;">O(n)</span></li>
+                      </ul>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:12px;">Hash Map / Hash Set</h4>
+                      <ul style="color:#94a3b8;font-size:13px;line-height:1.9;padding-left:18px;">
+                        <li>Insert / Delete / Lookup: <span style="color:#68d391;">O(1) avg</span></li>
+                        <li>Worst case (all collisions): <span style="color:#fc8181;">O(n)</span></li>
+                        <li>Iterate all entries: <span style="color:#f6e05e;">O(n)</span></li>
+                        <li>Space: <span style="color:#f6e05e;">O(n)</span></li>
+                      </ul>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:12px;">Balanced BST (e.g. Red-Black Tree)</h4>
+                      <ul style="color:#94a3b8;font-size:13px;line-height:1.9;padding-left:18px;">
+                        <li>Search / Insert / Delete: <span style="color:#68d391;">O(log n)</span></li>
+                        <li>Min / Max: <span style="color:#68d391;">O(log n)</span></li>
+                        <li>In-order traversal (sorted): <span style="color:#f6e05e;">O(n)</span></li>
+                        <li>Space: <span style="color:#f6e05e;">O(n)</span></li>
+                      </ul>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:12px;">Heap (Min/Max)</h4>
+                      <ul style="color:#94a3b8;font-size:13px;line-height:1.9;padding-left:18px;">
+                        <li>Peek min/max: <span style="color:#68d391;">O(1)</span></li>
+                        <li>Insert (sift up): <span style="color:#68d391;">O(log n)</span></li>
+                        <li>Extract min/max (sift down): <span style="color:#68d391;">O(log n)</span></li>
+                        <li>Build heap from array: <span style="color:#f6e05e;">O(n)</span></li>
+                        <li>Space: <span style="color:#f6e05e;">O(n)</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </section>
+
+        <section class="section" id="dsa-arrays">
+                  <div class="section-header">
+                    <span class="section-tag">DSA</span>
+                    <h2>Arrays &amp; Strings</h2>
+                  </div>
+        
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:24px;">
+                    Arrays and strings make up roughly <strong style="color:#e2e8f0;">40% of FAANG coding questions</strong>. The core techniques — two pointers, sliding window, and prefix sums — are force multipliers: mastering them lets you solve dozens of problems with one mental model. Every implementation below is production-quality with edge-case handling.
+                  </p>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">Two Pointers Pattern</h3>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:16px;">
+                    Use two pointers when the array is sorted (or can be sorted) and you need to find pairs/triplets, or when processing from both ends simultaneously. Eliminates the need for nested loops — reduces O(n²) to <strong style="color:#68d391;">O(n)</strong>.
+                  </p>
+                  <pre><code class="language-javascript">// ─── Two Sum (sorted array variant) — O(n) time, O(1) space ───
+                function twoSumSorted(nums, target) {
+                  let left = 0, right = nums.length - 1;
+                  while (left &lt; right) {
+                    const sum = nums[left] + nums[right];
+                    if (sum === target) return [left, right];
+                    else if (sum &lt; target) left++;   // need larger sum
+                    else right--;                     // need smaller sum
+                  }
+                  return [-1, -1];
+                }
+        
+                // ─── Three Sum — O(n²) time, O(1) space (excluding output) ───
+                // Find all unique triplets that sum to zero
+                function threeSum(nums) {
+                  nums.sort((a, b) => a - b);  // sort first: O(n log n)
+                  const result = [];
+        
+                  for (let i = 0; i &lt; nums.length - 2; i++) {
+                    // Skip duplicates for first element
+                    if (i &gt; 0 && nums[i] === nums[i - 1]) continue;
+                    if (nums[i] &gt; 0) break;  // sorted: if first positive, no zero sum possible
+        
+                    let left = i + 1, right = nums.length - 1;
+                    while (left &lt; right) {
+                      const sum = nums[i] + nums[left] + nums[right];
+                      if (sum === 0) {
+                        result.push([nums[i], nums[left], nums[right]]);
+                        // Skip duplicates for second and third elements
+                        while (left &lt; right && nums[left] === nums[left + 1]) left++;
+                        while (left &lt; right && nums[right] === nums[right - 1]) right--;
+                        left++; right--;
+                      } else if (sum &lt; 0) left++;
+                      else right--;
+                    }
+                  }
+                  return result;
+                }
+        
+                // ─── Container With Most Water — O(n) time, O(1) space ───
+                // Key insight: always move the pointer with the SHORTER height
+                // Moving the taller one can only decrease or maintain the width
+                // while the height is bounded by the shorter — so it can only get worse
+                function maxArea(height) {
+                  let left = 0, right = height.length - 1;
+                  let max = 0;
+                  while (left &lt; right) {
+                    const area = Math.min(height[left], height[right]) * (right - left);
+                    max = Math.max(max, area);
+                    if (height[left] &lt; height[right]) left++;
+                    else right--;
+                  }
+                  return max;
+                }
+        
+                // ─── Trapping Rain Water — O(n) time, O(1) space ───
+                // Two-pointer with running max from each side
+                function trap(height) {
+                  let left = 0, right = height.length - 1;
+                  let leftMax = 0, rightMax = 0;
+                  let water = 0;
+        
+                  while (left &lt; right) {
+                    if (height[left] &lt; height[right]) {
+                      // Right side is taller — water at left is determined by leftMax
+                      if (height[left] &gt;= leftMax) leftMax = height[left];
+                      else water += leftMax - height[left];
+                      left++;
+                    } else {
+                      if (height[right] &gt;= rightMax) rightMax = height[right];
+                      else water += rightMax - height[right];
+                      right--;
+                    }
+                  }
+                  return water;
+                }
+                // Time: O(n) | Space: O(1)</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Sliding Window Pattern</h3>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:16px;">
+                    Sliding window maintains a dynamic subarray/substring. Use it for contiguous subarray/substring problems with a constraint. Two variants: <strong style="color:#e2e8f0;">fixed-size window</strong> and <strong style="color:#e2e8f0;">variable-size window</strong> (expand right, shrink left when constraint violated).
+                  </p>
+                  <pre><code class="language-javascript">// ─── Maximum Sum Subarray of Size K — Fixed Window — O(n), O(1) ───
+                function maxSumSubarrayK(nums, k) {
+                  let windowSum = 0, maxSum = 0;
+        
+                  // Build initial window
+                  for (let i = 0; i &lt; k; i++) windowSum += nums[i];
+                  maxSum = windowSum;
+        
+                  // Slide: add next element, drop first element
+                  for (let i = k; i &lt; nums.length; i++) {
+                    windowSum += nums[i] - nums[i - k];
+                    maxSum = Math.max(maxSum, windowSum);
+                  }
+                  return maxSum;
+                }
+        
+                // ─── Longest Substring Without Repeating Characters — O(n), O(min(n,m)) ───
+                // Variable window: expand right, shrink left on duplicate
+                function lengthOfLongestSubstring(s) {
+                  const seen = new Map();  // char → last seen index
+                  let left = 0, maxLen = 0;
+        
+                  for (let right = 0; right &lt; s.length; right++) {
+                    const ch = s[right];
+                    // If char was seen and is INSIDE current window, shrink from left
+                    if (seen.has(ch) && seen.get(ch) &gt;= left) {
+                      left = seen.get(ch) + 1;
+                    }
+                    seen.set(ch, right);
+                    maxLen = Math.max(maxLen, right - left + 1);
+                  }
+                  return maxLen;
+                }
+        
+                // ─── Minimum Window Substring — O(n + m), O(m) space ───
+                // Find smallest window in s containing all chars of t
+                function minWindow(s, t) {
+                  if (t.length &gt; s.length) return '';
+        
+                  const need = new Map();   // required char frequencies
+                  for (const ch of t) need.set(ch, (need.get(ch) || 0) + 1);
+        
+                  const window = new Map(); // current window frequencies
+                  let have = 0;             // chars satisfying their required count
+                  const required = need.size;
+        
+                  let left = 0, minLen = Infinity, minLeft = 0;
+        
+                  for (let right = 0; right &lt; s.length; right++) {
+                    const ch = s[right];
+                    window.set(ch, (window.get(ch) || 0) + 1);
+        
+                    // Check if this char's frequency meets the requirement
+                    if (need.has(ch) && window.get(ch) === need.get(ch)) have++;
+        
+                    // Shrink from left while window is valid
+                    while (have === required) {
+                      if (right - left + 1 &lt; minLen) {
+                        minLen = right - left + 1;
+                        minLeft = left;
+                      }
+                      const leftCh = s[left];
+                      window.set(leftCh, window.get(leftCh) - 1);
+                      if (need.has(leftCh) && window.get(leftCh) &lt; need.get(leftCh)) have--;
+                      left++;
+                    }
+                  }
+                  return minLen === Infinity ? '' : s.substring(minLeft, minLeft + minLen);
+                }
+        
+                // ─── Longest Subarray with Sum ≤ K (variable window) — O(n), O(1) ───
+                function longestSubarrayWithSumK(nums, k) {
+                  let left = 0, sum = 0, maxLen = 0;
+                  for (let right = 0; right &lt; nums.length; right++) {
+                    sum += nums[right];
+                    while (sum &gt; k) { sum -= nums[left++]; }
+                    maxLen = Math.max(maxLen, right - left + 1);
+                  }
+                  return maxLen;
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Prefix Sums</h3>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:16px;">
+                    Prefix sums enable O(1) range-sum queries after O(n) preprocessing. Combined with a hash map, they solve subarray-sum problems in O(n) that would otherwise require O(n²).
+                  </p>
+                  <pre><code class="language-javascript">// ─── Prefix Sum Array — O(n) build, O(1) range query ───
+                function buildPrefixSum(nums) {
+                  const prefix = new Array(nums.length + 1).fill(0);
+                  for (let i = 0; i &lt; nums.length; i++) {
+                    prefix[i + 1] = prefix[i] + nums[i];
+                  }
+                  // Sum from index l to r (inclusive) = prefix[r+1] - prefix[l]
+                  return prefix;
+                }
+        
+                // ─── Subarray Sum Equals K — O(n), O(n) ───
+                // Count contiguous subarrays summing to exactly k
+                // Key insight: if prefix[j] - prefix[i] = k, then subarray [i..j-1] sums to k
+                // Rearranged: we need prefix[i] = prefix[j] - k — look it up in a map!
+                function subarraySum(nums, k) {
+                  const prefixCounts = new Map([[0, 1]]);  // empty prefix has count 1
+                  let runningSum = 0, count = 0;
+        
+                  for (const num of nums) {
+                    runningSum += num;
+                    const complement = runningSum - k;
+                    if (prefixCounts.has(complement)) {
+                      count += prefixCounts.get(complement);
+                    }
+                    prefixCounts.set(runningSum, (prefixCounts.get(runningSum) || 0) + 1);
+                  }
+                  return count;
+                }
+        
+                // ─── Product of Array Except Self — O(n), O(1) extra space ───
+                // No division allowed — use prefix and suffix product arrays
+                function productExceptSelf(nums) {
+                  const n = nums.length;
+                  const result = new Array(n).fill(1);
+        
+                  // Pass 1: result[i] = product of all elements to the LEFT of i
+                  let prefixProduct = 1;
+                  for (let i = 0; i &lt; n; i++) {
+                    result[i] = prefixProduct;
+                    prefixProduct *= nums[i];
+                  }
+        
+                  // Pass 2: multiply by product of all elements to the RIGHT of i
+                  let suffixProduct = 1;
+                  for (let i = n - 1; i &gt;= 0; i--) {
+                    result[i] *= suffixProduct;
+                    suffixProduct *= nums[i];
+                  }
+                  return result;
+                }
+        
+                // ─── 2D Prefix Sum (Matrix Range Sum Query) — O(mn) build, O(1) query ───
+                class NumMatrix {
+                  constructor(matrix) {
+                    const m = matrix.length, n = matrix[0].length;
+                    // prefix[i][j] = sum of rectangle from (0,0) to (i-1,j-1)
+                    this.prefix = Array.from({length: m+1}, () => new Array(n+1).fill(0));
+                    for (let i = 1; i &lt;= m; i++) {
+                      for (let j = 1; j &lt;= n; j++) {
+                        this.prefix[i][j] = matrix[i-1][j-1]
+                          + this.prefix[i-1][j]    // top
+                          + this.prefix[i][j-1]    // left
+                          - this.prefix[i-1][j-1]; // subtract double-counted top-left
+                      }
+                    }
+                  }
+                  // Sum of rectangle from (r1,c1) to (r2,c2) inclusive
+                  sumRegion(r1, c1, r2, c2) {
+                    return this.prefix[r2+1][c2+1]
+                      - this.prefix[r1][c2+1]
+                      - this.prefix[r2+1][c1]
+                      + this.prefix[r1][c1];
+                  }
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">String Manipulation Essentials</h3>
+                  <pre><code class="language-javascript">// ─── Valid Anagram — O(n), O(1) space (26 chars) ───
+                function isAnagram(s, t) {
+                  if (s.length !== t.length) return false;
+                  const count = new Array(26).fill(0);
+                  const a = 'a'.charCodeAt(0);
+                  for (let i = 0; i &lt; s.length; i++) {
+                    count[s.charCodeAt(i) - a]++;
+                    count[t.charCodeAt(i) - a]--;
+                  }
+                  return count.every(c => c === 0);
+                }
+        
+                // ─── Longest Palindromic Substring — O(n²), O(1) ───
+                // Expand-around-center: try each char as center (odd) and each gap (even)
+                function longestPalindrome(s) {
+                  let start = 0, maxLen = 1;
+        
+                  function expand(left, right) {
+                    while (left &gt;= 0 && right &lt; s.length && s[left] === s[right]) {
+                      if (right - left + 1 &gt; maxLen) {
+                        maxLen = right - left + 1;
+                        start = left;
+                      }
+                      left--; right++;
+                    }
+                  }
+        
+                  for (let i = 0; i &lt; s.length; i++) {
+                    expand(i, i);     // odd-length palindromes
+                    expand(i, i + 1); // even-length palindromes
+                  }
+                  return s.substring(start, start + maxLen);
+                }
+                // Note: Manacher's algorithm solves this in O(n) but rarely required in interviews
+        
+                // ─── Group Anagrams — O(n * k log k), O(nk) where k = max string length ───
+                function groupAnagrams(strs) {
+                  const map = new Map();
+                  for (const s of strs) {
+                    const key = s.split('').sort().join('');
+                    if (!map.has(key)) map.set(key, []);
+                    map.get(key).push(s);
+                  }
+                  return [...map.values()];
+                  // Optimization: use char-count array as key for O(n * k) total
+                }
+        
+                // ─── Encode / Decode Strings — O(n) ───
+                // Non-delimiter approach: prefix each string with its length
+                function encode(strs) {
+                  return strs.map(s => `${s.length}#${s}`).join('');
+                }
+                function decode(s) {
+                  const result = [];
+                  let i = 0;
+                  while (i &lt; s.length) {
+                    const j = s.indexOf('#', i);
+                    const len = parseInt(s.substring(i, j));
+                    result.push(s.substring(j + 1, j + 1 + len));
+                    i = j + 1 + len;
+                  }
+                  return result;
+                }</code></pre>
+        
+                  <div class="callout callout-info">
+                    <strong style="color:#f1f5f9;">Pattern recognition guide:</strong> "subarray/substring" + "contiguous" + "sum/count" → prefix sum + hash map. "subarray" + "at most K distinct" or "window" → sliding window. "pair/triplet in sorted array" → two pointers. "find duplicates" → hash set or XOR trick.
+                  </div>
+                </section>
+
+        <section class="section" id="dsa-linked-lists">
+                  <div class="section-header">
+                    <span class="section-tag">DSA</span>
+                    <h2>Linked Lists</h2>
+                  </div>
+        
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:24px;">
+                    Linked list problems test pointer manipulation, edge-case discipline, and the ability to hold multiple node references in your head simultaneously. The <strong style="color:#68d391;">fast/slow pointer (Floyd's algorithm)</strong> is the key technique — it solves cycle detection, finding the middle, and detecting the k-th from the end, all in O(n) time and O(1) space.
+                  </p>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">Node Implementation &amp; Core Operations</h3>
+                  <pre><code class="language-javascript">// ─── Singly Linked List ───
+                class ListNode {
+                  constructor(val, next = null) {
+                    this.val = val;
+                    this.next = next;
+                  }
+                }
+        
+                class LinkedList {
+                  constructor() {
+                    this.head = null;
+                    this.size = 0;
+                  }
+        
+                  // Prepend — O(1)
+                  prepend(val) {
+                    this.head = new ListNode(val, this.head);
+                    this.size++;
+                  }
+        
+                  // Append — O(n) without tail pointer; O(1) with
+                  append(val) {
+                    const node = new ListNode(val);
+                    if (!this.head) { this.head = node; this.size++; return; }
+                    let curr = this.head;
+                    while (curr.next) curr = curr.next;
+                    curr.next = node;
+                    this.size++;
+                  }
+        
+                  // Delete by value — O(n)
+                  delete(val) {
+                    if (!this.head) return;
+                    if (this.head.val === val) { this.head = this.head.next; this.size--; return; }
+                    let curr = this.head;
+                    while (curr.next) {
+                      if (curr.next.val === val) {
+                        curr.next = curr.next.next;
+                        this.size--;
+                        return;
+                      }
+                      curr = curr.next;
+                    }
+                  }
+        
+                  // Convert to array for debugging — O(n)
+                  toArray() {
+                    const arr = [];
+                    let curr = this.head;
+                    while (curr) { arr.push(curr.val); curr = curr.next; }
+                    return arr;
+                  }
+                }
+        
+                // ─── Doubly Linked List Node ───
+                class DListNode {
+                  constructor(val, prev = null, next = null) {
+                    this.val = val;
+                    this.prev = prev;
+                    this.next = next;
+                  }
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Reverse a Linked List</h3>
+                  <pre><code class="language-javascript">// ─── Iterative Reverse — O(n) time, O(1) space ───
+                function reverseList(head) {
+                  let prev = null;
+                  let curr = head;
+                  while (curr) {
+                    const next = curr.next;  // save next before overwriting
+                    curr.next = prev;        // reverse the pointer
+                    prev = curr;             // advance prev
+                    curr = next;             // advance curr
+                  }
+                  return prev;  // prev is the new head
+                }
+        
+                // ─── Recursive Reverse — O(n) time, O(n) space (call stack) ───
+                function reverseListRecursive(head) {
+                  // Base case: empty list or single node
+                  if (!head || !head.next) return head;
+        
+                  // Recurse to the end — newHead is the last node
+                  const newHead = reverseListRecursive(head.next);
+        
+                  // head.next is now the tail of the reversed sublist
+                  // make it point back to head
+                  head.next.next = head;
+                  head.next = null;
+                  return newHead;
+                }
+        
+                // ─── Reverse Sublist from position left to right — O(n), O(1) ───
+                function reverseBetween(head, left, right) {
+                  if (!head || left === right) return head;
+        
+                  const dummy = new ListNode(0, head);
+                  let pre = dummy;
+        
+                  // Step 1: Move pre to the node BEFORE position `left`
+                  for (let i = 1; i &lt; left; i++) pre = pre.next;
+        
+                  let curr = pre.next;  // the node at position `left`
+                  let prev = null;
+        
+                  // Step 2: Reverse (right - left + 1) nodes
+                  for (let i = 0; i &lt;= right - left; i++) {
+                    const next = curr.next;
+                    curr.next = prev;
+                    prev = curr;
+                    curr = next;
+                  }
+        
+                  // Step 3: Reconnect
+                  pre.next.next = curr;  // original `left` node now points to node after `right`
+                  pre.next = prev;        // pre points to original `right` node (new sublist head)
+                  return dummy.next;
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Fast / Slow Pointer (Floyd's Algorithm)</h3>
+                  <pre><code class="language-javascript">// ─── Detect Cycle — O(n), O(1) ───
+                function hasCycle(head) {
+                  let slow = head, fast = head;
+                  while (fast && fast.next) {
+                    slow = slow.next;        // moves 1 step
+                    fast = fast.next.next;   // moves 2 steps
+                    if (slow === fast) return true;  // they meet inside the cycle
+                  }
+                  return false;
+                }
+        
+                // ─── Find Cycle Start Node — O(n), O(1) ───
+                // Proof: let F = distance to cycle start, C = cycle length, h = head-to-meet distance
+                // When slow and fast meet: fast traveled 2x slow's distance
+                // 2(F + h) = F + h + kC  →  F = kC - h
+                // So starting fresh pointers from head and meeting point, both walking 1 step,
+                // they meet exactly at the cycle start.
+                function detectCycle(head) {
+                  let slow = head, fast = head;
+                  while (fast && fast.next) {
+                    slow = slow.next;
+                    fast = fast.next.next;
+                    if (slow === fast) {
+                      // Found meeting point — now find cycle start
+                      let ptr = head;
+                      while (ptr !== slow) {
+                        ptr = ptr.next;
+                        slow = slow.next;
+                      }
+                      return ptr;  // cycle start node
+                    }
+                  }
+                  return null;
+                }
+        
+                // ─── Find Middle Node — O(n), O(1) ───
+                // When fast reaches end, slow is at middle
+                // For even length: slow lands at second middle (use slow = slow.next adjustment if needed)
+                function findMiddle(head) {
+                  let slow = head, fast = head;
+                  while (fast && fast.next) {
+                    slow = slow.next;
+                    fast = fast.next.next;
+                  }
+                  return slow;
+                }
+        
+                // ─── Remove K-th Node from End — O(n), O(1) ───
+                function removeNthFromEnd(head, n) {
+                  const dummy = new ListNode(0, head);
+                  let fast = dummy, slow = dummy;
+        
+                  // Advance fast n+1 steps ahead
+                  for (let i = 0; i &lt;= n; i++) fast = fast.next;
+        
+                  // Move both until fast hits null
+                  while (fast) {
+                    slow = slow.next;
+                    fast = fast.next;
+                  }
+                  // slow is now at the node BEFORE the one to remove
+                  slow.next = slow.next.next;
+                  return dummy.next;
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Merge &amp; Sort Operations</h3>
+                  <pre><code class="language-javascript">// ─── Merge Two Sorted Lists — O(n+m), O(1) ───
+                function mergeTwoLists(l1, l2) {
+                  const dummy = new ListNode(0);
+                  let curr = dummy;
+        
+                  while (l1 && l2) {
+                    if (l1.val &lt;= l2.val) { curr.next = l1; l1 = l1.next; }
+                    else                   { curr.next = l2; l2 = l2.next; }
+                    curr = curr.next;
+                  }
+                  curr.next = l1 || l2;  // attach remaining nodes
+                  return dummy.next;
+                }
+        
+                // ─── Merge K Sorted Lists — O(n log k), O(k) space ───
+                // Use a min-heap (simulate with sorted structure in JS) or divide-and-conquer
+                function mergeKLists(lists) {
+                  if (!lists.length) return null;
+        
+                  // Divide and conquer: repeatedly merge pairs
+                  while (lists.length &gt; 1) {
+                    const merged = [];
+                    for (let i = 0; i &lt; lists.length; i += 2) {
+                      const l1 = lists[i];
+                      const l2 = lists[i + 1] || null;
+                      merged.push(mergeTwoLists(l1, l2));
+                    }
+                    lists = merged;
+                  }
+                  return lists[0];
+                }
+        
+                // ─── Sort Linked List — O(n log n), O(log n) space ───
+                // Merge sort is ideal for linked lists (no random access needed)
+                function sortList(head) {
+                  if (!head || !head.next) return head;
+        
+                  // Find middle and split
+                  let slow = head, fast = head.next;  // fast starts at head.next to get LEFT middle
+                  while (fast && fast.next) {
+                    slow = slow.next;
+                    fast = fast.next.next;
+                  }
+                  const mid = slow.next;
+                  slow.next = null;  // split the list
+        
+                  const left = sortList(head);
+                  const right = sortList(mid);
+                  return mergeTwoLists(left, right);
+                }
+        
+                // ─── Reorder List — O(n), O(1) ───
+                // L0 → Ln → L1 → Ln-1 → L2 → Ln-2...
+                // Strategy: find middle, reverse second half, merge two halves
+                function reorderList(head) {
+                  if (!head || !head.next) return;
+        
+                  // 1. Find middle
+                  let slow = head, fast = head;
+                  while (fast.next && fast.next.next) {
+                    slow = slow.next;
+                    fast = fast.next.next;
+                  }
+        
+                  // 2. Reverse second half
+                  let prev = null, curr = slow.next;
+                  slow.next = null;  // disconnect first half
+                  while (curr) {
+                    const next = curr.next;
+                    curr.next = prev;
+                    prev = curr;
+                    curr = next;
+                  }
+        
+                  // 3. Interleave: first half and reversed second half
+                  let p1 = head, p2 = prev;
+                  while (p2) {
+                    const n1 = p1.next, n2 = p2.next;
+                    p1.next = p2;
+                    p2.next = n1;
+                    p1 = n1;
+                    p2 = n2;
+                  }
+                }</code></pre>
+        
+                  <div class="callout callout-info">
+                    <strong style="color:#f1f5f9;">Linked list debugging tip:</strong> Always use a <code>dummy</code> head node when the head itself might be modified (deletion, merge). It eliminates null checks for the head case and makes the code uniform. Cost: O(1) extra space — always worth it.
+                  </div>
+        
+                  <div class="feature-grid" style="grid-template-columns:repeat(2,1fr);margin-top:24px;">
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:10px;">Singly vs Doubly — When to Use</h4>
+                      <ul style="color:#94a3b8;font-size:14px;line-height:1.8;padding-left:18px;">
+                        <li><strong style="color:#e2e8f0;">Singly:</strong> stack, queue, most interview problems</li>
+                        <li><strong style="color:#e2e8f0;">Doubly:</strong> LRU cache (O(1) removal), deque, browser history</li>
+                        <li>Doubly uses 2× pointer memory; singly is simpler to implement correctly</li>
+                      </ul>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:10px;">Complexity Reference</h4>
+                      <ul style="color:#94a3b8;font-size:14px;line-height:1.8;padding-left:18px;">
+                        <li>Reverse: <span style="color:#68d391;">O(n) time, O(1) space</span></li>
+                        <li>Detect cycle: <span style="color:#68d391;">O(n) time, O(1) space</span></li>
+                        <li>Merge k sorted (n total): <span style="color:#68d391;">O(n log k)</span></li>
+                        <li>Sort linked list: <span style="color:#68d391;">O(n log n) time, O(log n) space</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </section>
+
+        <section class="section" id="dsa-stacks-queues">
+                  <div class="section-header">
+                    <span class="section-tag">DSA</span>
+                    <h2>Stacks &amp; Queues</h2>
+                  </div>
+        
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:24px;">
+                    Stacks and queues are deceptively simple — the insight is knowing <em>when</em> to apply them. The <strong style="color:#68d391;">monotonic stack</strong> pattern unlocks O(n) solutions for "next greater element," histogram, and temperature problems. The <strong style="color:#68d391;">deque</strong> (double-ended queue) enables sliding-window maximum in O(n). LRU cache combines a doubly linked list with a hash map for O(1) get and put.
+                  </p>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">Stack Fundamentals &amp; Common Patterns</h3>
+                  <pre><code class="language-javascript">// ─── Stack via Array — all operations O(1) ───
+                class Stack {
+                  constructor() { this.data = []; }
+                  push(val)  { this.data.push(val); }
+                  pop()      { return this.data.pop(); }
+                  peek()     { return this.data[this.data.length - 1]; }
+                  isEmpty()  { return this.data.length === 0; }
+                  size()     { return this.data.length; }
+                }
+        
+                // ─── Valid Parentheses — O(n), O(n) ───
+                function isValid(s) {
+                  const stack = [];
+                  const map = { ')': '(', '}': '{', ']': '[' };
+                  for (const ch of s) {
+                    if ('({['.includes(ch)) {
+                      stack.push(ch);
+                    } else {
+                      if (stack.pop() !== map[ch]) return false;
+                    }
+                  }
+                  return stack.length === 0;
+                }
+        
+                // ─── Min Stack — O(1) push/pop/getMin ───
+                class MinStack {
+                  constructor() {
+                    this.stack = [];
+                    this.minStack = [];
+                  }
+                  push(val) {
+                    this.stack.push(val);
+                    const currentMin = this.minStack.length
+                      ? Math.min(val, this.minStack[this.minStack.length - 1])
+                      : val;
+                    this.minStack.push(currentMin);
+                  }
+                  pop() {
+                    this.stack.pop();
+                    this.minStack.pop();
+                  }
+                  top()    { return this.stack[this.stack.length - 1]; }
+                  getMin() { return this.minStack[this.minStack.length - 1]; }
+                }
+        
+                // ─── Evaluate Reverse Polish Notation — O(n), O(n) ───
+                function evalRPN(tokens) {
+                  const stack = [];
+                  const ops = {
+                    '+': (a, b) => a + b,
+                    '-': (a, b) => a - b,
+                    '*': (a, b) => a * b,
+                    '/': (a, b) => Math.trunc(a / b),
+                  };
+                  for (const t of tokens) {
+                    if (ops[t]) {
+                      const b = stack.pop(), a = stack.pop();
+                      stack.push(ops[t](a, b));
+                    } else {
+                      stack.push(Number(t));
+                    }
+                  }
+                  return stack[0];
+                }
+        
+                // ─── Generate Parentheses — O(4^n / sqrt(n)) — Catalan number ───
+                function generateParenthesis(n) {
+                  const result = [];
+                  function backtrack(s, open, close) {
+                    if (s.length === 2 * n) { result.push(s); return; }
+                    if (open &lt; n)           backtrack(s + '(', open + 1, close);
+                    if (close &lt; open)       backtrack(s + ')', open, close + 1);
+                  }
+                  backtrack('', 0, 0);
+                  return result;
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Monotonic Stack</h3>
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:16px;">
+                    A monotonic stack maintains elements in strictly increasing or decreasing order. When a new element violates the order, elements are popped and <em>processed</em> — that pop moment is when you compute the answer. Each element is pushed and popped at most once: <strong style="color:#68d391;">O(n) total</strong>.
+                  </p>
+                  <pre><code class="language-javascript">// ─── Next Greater Element — O(n), O(n) ───
+                function nextGreaterElement(nums) {
+                  const result = new Array(nums.length).fill(-1);
+                  const stack = [];  // monotonic decreasing (stores indices)
+        
+                  for (let i = 0; i &lt; nums.length; i++) {
+                    while (stack.length && nums[stack[stack.length - 1]] &lt; nums[i]) {
+                      const idx = stack.pop();
+                      result[idx] = nums[i];
+                    }
+                    stack.push(i);
+                  }
+                  return result;
+                }
+        
+                // ─── Daily Temperatures — O(n), O(n) ───
+                function dailyTemperatures(temps) {
+                  const result = new Array(temps.length).fill(0);
+                  const stack = [];
+        
+                  for (let i = 0; i &lt; temps.length; i++) {
+                    while (stack.length && temps[stack[stack.length - 1]] &lt; temps[i]) {
+                      const idx = stack.pop();
+                      result[idx] = i - idx;
+                    }
+                    stack.push(i);
+                  }
+                  return result;
+                }
+        
+                // ─── Largest Rectangle in Histogram — O(n), O(n) ───
+                function largestRectangleArea(heights) {
+                  const stack = [];
+                  let maxArea = 0;
+                  const h = [...heights, 0];  // sentinel forces remaining bars to pop
+        
+                  for (let i = 0; i &lt; h.length; i++) {
+                    while (stack.length && h[stack[stack.length - 1]] &gt; h[i]) {
+                      const height = h[stack.pop()];
+                      const width = stack.length ? i - stack[stack.length - 1] - 1 : i;
+                      maxArea = Math.max(maxArea, height * width);
+                    }
+                    stack.push(i);
+                  }
+                  return maxArea;
+                }
+        
+                // ─── Car Fleet — O(n log n), O(n) ───
+                function carFleet(target, position, speed) {
+                  const cars = position.map((p, i) => [p, speed[i]]);
+                  cars.sort((a, b) => b[0] - a[0]);
+                  const stack = [];
+                  for (const [pos, spd] of cars) {
+                    const t = (target - pos) / spd;
+                    if (!stack.length || t &gt; stack[stack.length - 1]) stack.push(t);
+                  }
+                  return stack.length;
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Queue, Deque &amp; Sliding Window Maximum</h3>
+                  <pre><code class="language-javascript">// ─── Queue via Two Stacks — O(1) amortized dequeue ───
+                class MyQueue {
+                  constructor() { this.inbox = []; this.outbox = []; }
+                  push(val) { this.inbox.push(val); }
+                  pop() { this._transfer(); return this.outbox.pop(); }
+                  peek() { this._transfer(); return this.outbox[this.outbox.length - 1]; }
+                  empty() { return !this.inbox.length && !this.outbox.length; }
+                  _transfer() {
+                    if (!this.outbox.length)
+                      while (this.inbox.length) this.outbox.push(this.inbox.pop());
+                  }
+                }
+        
+                // ─── Sliding Window Maximum — O(n), O(k) ───
+                function maxSlidingWindow(nums, k) {
+                  const deque = [];  // stores indices; front = index of current max
+                  const result = [];
+        
+                  for (let i = 0; i &lt; nums.length; i++) {
+                    // Remove out-of-window indices
+                    while (deque.length && deque[0] &lt; i - k + 1) deque.shift();
+                    // Remove indices with smaller values (they can never be max while i exists)
+                    while (deque.length && nums[deque[deque.length - 1]] &lt;= nums[i]) deque.pop();
+                    deque.push(i);
+                    if (i &gt;= k - 1) result.push(nums[deque[0]]);
+                  }
+                  return result;
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">LRU Cache — O(1) Get &amp; Put</h3>
+                  <pre><code class="language-javascript">// Doubly linked list + hash map for true O(1) operations
+                class LRUNode {
+                  constructor(key, val) { this.key = key; this.val = val; this.prev = this.next = null; }
+                }
+        
+                class LRUCache {
+                  constructor(capacity) {
+                    this.capacity = capacity;
+                    this.map = new Map();
+                    // Sentinel nodes eliminate null checks
+                    this.head = new LRUNode(0, 0);  // MRU side
+                    this.tail = new LRUNode(0, 0);  // LRU side
+                    this.head.next = this.tail;
+                    this.tail.prev = this.head;
+                  }
+        
+                  get(key) {
+                    if (!this.map.has(key)) return -1;
+                    const node = this.map.get(key);
+                    this._remove(node);
+                    this._insertFront(node);
+                    return node.val;
+                  }
+        
+                  put(key, val) {
+                    if (this.map.has(key)) this._remove(this.map.get(key));
+                    const node = new LRUNode(key, val);
+                    this.map.set(key, node);
+                    this._insertFront(node);
+                    if (this.map.size &gt; this.capacity) {
+                      const lru = this.tail.prev;
+                      this._remove(lru);
+                      this.map.delete(lru.key);
+                    }
+                  }
+        
+                  _remove(node) {
+                    node.prev.next = node.next;
+                    node.next.prev = node.prev;
+                  }
+        
+                  _insertFront(node) {
+                    node.next = this.head.next;
+                    node.prev = this.head;
+                    this.head.next.prev = node;
+                    this.head.next = node;
+                  }
+                }
+                // Time: O(1) get and put | Space: O(capacity)</code></pre>
+        
+                  <div class="callout callout-info">
+                    <strong style="color:#f1f5f9;">JavaScript Map shortcut:</strong> JavaScript's <code>Map</code> preserves insertion order. You can implement LRU in 5 lines by deleting and re-inserting on access — the Map's first key is always the LRU. This is acceptable in interviews as long as you explain <em>why</em> it works.
+                  </div>
+                </section>
+
+        <section class="section" id="dsa-trees">
+                  <div class="section-header">
+                    <span class="section-tag">DSA</span>
+                    <h2>Trees</h2>
+                  </div>
+        
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:24px;">
+                    Trees underpin databases (B-trees), file systems, compilers (ASTs), and autocomplete (Trie). The critical skill is choosing between <strong style="color:#68d391;">DFS variants</strong> (preorder/inorder/postorder) and <strong style="color:#68d391;">BFS</strong> (level-by-level). Most tree problems reduce to one of these traversals with additional bookkeeping. Postorder DFS — computing children before parents — solves the majority of subtree property problems.
+                  </p>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">Tree Node &amp; Traversals</h3>
+                  <pre><code class="language-javascript">class TreeNode {
+                  constructor(val, left = null, right = null) {
+                    this.val = val; this.left = left; this.right = right;
+                  }
+                }
+        
+                // ─── Inorder — sorted output for BST — O(n), O(h) ───
+                function inorder(root) {
+                  const result = [];
+                  function dfs(node) {
+                    if (!node) return;
+                    dfs(node.left); result.push(node.val); dfs(node.right);
+                  }
+                  dfs(root); return result;
+                }
+        
+                // ─── Iterative Inorder — avoids call-stack depth limit — O(n), O(h) ───
+                function inorderIterative(root) {
+                  const result = [], stack = [];
+                  let curr = root;
+                  while (curr || stack.length) {
+                    while (curr) { stack.push(curr); curr = curr.left; }
+                    curr = stack.pop();
+                    result.push(curr.val);
+                    curr = curr.right;
+                  }
+                  return result;
+                }
+        
+                // ─── BFS Level Order — O(n), O(w) where w = max width ───
+                function levelOrder(root) {
+                  if (!root) return [];
+                  const result = [], queue = [root];
+                  while (queue.length) {
+                    const level = [], size = queue.length;
+                    for (let i = 0; i &lt; size; i++) {
+                      const node = queue.shift();
+                      level.push(node.val);
+                      if (node.left)  queue.push(node.left);
+                      if (node.right) queue.push(node.right);
+                    }
+                    result.push(level);
+                  }
+                  return result;
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">BST Operations</h3>
+                  <pre><code class="language-javascript">// ─── Validate BST — O(n), O(h) ───
+                // Must pass min/max bounds — not just compare with direct children
+                function isValidBST(root, min = -Infinity, max = Infinity) {
+                  if (!root) return true;
+                  if (root.val &lt;= min || root.val &gt;= max) return false;
+                  return isValidBST(root.left, min, root.val)
+                      && isValidBST(root.right, root.val, max);
+                }
+        
+                // ─── Kth Smallest in BST — O(h + k), O(h) ───
+                function kthSmallest(root, k) {
+                  const stack = [];
+                  let curr = root, count = 0;
+                  while (curr || stack.length) {
+                    while (curr) { stack.push(curr); curr = curr.left; }
+                    curr = stack.pop();
+                    if (++count === k) return curr.val;
+                    curr = curr.right;
+                  }
+                }
+        
+                // ─── BST Insert — O(h) ───
+                function insertBST(root, val) {
+                  if (!root) return new TreeNode(val);
+                  if (val &lt; root.val) root.left  = insertBST(root.left,  val);
+                  else                root.right = insertBST(root.right, val);
+                  return root;
+                }
+        
+                // ─── BST Delete — O(h) ───
+                function deleteBST(root, key) {
+                  if (!root) return null;
+                  if (key &lt; root.val)      root.left  = deleteBST(root.left,  key);
+                  else if (key &gt; root.val) root.right = deleteBST(root.right, key);
+                  else {
+                    if (!root.left)  return root.right;
+                    if (!root.right) return root.left;
+                    // Two children: replace with inorder successor (min of right subtree)
+                    let succ = root.right;
+                    while (succ.left) succ = succ.left;
+                    root.val = succ.val;
+                    root.right = deleteBST(root.right, succ.val);
+                  }
+                  return root;
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Classic Tree Problems</h3>
+                  <pre><code class="language-javascript">// ─── Max Depth — O(n), O(h) ───
+                const maxDepth = root =>
+                  !root ? 0 : 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+        
+                // ─── Diameter of Binary Tree — O(n), O(h) ───
+                function diameterOfBinaryTree(root) {
+                  let diameter = 0;
+                  function height(node) {
+                    if (!node) return 0;
+                    const l = height(node.left), r = height(node.right);
+                    diameter = Math.max(diameter, l + r);
+                    return 1 + Math.max(l, r);
+                  }
+                  height(root);
+                  return diameter;
+                }
+        
+                // ─── Lowest Common Ancestor — O(n), O(h) ───
+                function lowestCommonAncestor(root, p, q) {
+                  if (!root || root === p || root === q) return root;
+                  const left  = lowestCommonAncestor(root.left,  p, q);
+                  const right = lowestCommonAncestor(root.right, p, q);
+                  return left && right ? root : left || right;
+                }
+        
+                // ─── Path Sum II — O(n), O(h) space ───
+                function pathSum(root, target) {
+                  const result = [];
+                  function dfs(node, rem, path) {
+                    if (!node) return;
+                    path.push(node.val);
+                    if (!node.left && !node.right && rem === node.val) result.push([...path]);
+                    dfs(node.left,  rem - node.val, path);
+                    dfs(node.right, rem - node.val, path);
+                    path.pop();  // backtrack
+                  }
+                  dfs(root, target, []);
+                  return result;
+                }
+        
+                // ─── Serialize / Deserialize — O(n), O(n) ───
+                function serialize(root) {
+                  if (!root) return 'null';
+                  return `${root.val},${serialize(root.left)},${serialize(root.right)}`;
+                }
+                function deserialize(data) {
+                  const vals = data.split(',');
+                  let i = 0;
+                  function build() {
+                    if (vals[i] === 'null') { i++; return null; }
+                    const node = new TreeNode(parseInt(vals[i++]));
+                    node.left  = build();
+                    node.right = build();
+                    return node;
+                  }
+                  return build();
+                }
+        
+                // ─── Right Side View — O(n), O(w) ───
+                function rightSideView(root) {
+                  if (!root) return [];
+                  const result = [], queue = [root];
+                  while (queue.length) {
+                    const size = queue.length;
+                    for (let i = 0; i &lt; size; i++) {
+                      const node = queue.shift();
+                      if (i === size - 1) result.push(node.val);
+                      if (node.left)  queue.push(node.left);
+                      if (node.right) queue.push(node.right);
+                    }
+                  }
+                  return result;
+                }
+        
+                // ─── Binary Tree Maximum Path Sum — O(n), O(h) ───
+                // Path can start and end at any node; nodes can have negative values
+                function maxPathSum(root) {
+                  let maxSum = -Infinity;
+                  function gain(node) {
+                    if (!node) return 0;
+                    const leftGain  = Math.max(gain(node.left),  0);  // ignore if negative
+                    const rightGain = Math.max(gain(node.right), 0);
+                    maxSum = Math.max(maxSum, node.val + leftGain + rightGain);
+                    return node.val + Math.max(leftGain, rightGain);  // can only extend one side upward
+                  }
+                  gain(root);
+                  return maxSum;
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Trie (Prefix Tree)</h3>
+                  <pre><code class="language-javascript">class TrieNode {
+                  constructor() { this.children = {}; this.isEnd = false; }
+                }
+        
+                class Trie {
+                  constructor() { this.root = new TrieNode(); }
+        
+                  insert(word) {  // O(m)
+                    let node = this.root;
+                    for (const ch of word) {
+                      if (!node.children[ch]) node.children[ch] = new TrieNode();
+                      node = node.children[ch];
+                    }
+                    node.isEnd = true;
+                  }
+        
+                  search(word) {  // O(m) — exact match
+                    let node = this.root;
+                    for (const ch of word) {
+                      if (!node.children[ch]) return false;
+                      node = node.children[ch];
+                    }
+                    return node.isEnd;
+                  }
+        
+                  startsWith(prefix) {  // O(m)
+                    let node = this.root;
+                    for (const ch of prefix) {
+                      if (!node.children[ch]) return false;
+                      node = node.children[ch];
+                    }
+                    return true;
+                  }
+                }
+        
+                // ─── Word Search II — find all board words in dictionary ───
+                // Build trie from word list, DFS on board using trie to prune paths
+                // Time: O(4 * 3^(L-1) * mn) — far better than brute force per-word search
+                function findWords(board, words) {
+                  const trie = new Trie();
+                  for (const w of words) trie.insert(w);
+        
+                  const m = board.length, n = board[0].length;
+                  const result = new Set();
+        
+                  function dfs(i, j, node, path) {
+                    if (i &lt; 0 || i &gt;= m || j &lt; 0 || j &gt;= n) return;
+                    const ch = board[i][j];
+                    if (ch === '#' || !node.children[ch]) return;
+        
+                    const next = node.children[ch];
+                    path += ch;
+                    if (next.isEnd) result.add(path);
+        
+                    board[i][j] = '#';  // mark visited
+                    dfs(i+1,j,next,path); dfs(i-1,j,next,path);
+                    dfs(i,j+1,next,path); dfs(i,j-1,next,path);
+                    board[i][j] = ch;   // restore
+                  }
+        
+                  for (let i = 0; i &lt; m; i++)
+                    for (let j = 0; j &lt; n; j++)
+                      dfs(i, j, trie.root, '');
+        
+                  return [...result];
+                }</code></pre>
+        
+                  <div class="callout callout-info">
+                    <strong style="color:#f1f5f9;">DFS vs BFS decision:</strong> BFS for shortest path, minimum depth, level-order output. DFS for path existence, all paths, subtree properties, backtracking. Postorder DFS (compute children before parent) solves height, diameter, path sum, and balance checks.
+                  </div>
+                </section>
+
+        <section class="section" id="dsa-graphs">
+                  <div class="section-header">
+                    <span class="section-tag">DSA</span>
+                    <h2>Graphs</h2>
+                  </div>
+        
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:24px;">
+                    Graphs are the most expressive data structure — any problem involving relationships, dependencies, or networks maps to a graph. The challenge is <strong style="color:#e2e8f0;">recognizing</strong> when a problem is a graph problem (word ladders, course schedules, island counting) and selecting the right algorithm. Master BFS, DFS, Dijkstra's, topological sort, and Union-Find.
+                  </p>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">Graph Representation</h3>
+                  <pre><code class="language-javascript">// ─── Adjacency List — O(V + E) space — preferred for sparse graphs ───
+                class Graph {
+                  constructor() { this.adj = new Map(); }
+                  addEdge(u, v) {
+                    if (!this.adj.has(u)) this.adj.set(u, []);
+                    if (!this.adj.has(v)) this.adj.set(v, []);
+                    this.adj.get(u).push(v);
+                    this.adj.get(v).push(u);  // remove for directed graph
+                  }
+                  neighbors(v) { return this.adj.get(v) || []; }
+                }
+        
+                // Weighted adjacency list:  adj[u] = [{ node: v, weight: w }, ...]
+                // Adjacency Matrix:         matrix[u][v] = weight (O(V²) space)
+                // Edge List:                [[u,v,w], ...] — input format for Kruskal's MST</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">BFS, DFS &amp; Grid Problems</h3>
+                  <pre><code class="language-javascript">// ─── BFS Shortest Path (unweighted) — O(V + E), O(V) ───
+                function bfsShortestPath(adj, start, end) {
+                  const visited = new Set([start]);
+                  const queue = [[start, 0]];
+                  while (queue.length) {
+                    const [node, dist] = queue.shift();
+                    if (node === end) return dist;
+                    for (const neighbor of (adj.get(node) || [])) {
+                      if (!visited.has(neighbor)) {
+                        visited.add(neighbor);
+                        queue.push([neighbor, dist + 1]);
+                      }
+                    }
+                  }
+                  return -1;
+                }
+        
+                // ─── Number of Islands — O(mn), O(mn) ───
+                function numIslands(grid) {
+                  let count = 0;
+                  const m = grid.length, n = grid[0].length;
+                  function dfs(i, j) {
+                    if (i &lt; 0 || i &gt;= m || j &lt; 0 || j &gt;= n || grid[i][j] !== '1') return;
+                    grid[i][j] = '0';  // mark visited
+                    dfs(i+1,j); dfs(i-1,j); dfs(i,j+1); dfs(i,j-1);
+                  }
+                  for (let i = 0; i &lt; m; i++)
+                    for (let j = 0; j &lt; n; j++)
+                      if (grid[i][j] === '1') { dfs(i,j); count++; }
+                  return count;
+                }
+        
+                // ─── Pacific Atlantic Water Flow — O(mn) ───
+                // BFS/DFS from ocean borders inward; find cells reachable from both
+                function pacificAtlantic(heights) {
+                  const m = heights.length, n = heights[0].length;
+                  const dirs = [[0,1],[0,-1],[1,0],[-1,0]];
+        
+                  function bfs(starts) {
+                    const visited = new Set(starts.map(([r,c]) => r*n+c));
+                    const queue = [...starts];
+                    while (queue.length) {
+                      const [r, c] = queue.shift();
+                      for (const [dr, dc] of dirs) {
+                        const nr = r+dr, nc = c+dc;
+                        const key = nr*n+nc;
+                        if (nr &gt;= 0 && nr &lt; m && nc &gt;= 0 && nc &lt; n
+                            && !visited.has(key)
+                            && heights[nr][nc] &gt;= heights[r][c]) {
+                          visited.add(key);
+                          queue.push([nr, nc]);
+                        }
+                      }
+                    }
+                    return visited;
+                  }
+        
+                  const pacific  = [], atlantic = [];
+                  for (let r = 0; r &lt; m; r++) { pacific.push([r,0]); atlantic.push([r,n-1]); }
+                  for (let c = 0; c &lt; n; c++) { pacific.push([0,c]); atlantic.push([m-1,c]); }
+        
+                  const pSet = bfs(pacific), aSet = bfs(atlantic);
+                  const result = [];
+                  for (let r = 0; r &lt; m; r++)
+                    for (let c = 0; c &lt; n; c++)
+                      if (pSet.has(r*n+c) && aSet.has(r*n+c)) result.push([r,c]);
+                  return result;
+                }
+        
+                // ─── Clone Graph — O(V + E), O(V) ───
+                function cloneGraph(node) {
+                  if (!node) return null;
+                  const map = new Map();
+                  function dfs(n) {
+                    if (map.has(n)) return map.get(n);
+                    const clone = { val: n.val, neighbors: [] };
+                    map.set(n, clone);
+                    for (const nb of n.neighbors) clone.neighbors.push(dfs(nb));
+                    return clone;
+                  }
+                  return dfs(node);
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Topological Sort</h3>
+                  <pre><code class="language-javascript">// ─── Kahn's Algorithm (BFS topological sort) — O(V + E), O(V) ───
+                function topoSort(n, prerequisites) {
+                  const adj = Array.from({length: n}, () => []);
+                  const inDegree = new Array(n).fill(0);
+        
+                  for (const [a, b] of prerequisites) { adj[b].push(a); inDegree[a]++; }
+        
+                  const queue = [];
+                  for (let i = 0; i &lt; n; i++) if (inDegree[i] === 0) queue.push(i);
+        
+                  const order = [];
+                  while (queue.length) {
+                    const node = queue.shift();
+                    order.push(node);
+                    for (const nb of adj[node])
+                      if (--inDegree[nb] === 0) queue.push(nb);
+                  }
+                  return order.length === n ? order : [];  // [] means cycle exists
+                }
+        
+                // ─── Course Schedule II — O(V + E) ───
+                function findOrder(numCourses, prerequisites) {
+                  return topoSort(numCourses, prerequisites);
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Dijkstra's Shortest Path &amp; Union-Find</h3>
+                  <pre><code class="language-javascript">// ─── Dijkstra (min-heap simulation) — O((V+E) log V), O(V) ───
+                function dijkstra(n, edges, src) {
+                  const adj = Array.from({length: n}, () => []);
+                  for (const [u, v, w] of edges) { adj[u].push([v,w]); adj[v].push([u,w]); }
+        
+                  const dist = new Array(n).fill(Infinity);
+                  dist[src] = 0;
+                  // Priority queue as sorted array (use real heap for production)
+                  const pq = [[0, src]];
+        
+                  while (pq.length) {
+                    pq.sort((a,b) => a[0]-b[0]);
+                    const [d, u] = pq.shift();
+                    if (d &gt; dist[u]) continue;  // stale entry
+                    for (const [v, w] of adj[u]) {
+                      if (dist[u] + w &lt; dist[v]) {
+                        dist[v] = dist[u] + w;
+                        pq.push([dist[v], v]);
+                      }
+                    }
+                  }
+                  return dist;
+                }
+        
+                // ─── Union-Find with path compression + union by rank — O(alpha(n)) per op ───
+                class UnionFind {
+                  constructor(n) {
+                    this.parent = Array.from({length: n}, (_, i) => i);
+                    this.rank   = new Array(n).fill(0);
+                    this.count  = n;
+                  }
+                  find(x) {
+                    if (this.parent[x] !== x) this.parent[x] = this.find(this.parent[x]);
+                    return this.parent[x];
+                  }
+                  union(x, y) {
+                    const rx = this.find(x), ry = this.find(y);
+                    if (rx === ry) return false;
+                    if (this.rank[rx] &lt; this.rank[ry]) this.parent[rx] = ry;
+                    else if (this.rank[rx] &gt; this.rank[ry]) this.parent[ry] = rx;
+                    else { this.parent[ry] = rx; this.rank[rx]++; }
+                    this.count--;
+                    return true;
+                  }
+                }
+        
+                // ─── Redundant Connection — O(E * alpha(V)) ───
+                function findRedundantConnection(edges) {
+                  const uf = new UnionFind(edges.length + 1);
+                  for (const [u, v] of edges)
+                    if (!uf.union(u, v)) return [u, v];
+                }
+        
+                // ─── Word Ladder — O(n * m^2) — BFS on implicit graph ───
+                function ladderLength(beginWord, endWord, wordList) {
+                  const wordSet = new Set(wordList);
+                  if (!wordSet.has(endWord)) return 0;
+                  const queue = [[beginWord, 1]], visited = new Set([beginWord]);
+                  while (queue.length) {
+                    const [word, level] = queue.shift();
+                    for (let i = 0; i &lt; word.length; i++) {
+                      for (let c = 97; c &lt;= 122; c++) {
+                        const next = word.slice(0,i) + String.fromCharCode(c) + word.slice(i+1);
+                        if (next === endWord) return level + 1;
+                        if (wordSet.has(next) && !visited.has(next)) {
+                          visited.add(next); queue.push([next, level+1]);
+                        }
+                      }
+                    }
+                  }
+                  return 0;
+                }</code></pre>
+        
+                  <div class="feature-grid" style="grid-template-columns:repeat(2,1fr);margin-top:24px;">
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:10px;">Algorithm Selection</h4>
+                      <ul style="color:#94a3b8;font-size:13px;line-height:1.8;padding-left:18px;">
+                        <li><strong style="color:#68d391;">BFS</strong> — unweighted shortest path</li>
+                        <li><strong style="color:#68d391;">Dijkstra</strong> — non-negative weighted shortest path</li>
+                        <li><strong style="color:#f6e05e;">Bellman-Ford</strong> — negative weights O(VE)</li>
+                        <li><strong style="color:#f6e05e;">Floyd-Warshall</strong> — all-pairs O(V³)</li>
+                        <li><strong style="color:#68d391;">Kahn's / DFS topo</strong> — DAG ordering, cycle detection</li>
+                        <li><strong style="color:#68d391;">Union-Find</strong> — connected components, MST</li>
+                      </ul>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:10px;">Complexity Reference</h4>
+                      <ul style="color:#94a3b8;font-size:13px;line-height:1.8;padding-left:18px;">
+                        <li>BFS/DFS: <span style="color:#68d391;">O(V + E)</span></li>
+                        <li>Dijkstra (heap): <span style="color:#68d391;">O((V+E) log V)</span></li>
+                        <li>Bellman-Ford: <span style="color:#f6e05e;">O(VE)</span></li>
+                        <li>Floyd-Warshall: <span style="color:#fc8181;">O(V³)</span></li>
+                        <li>Union-Find: <span style="color:#68d391;">O(α(n)) ≈ O(1)</span></li>
+                        <li>Kruskal's MST: <span style="color:#68d391;">O(E log E)</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </section>
+
+        <section class="section" id="dsa-dynamic-programming">
+                  <div class="section-header">
+                    <span class="section-tag">DSA</span>
+                    <h2>Dynamic Programming</h2>
+                  </div>
+        
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:24px;">
+                    Dynamic Programming solves problems by breaking them into <strong style="color:#e2e8f0;">overlapping subproblems</strong> and storing results to avoid recomputation. The two key properties are <strong style="color:#68d391;">optimal substructure</strong> (optimal solution contains optimal solutions to subproblems) and <strong style="color:#68d391;">overlapping subproblems</strong> (same subproblems recur). DP converts exponential brute force to polynomial time.
+                  </p>
+        
+                  <div class="feature-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:24px;">
+                    <div class="feature-card" style="border-left:3px solid #68d391;">
+                      <h4 style="color:#68d391;margin-bottom:8px;">Top-Down: Memoization</h4>
+                      <p style="color:#94a3b8;font-size:14px;line-height:1.6;">Start with recursion. Cache results in a map/array. Natural to write — follows the recurrence relation directly. Lazy: only computes needed subproblems.</p>
+                      <ul style="color:#94a3b8;font-size:13px;line-height:1.8;padding-left:18px;margin-top:8px;">
+                        <li>Easy to derive from brute-force recursion</li>
+                        <li>Call stack overhead — may hit stack limit for large n</li>
+                        <li>Space: O(n) cache + O(n) call stack</li>
+                      </ul>
+                    </div>
+                    <div class="feature-card" style="border-left:3px solid #60a5fa;">
+                      <h4 style="color:#60a5fa;margin-bottom:8px;">Bottom-Up: Tabulation</h4>
+                      <p style="color:#94a3b8;font-size:14px;line-height:1.6;">Fill a table iteratively from base cases up. No recursion overhead. Often allows space optimization by discarding old rows.</p>
+                      <ul style="color:#94a3b8;font-size:13px;line-height:1.8;padding-left:18px;margin-top:8px;">
+                        <li>No stack overflow risk</li>
+                        <li>Can optimize space to O(1) or O(n) from O(n²)</li>
+                        <li>Requires figuring out the correct fill order</li>
+                      </ul>
+                    </div>
+                  </div>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">1D DP Patterns</h3>
+                  <pre><code class="language-javascript">// ─── Fibonacci — Memoization vs Tabulation ───
+                // Brute force: O(2^n) | Memoization: O(n) time, O(n) space | Tabulation: O(n)/O(1)
+        
+                // Memoization (top-down)
+                function fibMemo(n, memo = {}) {
+                  if (n <= 1) return n;
+                  if (memo[n]) return memo[n];
+                  return memo[n] = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
+                }
+        
+                // Tabulation with space optimization (only need last two values)
+                function fibDP(n) {
+                  if (n <= 1) return n;
+                  let prev2 = 0, prev1 = 1;
+                  for (let i = 2; i <= n; i++) {
+                    [prev2, prev1] = [prev1, prev1 + prev2];
+                  }
+                  return prev1;
+                }
+        
+                // ─── Climbing Stairs (same as Fibonacci) — O(n), O(1) ───
+                function climbStairs(n) {
+                  if (n <= 2) return n;
+                  let a = 1, b = 2;
+                  for (let i = 3; i <= n; i++) [a, b] = [b, a + b];
+                  return b;
+                }
+        
+                // ─── House Robber — O(n), O(1) ───
+                // Max sum of non-adjacent elements
+                function rob(nums) {
+                  let prev2 = 0, prev1 = 0;
+                  for (const num of nums) {
+                    const curr = Math.max(prev1, prev2 + num);
+                    prev2 = prev1;
+                    prev1 = curr;
+                  }
+                  return prev1;
+                }
+        
+                // ─── House Robber II (circular array) — O(n), O(1) ───
+                // Cannot rob first AND last. Run linear rob on [0..n-2] and [1..n-1], take max.
+                function robCircular(nums) {
+                  if (nums.length === 1) return nums[0];
+                  function robLinear(arr) {
+                    let prev2 = 0, prev1 = 0;
+                    for (const n of arr) { const c = Math.max(prev1, prev2+n); prev2=prev1; prev1=c; }
+                    return prev1;
+                  }
+                  return Math.max(
+                    robLinear(nums.slice(0, -1)),  // exclude last house
+                    robLinear(nums.slice(1))       // exclude first house
+                  );
+                }
+        
+                // ─── Longest Increasing Subsequence — O(n log n), O(n) ───
+                // Patience sorting / binary search for optimal O(n log n) solution
+                function lengthOfLIS(nums) {
+                  const tails = [];  // tails[i] = smallest tail of increasing subseq of length i+1
+                  for (const num of nums) {
+                    let lo = 0, hi = tails.length;
+                    while (lo < hi) {  // binary search for leftmost tail >= num
+                      const mid = (lo + hi) >> 1;
+                      if (tails[mid] < num) lo = mid + 1;
+                      else hi = mid;
+                    }
+                    tails[lo] = num;  // extend or replace
+                  }
+                  return tails.length;
+                }
+                // O(n^2) DP approach: dp[i] = LIS ending at index i
+                // for i: for j<i: if nums[j]<nums[i]: dp[i] = max(dp[i], dp[j]+1)
+        
+                // ─── Coin Change (minimum coins) — O(n * amount), O(amount) ───
+                function coinChange(coins, amount) {
+                  const dp = new Array(amount + 1).fill(Infinity);
+                  dp[0] = 0;
+                  for (let a = 1; a <= amount; a++) {
+                    for (const coin of coins) {
+                      if (coin <= a) dp[a] = Math.min(dp[a], dp[a - coin] + 1);
+                    }
+                  }
+                  return dp[amount] === Infinity ? -1 : dp[amount];
+                }
+        
+                // ─── Coin Change II (number of ways) — O(n * amount), O(amount) ───
+                // Order matters for coin change I (min coins) but not II (combinations)
+                function change(amount, coins) {
+                  const dp = new Array(amount + 1).fill(0);
+                  dp[0] = 1;  // one way to make amount 0: use no coins
+                  for (const coin of coins) {          // outer loop = coins (avoids counting permutations)
+                    for (let a = coin; a <= amount; a++) {
+                      dp[a] += dp[a - coin];
+                    }
+                  }
+                  return dp[amount];
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">2D DP Patterns</h3>
+                  <pre><code class="language-javascript">// ─── Longest Common Subsequence — O(mn), O(mn) ───
+                // dp[i][j] = LCS of text1[0..i-1] and text2[0..j-1]
+                function longestCommonSubsequence(text1, text2) {
+                  const m = text1.length, n = text2.length;
+                  const dp = Array.from({length: m+1}, () => new Array(n+1).fill(0));
+        
+                  for (let i = 1; i <= m; i++) {
+                    for (let j = 1; j <= n; j++) {
+                      if (text1[i-1] === text2[j-1]) {
+                        dp[i][j] = dp[i-1][j-1] + 1;          // extend LCS
+                      } else {
+                        dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);  // skip one char
+                      }
+                    }
+                  }
+                  return dp[m][n];
+                }
+                // Space optimization: only need previous row → O(n) space
+        
+                // ─── Edit Distance (Levenshtein) — O(mn), O(mn) ───
+                function minDistance(word1, word2) {
+                  const m = word1.length, n = word2.length;
+                  // dp[i][j] = min ops to convert word1[0..i-1] to word2[0..j-1]
+                  const dp = Array.from({length: m+1}, (_, i) => {
+                    const row = new Array(n+1).fill(0);
+                    row[0] = i;  // delete i chars from word1
+                    return row;
+                  });
+                  for (let j = 0; j <= n; j++) dp[0][j] = j;  // insert j chars
+        
+                  for (let i = 1; i <= m; i++) {
+                    for (let j = 1; j <= n; j++) {
+                      if (word1[i-1] === word2[j-1]) {
+                        dp[i][j] = dp[i-1][j-1];  // no operation needed
+                      } else {
+                        dp[i][j] = 1 + Math.min(
+                          dp[i-1][j],    // delete from word1
+                          dp[i][j-1],    // insert into word1
+                          dp[i-1][j-1]   // replace
+                        );
+                      }
+                    }
+                  }
+                  return dp[m][n];
+                }
+        
+                // ─── 0/1 Knapsack — O(n * W), O(W) space-optimized ───
+                function knapsack(weights, values, W) {
+                  const n = weights.length;
+                  const dp = new Array(W + 1).fill(0);
+        
+                  for (let i = 0; i < n; i++) {
+                    // Traverse RIGHT to LEFT to avoid using item i twice (0/1 constraint)
+                    for (let w = W; w >= weights[i]; w--) {
+                      dp[w] = Math.max(dp[w], dp[w - weights[i]] + values[i]);
+                    }
+                  }
+                  return dp[W];
+                }
+                // Unbounded knapsack (each item usable multiple times): traverse left to right
+        
+                // ─── Unique Paths — O(mn), O(n) ───
+                function uniquePaths(m, n) {
+                  const dp = new Array(n).fill(1);  // first row all 1s
+                  for (let i = 1; i < m; i++) {
+                    for (let j = 1; j < n; j++) {
+                      dp[j] += dp[j-1];  // dp[j] = from above + from left
+                    }
+                  }
+                  return dp[n-1];
+                }
+        
+                // ─── Partition Equal Subset Sum — O(n * sum), O(sum) ───
+                // Subset-sum variant: can we partition into two equal-sum subsets?
+                function canPartition(nums) {
+                  const total = nums.reduce((a,b) => a+b, 0);
+                  if (total % 2 !== 0) return false;
+                  const target = total / 2;
+        
+                  const dp = new Array(target + 1).fill(false);
+                  dp[0] = true;
+        
+                  for (const num of nums) {
+                    for (let j = target; j >= num; j--) {
+                      dp[j] = dp[j] || dp[j - num];
+                    }
+                  }
+                  return dp[target];
+                }
+        
+                // ─── Palindromic Substrings (count) — O(n^2), O(1) ───
+                function countSubstrings(s) {
+                  let count = 0;
+                  function expand(l, r) {
+                    while (l >= 0 && r < s.length && s[l] === s[r]) { count++; l--; r++; }
+                  }
+                  for (let i = 0; i < s.length; i++) {
+                    expand(i, i);   // odd length
+                    expand(i, i+1); // even length
+                  }
+                  return count;
+                }</code></pre>
+        
+                  <div class="callout callout-info">
+                    <strong style="color:#f1f5f9;">DP identification checklist:</strong> (1) "minimum/maximum/count ways" — strong DP signal. (2) Can the problem be broken into smaller subproblems with overlapping structure? (3) Is a greedy approach provably optimal, or do you need to explore multiple choices? If all three are yes, reach for DP. Start with the recurrence relation — draw the state transition — then implement memoization first, optimize to tabulation second.
+                  </div>
+                </section>
+
+        <section class="section" id="dsa-sorting">
+                  <div class="section-header">
+                    <span class="section-tag">DSA</span>
+                    <h2>Sorting Algorithms</h2>
+                  </div>
+        
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:24px;">
+                    Knowing <em>which</em> sort to use — and why — signals engineering maturity. Merge sort for stability and guaranteed O(n log n), quicksort for cache-friendly in-place average performance, heap sort when O(1) auxiliary space is required, counting/radix sort when keys are bounded integers and you need O(n). JavaScript's built-in <code>Array.prototype.sort</code> uses TimSort (a hybrid merge/insertion sort) — O(n log n) worst case, O(n) best case on nearly-sorted data.
+                  </p>
+        
+                  <div class="feature-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px;">
+                    <div class="feature-card">
+                      <h4 style="color:#68d391;margin-bottom:6px;">Merge Sort</h4>
+                      <ul style="color:#94a3b8;font-size:12px;line-height:1.7;padding-left:14px;">
+                        <li>Time: O(n log n) always</li>
+                        <li>Space: O(n)</li>
+                        <li>Stable: yes</li>
+                        <li>Best for: linked lists, external sort, guaranteed performance</li>
+                      </ul>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#60a5fa;margin-bottom:6px;">Quick Sort</h4>
+                      <ul style="color:#94a3b8;font-size:12px;line-height:1.7;padding-left:14px;">
+                        <li>Time: O(n log n) avg, O(n²) worst</li>
+                        <li>Space: O(log n) avg</li>
+                        <li>Stable: no (standard)</li>
+                        <li>Best for: in-place, cache-friendly, general purpose</li>
+                      </ul>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f6ad55;margin-bottom:6px;">Heap Sort</h4>
+                      <ul style="color:#94a3b8;font-size:12px;line-height:1.7;padding-left:14px;">
+                        <li>Time: O(n log n) always</li>
+                        <li>Space: O(1)</li>
+                        <li>Stable: no</li>
+                        <li>Best for: constant-space guarantee required</li>
+                      </ul>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f6e05e;margin-bottom:6px;">Counting / Radix</h4>
+                      <ul style="color:#94a3b8;font-size:12px;line-height:1.7;padding-left:14px;">
+                        <li>Time: O(n + k) / O(nk)</li>
+                        <li>Space: O(k)</li>
+                        <li>Stable: yes</li>
+                        <li>Best for: bounded integers, beats comparison lower bound</li>
+                      </ul>
+                    </div>
+                  </div>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">Merge Sort</h3>
+                  <pre><code class="language-javascript">// ─── Merge Sort — O(n log n), O(n) space ───
+                function mergeSort(arr) {
+                  if (arr.length <= 1) return arr;
+                  const mid = arr.length >> 1;
+                  return merge(mergeSort(arr.slice(0, mid)), mergeSort(arr.slice(mid)));
+                }
+        
+                function merge(left, right) {
+                  const result = [];
+                  let i = 0, j = 0;
+                  while (i < left.length && j < right.length) {
+                    // <= preserves stability (left wins ties — maintains original order)
+                    if (left[i] <= right[j]) result.push(left[i++]);
+                    else                      result.push(right[j++]);
+                  }
+                  return result.concat(left.slice(i), right.slice(j));
+                }
+        
+                // ─── In-place Merge Sort (avoids slice allocation) ───
+                function mergeSortIP(arr, lo = 0, hi = arr.length - 1) {
+                  if (lo >= hi) return;
+                  const mid = (lo + hi) >> 1;
+                  mergeSortIP(arr, lo, mid);
+                  mergeSortIP(arr, mid + 1, hi);
+                  // Merge [lo..mid] and [mid+1..hi]
+                  const left  = arr.slice(lo, mid + 1);
+                  const right = arr.slice(mid + 1, hi + 1);
+                  let i = 0, j = 0, k = lo;
+                  while (i < left.length && j < right.length)
+                    arr[k++] = left[i] <= right[j] ? left[i++] : right[j++];
+                  while (i < left.length)  arr[k++] = left[i++];
+                  while (j < right.length) arr[k++] = right[j++];
+                }
+                // Recurrence: T(n) = 2T(n/2) + O(n)  →  Master Theorem Case 2  →  O(n log n)</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Quick Sort &amp; Quick Select</h3>
+                  <pre><code class="language-javascript">// ─── Quick Sort (Lomuto partition, random pivot) — O(n log n) avg, O(n²) worst ───
+                function quickSort(arr, lo = 0, hi = arr.length - 1) {
+                  if (lo >= hi) return;
+                  const p = partition(arr, lo, hi);
+                  quickSort(arr, lo, p - 1);
+                  quickSort(arr, p + 1, hi);
+                }
+        
+                function partition(arr, lo, hi) {
+                  // Random pivot selection prevents O(n²) on already-sorted input
+                  const rand = lo + Math.floor(Math.random() * (hi - lo + 1));
+                  [arr[rand], arr[hi]] = [arr[hi], arr[rand]];
+        
+                  const pivot = arr[hi];
+                  let i = lo - 1;
+                  for (let j = lo; j < hi; j++) {
+                    if (arr[j] <= pivot) { i++; [arr[i], arr[j]] = [arr[j], arr[i]]; }
+                  }
+                  [arr[i+1], arr[hi]] = [arr[hi], arr[i+1]];
+                  return i + 1;
+                }
+        
+                // ─── Quick Select — Kth Largest — O(n) avg, O(1) space ───
+                // Same partition logic but only recurse into relevant half
+                function findKthLargest(nums, k) {
+                  const target = nums.length - k;  // kth largest = (n-k)th smallest
+                  function qs(lo, hi) {
+                    const pivot = nums[hi];
+                    let i = lo;
+                    for (let j = lo; j < hi; j++)
+                      if (nums[j] <= pivot) { [nums[i], nums[j]] = [nums[j], nums[i]]; i++; }
+                    [nums[i], nums[hi]] = [nums[hi], nums[i]];
+                    if (i === target) return nums[i];
+                    return i < target ? qs(i+1, hi) : qs(lo, i-1);
+                  }
+                  return qs(0, nums.length - 1);
+                  // Average O(n): n + n/2 + n/4 + ... = 2n geometric series
+                }</code></pre>
+        
+                  <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Heap Sort &amp; Non-Comparison Sorts</h3>
+                  <pre><code class="language-javascript">// ─── Heap Sort — O(n log n), O(1) ───
+                function heapSort(arr) {
+                  const n = arr.length;
+                  // Phase 1: Build max-heap bottom-up — O(n) total (sum of node heights)
+                  for (let i = Math.floor(n/2) - 1; i >= 0; i--) siftDown(arr, n, i);
+                  // Phase 2: Extract max n times — O(n log n) total
+                  for (let i = n - 1; i > 0; i--) {
+                    [arr[0], arr[i]] = [arr[i], arr[0]];  // move max to end
+                    siftDown(arr, i, 0);
+                  }
+                  return arr;
+                }
+        
+                function siftDown(arr, n, i) {
+                  while (true) {
+                    let largest = i;
+                    const l = 2*i+1, r = 2*i+2;
+                    if (l < n && arr[l] > arr[largest]) largest = l;
+                    if (r < n && arr[r] > arr[largest]) largest = r;
+                    if (largest === i) break;
+                    [arr[i], arr[largest]] = [arr[largest], arr[i]];
+                    i = largest;
+                  }
+                }
+        
+                // ─── Counting Sort — O(n + k), O(k) — only for non-negative integers ───
+                function countingSort(arr) {
+                  const max = Math.max(...arr);
+                  const count = new Array(max + 1).fill(0);
+                  for (const n of arr) count[n]++;
+                  return count.flatMap((c, i) => Array(c).fill(i));
+                }
+        
+                // ─── Sort Colors — Dutch National Flag — O(n), O(1) ───
+                // Three-way partition for array containing 0, 1, 2
+                function sortColors(nums) {
+                  let lo = 0, mid = 0, hi = nums.length - 1;
+                  while (mid <= hi) {
+                    if      (nums[mid] === 0) { [nums[lo++], nums[mid++]] = [nums[mid], nums[lo]]; }
+                    else if (nums[mid] === 1) { mid++; }
+                    else                      { [nums[mid], nums[hi--]] = [nums[hi], nums[mid]]; }
+                  }
+                }
+        
+                // ─── Binary Search — O(log n), O(1) ───
+                function binarySearch(arr, target) {
+                  let lo = 0, hi = arr.length - 1;
+                  while (lo <= hi) {
+                    const mid = lo + ((hi - lo) >> 1);  // avoids overflow vs (lo+hi)/2
+                    if (arr[mid] === target) return mid;
+                    if (arr[mid] < target)   lo = mid + 1;
+                    else                     hi = mid - 1;
+                  }
+                  return -1;
+                }
+        
+                // ─── Binary Search on Answer — powerful meta-pattern ───
+                // Predicate canAchieve(x): find smallest x where it's true
+                // Example: Koko Eating Bananas — O(n log(max))
+                function minEatingSpeed(piles, h) {
+                  let lo = 1, hi = Math.max(...piles);
+                  while (lo < hi) {
+                    const mid = (lo + hi) >> 1;
+                    const hours = piles.reduce((s, p) => s + Math.ceil(p / mid), 0);
+                    if (hours <= h) hi = mid;  // can eat all — try slower
+                    else            lo = mid + 1;
+                  }
+                  return lo;
+                }
+        
+                // ─── Search in Rotated Sorted Array — O(log n) ───
+                function searchRotated(nums, target) {
+                  let lo = 0, hi = nums.length - 1;
+                  while (lo <= hi) {
+                    const mid = (lo + hi) >> 1;
+                    if (nums[mid] === target) return mid;
+                    if (nums[lo] <= nums[mid]) {  // left half sorted
+                      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1;
+                      else lo = mid + 1;
+                    } else {                      // right half sorted
+                      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;
+                      else hi = mid - 1;
+                    }
+                  }
+                  return -1;
+                }</code></pre>
+        
+                  <div class="callout callout-info">
+                    <strong style="color:#f1f5f9;">Sorting algorithm selection:</strong> Default to built-in (TimSort) unless constrained. Implement merge sort for linked lists (no random access needed), quicksort for average-case in-place arrays, heap sort when space is critical. Counting/radix sort unlocks O(n) — but only when keys are bounded integers. Always mention the O(n log n) comparison-sort lower bound to demonstrate algorithmic awareness.
+                  </div>
+                </section>
+
+        <section class="section" id="dsa-interview">
+                  <div class="section-header">
+                    <span class="section-tag">Interview Prep</span>
+                    <h2>DSA Interview Q&amp;A</h2>
+                  </div>
+        
+                  <p style="color:#94a3b8;line-height:1.7;margin-bottom:24px;">
+                    These are the conceptual questions interviewers ask to probe depth of understanding — not just "can you code it" but "do you understand <em>why</em> it works, when to use it, and what the trade-offs are." Memorizing code is not enough; you must be able to reason about these from first principles.
+                  </p>
+        
+                  <div class="qa-list">
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q1: Why is hash map lookup O(1) average case, and when does it degrade to O(n)? How do you defend against that in production?</div>
+                      <div class="qa-answer">
+                        <p>A hash map achieves O(1) average lookup by computing a hash of the key, mapping it to a bucket index, and storing the value there. The average-case analysis assumes a <strong>uniform hash function</strong> that distributes keys evenly across buckets, keeping the <em>load factor</em> (n/buckets) bounded — typically below 0.75 in Java's HashMap and JavaScript V8's implementation.</p>
+                        <p style="margin-top:8px;">Degradation to <strong>O(n) occurs when all n keys hash to the same bucket</strong> — every lookup must scan a linked list or tree of length n. This can happen naturally with a bad hash function, or be deliberately triggered by an adversary (hash-flooding attacks) who crafts input keys that all collide.</p>
+                        <p style="margin-top:8px;">Defenses in production: (1) <strong>Randomized hash seeds</strong> — inject a random value into the hash computation at startup so an attacker cannot precompute colliding keys (Python, Ruby, Rust all do this by default). (2) <strong>Treified buckets</strong> — Java 8+ converts individual collision chains exceeding 8 elements to red-black trees, guaranteeing O(log n) worst-case even under collision attacks. (3) <strong>Better hash functions</strong> — SipHash, xxHash, or MurmurHash3 provide strong distribution and resist preimage attacks.</p>
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q2: What is the difference between DFS and BFS, and which should you use for finding the shortest path in an unweighted graph?</div>
+                      <div class="qa-answer">
+                        <p><strong>BFS</strong> (Breadth-First Search) explores nodes level-by-level, using a queue. It visits all nodes at distance 1, then all at distance 2, and so on. <strong>DFS</strong> (Depth-First Search) explores as far as possible along a branch before backtracking, using a stack (explicit or the call stack).</p>
+                        <p style="margin-top:8px;"><strong>For shortest path in an unweighted graph, always use BFS.</strong> The proof is direct: BFS processes nodes in non-decreasing order of distance from the source. When it first reaches the target, that must be via the shortest path — any later path through unexplored nodes would have greater or equal distance. DFS has no such guarantee: it may find a path to the target immediately, but that path could be arbitrarily long.</p>
+                        <p style="margin-top:8px;">DFS is superior for: detecting cycles (back edges in DFS tree), topological sorting, finding connected components, exploring all possible paths (backtracking), and problems requiring postorder processing (subtree properties). DFS also uses O(h) memory vs BFS's O(w), which matters for deep, narrow graphs.</p>
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q3: Explain how a heap works internally, and why building a heap from an array is O(n) rather than O(n log n).</div>
+                      <div class="qa-answer">
+                        <p>A <strong>binary heap</strong> is a complete binary tree stored as an array, satisfying the heap property: every parent is greater (max-heap) or smaller (min-heap) than its children. For element at index <em>i</em>, the parent is at ⌊(i-1)/2⌋, left child at 2i+1, right child at 2i+2. No pointers needed — the tree structure is implicit in array indices.</p>
+                        <p style="margin-top:8px;">Insert (sift-up): place at end, bubble up until heap property restored — O(log n). Extract-min/max (sift-down): remove root, place last element at root, sink down — O(log n).</p>
+                        <p style="margin-top:8px;"><strong>Building from an array is O(n) — surprising but provable.</strong> The naive approach of inserting n elements one by one is O(n log n). But heapify (Floyd's algorithm) starts from the last non-leaf and calls sift-down on each internal node. The key insight: nodes near the bottom of the tree (the majority) have very small subtrees. Precisely: the height-h subtree has at most ⌈n/2^(h+1)⌉ nodes, each costing O(h) to sift down. Summing across all heights: Σ ⌈n/2^(h+1)⌉ * h = O(n) * Σ h/2^h = O(n) * 2 = O(n), since the geometric series Σ h/2^h converges to 2.</p>
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q4: What is the time complexity of recursive Fibonacci without memoization, and exactly why is it exponential?</div>
+                      <div class="qa-answer">
+                        <p>The recurrence is T(n) = T(n-1) + T(n-2) + O(1). The recursion tree has a branching factor of 2 and depth n, which might suggest O(2^n). The actual complexity is <strong>O(φ^n) where φ = (1+√5)/2 ≈ 1.618</strong> (the golden ratio) — slightly better than 2^n but still exponential.</p>
+                        <p style="margin-top:8px;">The exponential blowup comes from <strong>redundant recomputation of overlapping subproblems</strong>. fib(5) computes fib(3) twice — once as a subproblem of fib(4) and once directly. fib(3) computes fib(1) three times. By fib(40), fib(2) is computed over 100 million times. The call tree has Θ(φ^n) nodes total.</p>
+                        <p style="margin-top:8px;">Memoization eliminates the redundancy: each of the n unique subproblems is computed exactly once → O(n) time, O(n) space. Bottom-up DP reduces this to O(1) space since we only need the last two values. Matrix exponentiation can compute fib(n) in O(log n) time — relevant for astronomical n values.</p>
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q5: When would you use a trie over a hash map for string storage, and what are the trade-offs?</div>
+                      <div class="qa-answer">
+                        <p>Use a <strong>trie</strong> when you need prefix-based operations: autocomplete, spell checking, IP routing (longest prefix match), or finding all strings with a given prefix. A hash map can only tell you if an exact key exists — it has no concept of prefix structure.</p>
+                        <p style="margin-top:8px;"><strong>Trie advantages:</strong> prefix search in O(m) where m = prefix length — independent of how many strings are stored. Can enumerate all strings with a prefix in O(m + output size). Lexicographic ordering is implicit. Worst-case lookup is O(m) guaranteed, unlike hash maps which are O(m) average with O(mn) worst case under collision attacks.</p>
+                        <p style="margin-top:8px;"><strong>Trie disadvantages:</strong> Higher memory usage — each node stores up to 26 child pointers (for lowercase ASCII) plus a boolean. With sparse data, many pointers are null. A hash map storing the same strings uses O(total character count) space vs a trie's O(unique prefix count * alphabet size). Cache locality is worse for tries: pointer-chasing vs contiguous hash table storage. For large alphabets (Unicode), use a hash map per node instead of a fixed-size array — the compressed trie (Patricia trie / radix tree) further reduces memory by merging single-child chains.</p>
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q6: Explain Union-Find path compression and union by rank. Why does this achieve nearly O(1) per operation?</div>
+                      <div class="qa-answer">
+                        <p><strong>Path compression:</strong> After finding the root of a set, make every node on the path point directly to the root. This flattens the tree so future finds on the same nodes are O(1). Implemented by setting <code>parent[x] = find(parent[x])</code> recursively (two-pass) or by a single pass that updates all nodes to the root.</p>
+                        <p style="margin-top:8px;"><strong>Union by rank:</strong> When merging two trees, always attach the shorter tree under the root of the taller tree. "Rank" is an upper bound on height. Without this, a sequence of unions could create a linear chain (O(n) find). With rank, tree height is bounded by O(log n).</p>
+                        <p style="margin-top:8px;">Combined, the amortized cost per operation is <strong>O(α(n))</strong> where α is the inverse Ackermann function. α(n) ≤ 4 for any n that could exist in the physical universe. The proof uses a potential function argument (Tarjan, 1975) showing that path compression "pays back" the cost of heavy finds by making future finds cheaper. For practical purposes, treat it as O(1) amortized — but say "inverse Ackermann, which is effectively constant for all practical n" to demonstrate you know the actual bound.</p>
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q7: What is the intuition behind why Dijkstra's algorithm is correct, and why does it fail with negative edge weights?</div>
+                      <div class="qa-answer">
+                        <p>Dijkstra's correctness relies on a <strong>greedy invariant</strong>: at each step, the node extracted from the min-heap has a finalized shortest distance. The proof is by induction: when we extract a node u with distance d[u], no future path can be shorter, because all remaining nodes in the heap have distances ≥ d[u], and any path through them adds further non-negative weight.</p>
+                        <p style="margin-top:8px;"><strong>The invariant breaks with negative edges.</strong> Consider: A→B with weight 3, A→C with weight 1, C→B with weight -5. Dijkstra extracts C first (distance 1), then extracts B at distance 3 (via A→B). But the true shortest path to B is 1 + (-5) = -4 via A→C→B. Dijkstra already finalized B at 3 and won't revisit it.</p>
+                        <p style="margin-top:8px;">For graphs with negative edges (but no negative cycles), use <strong>Bellman-Ford</strong>: relax all edges V-1 times, O(VE). For negative cycles detection, do a Vth pass — if any distance improves, a negative cycle exists. For dense graphs, <strong>Floyd-Warshall</strong> (O(V³)) computes all-pairs shortest paths and can detect negative cycles. Johnson's algorithm preprocesses with Bellman-Ford to re-weight edges non-negative, then runs Dijkstra from each vertex — O(V² log V + VE).</p>
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q8: How do you identify that a problem requires dynamic programming versus greedy? Give a concrete example where greedy fails but DP succeeds.</div>
+                      <div class="qa-answer">
+                        <p>A <strong>greedy algorithm</strong> makes the locally optimal choice at each step and never backtracks. It works when: (1) the problem has the <em>greedy choice property</em> — a locally optimal choice leads to a globally optimal solution, and (2) there are no interdependencies between choices that could make an earlier greedy choice suboptimal in hindsight.</p>
+                        <p style="margin-top:8px;"><strong>DP is needed</strong> when choices have long-range consequences — the optimal choice at step i depends on future decisions, or when subproblems overlap and memoization provides speedup.</p>
+                        <p style="margin-top:8px;"><strong>Concrete failure case — Coin Change:</strong> Given coins [1, 3, 4] and target = 6. Greedy (largest coin first): 4 + 1 + 1 = 3 coins. Optimal: 3 + 3 = 2 coins. Greedy chose 4 first, which forced two 1s — it couldn't anticipate that skipping 4 leads to a better solution. DP explores all combinations: dp[6] = min(dp[5]+1, dp[3]+1, dp[2]+1) correctly finds 2.</p>
+                        <p style="margin-top:8px;">Identification heuristic: try to prove greedy with an exchange argument (swapping greedy choice for any other only makes things worse). If you can't prove it, DP. Problems with "at most / at least K" constraints, choices with dependencies, or "count the number of ways" almost always require DP.</p>
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q9: What is the difference between a BST, AVL tree, and Red-Black tree? When would you use each?</div>
+                      <div class="qa-answer">
+                        <p>A <strong>BST (Binary Search Tree)</strong> maintains the ordering property: left subtree &lt; root &lt; right subtree. Operations are O(h) where h = height. Without balancing, insertions in sorted order degrade to O(n) — the tree becomes a linked list.</p>
+                        <p style="margin-top:8px;">An <strong>AVL tree</strong> enforces strict balancing: the heights of left and right subtrees at every node differ by at most 1. Height is guaranteed ≤ 1.44 log₂(n), ensuring O(log n) operations. Rebalancing uses rotations after every insert/delete — up to O(log n) rotations per operation. AVL trees are more rigidly balanced, making <strong>lookups faster</strong> but inserts/deletes slightly slower.</p>
+                        <p style="margin-top:8px;">A <strong>Red-Black tree</strong> uses a weaker invariant: (1) every node is red or black, (2) root and leaves (nil) are black, (3) red nodes have black children, (4) all paths from root to nil have equal black-node count. This guarantees height ≤ 2 log₂(n+1). At most 2 rotations per insert (3 per delete) — making <strong>mutations faster</strong> than AVL. Java's TreeMap/TreeSet, C++ std::map/set, and Linux kernel interval trees use Red-Black trees.</p>
+                        <p style="margin-top:8px;">Use AVL when reads vastly outnumber writes (e.g., in-memory indexes). Use Red-Black when writes are frequent. Use plain BST only when you control the insertion order or can randomize it (treap). In practice, B-trees dominate for on-disk storage (databases) because they minimize disk I/O with high branching factors.</p>
+                      </div>
+                    </div>
+        
+                    <div class="qa-item">
+                      <div class="qa-question">Q10: Walk through how you would approach a completely unfamiliar algorithm problem in a 45-minute FAANG interview. What is your process?</div>
+                      <div class="qa-answer">
+                        <p><strong>Minutes 0–5: Understand &amp; clarify.</strong> Restate the problem in your own words. Ask about edge cases: empty input? negative numbers? integer overflow? duplicates? Ask about constraints: what is n? Are they optimizing for time or space? Is the input sorted? This is not stalling — it demonstrates engineering discipline and prevents solving the wrong problem.</p>
+                        <p style="margin-top:8px;"><strong>Minutes 5–10: Explore examples &amp; identify patterns.</strong> Work through 2–3 concrete examples by hand, including edge cases. Look for patterns: is the answer monotonic (binary search on answer)? Does it involve a subarray (sliding window / prefix sum)? Are there dependencies (graph / DP)? Try to categorize: 1D array, string, tree, graph, math.</p>
+                        <p style="margin-top:8px;"><strong>Minutes 10–15: State your approach before coding.</strong> Explain your algorithm in plain English. State the time and space complexity. If you have a brute-force approach, state it first ("I can do this in O(n²) with nested loops — let me see if we can improve"), then optimize. Get explicit buy-in: "Does this approach make sense before I start coding?"</p>
+                        <p style="margin-top:8px;"><strong>Minutes 15–35: Code clearly &amp; narrate.</strong> Write readable code with meaningful variable names — not single letters except loop indices. Talk through each step: "I'm using a hash map here to get O(1) lookup." Handle edge cases inline. Don't erase and restart — cross out and refine if needed.</p>
+                        <p style="margin-top:8px;"><strong>Minutes 35–45: Test &amp; optimize.</strong> Trace through your solution with the examples from step 2. Identify and fix bugs. Discuss optimizations you'd make with more time. If time allows, write the test cases you'd add. Proactively mention limitations: "This assumes no integer overflow — I'd add a check in production."</p>
+                        <p style="margin-top:8px;"><strong>Red flags to avoid:</strong> Coding in silence, changing approach without explaining why, panicking when stuck (instead say "I'm not immediately seeing the optimal approach — let me think about the structure of the problem"), ignoring edge cases, forgetting to state complexity.</p>
+                      </div>
+                    </div>
+        
+                  </div>
+                </section>
+        <footer class="footer">
+          <p>Senior Full-Stack Interview Prep Guide</p>
+          <p><a href="index.html" style="color:#68d391;text-decoration:none;">← Back to Home</a></p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQ4n5wg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="app.js"></script>
+</body>
+</html>

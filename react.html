@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>React.js Deep Dive — Interview Prep</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" integrity="sha512-Jk4AqjWsdSzSWCSuQTfYRIF84Rq/eV0G2+tu07byYwHcbTGfdmLrHjUSwvzp5HvbiqK4ibmNwdcG49Y5RGYPg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <div id="progressBar" class="progress-bar"></div>
+  <button class="sidebar-float-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">⚛️</span>
+          <span class="logo-text">React.js Deep Dive</span>
+        </div>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search topics..." />
+        <span class="search-icon">🔍</span>
+      </div>
+      <nav class="nav" id="nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Navigation</div>
+          <a href="index.html" class="nav-link" style="color:#68d391;font-weight:600;">🏠 Back to Home</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">React.js Deep Dive</div>
+          <a href="#react-fundamentals" class="nav-link" data-section="react-fundamentals">React Fundamentals</a>
+          <a href="#react-hooks" class="nav-link" data-section="react-hooks">React Hooks Deep Dive</a>
+          <a href="#react-performance" class="nav-link" data-section="react-performance">React Performance</a>
+          <a href="#react-patterns" class="nav-link" data-section="react-patterns">React Patterns</a>
+          <a href="#react-state-mgmt" class="nav-link" data-section="react-state-mgmt">State Management</a>
+          <a href="#react-interview" class="nav-link" data-section="react-interview">React Interview Q&A</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Other Topics</div>
+          <a href="javascript.html" class="nav-link">JavaScript Fundamentals</a>
+          <a href="nodejs.html" class="nav-link">Node.js Mastery</a>
+          <a href="dsa.html" class="nav-link">DSA</a>
+          <a href="system-design.html" class="nav-link">System Design</a>
+          <a href="databases.html" class="nav-link">Databases</a>
+          <a href="kafka.html" class="nav-link">Kafka & Streaming</a>
+          <a href="hld-lld.html" class="nav-link">HLD / LLD</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="main" id="main">
+      <div class="content-wrapper">
+        <section class="section" id="react-fundamentals">
+                  <div class="section-header">
+                    <span class="section-tag">React.js</span>
+                    <h2>React Fundamentals</h2>
+                  </div>
+                  <p style="color:#94a3b8;margin-bottom:28px;line-height:1.7;">Understanding what React actually does under the hood — not just how to use it — separates senior engineers from mid-level ones. Interviewers probe JSX compilation, the Virtual DOM diffing algorithm, and subtle component design decisions constantly.</p>
+                  <div class="feature-card" style="margin-bottom:24px;">
+                    <div class="feature-icon">⚛</div>
+                    <h3 style="color:#f1f5f9;margin-bottom:12px;">JSX Internals — What Babel Actually Produces</h3>
+                    <p style="color:#94a3b8;margin-bottom:16px;line-height:1.7;">JSX is syntactic sugar. Babel transforms every JSX element into a <code>React.createElement(type, props, ...children)</code> call. React 17+ uses the new JSX transform which imports from <code>react/jsx-runtime</code> automatically. The result is a plain JavaScript object — a <strong>React element</strong>.</p>
+                    <pre><code class="language-javascript">// React.createElement output:
+        // { $$typeof: Symbol(react.element), type: 'div', key: null, ref: null,
+        //   props: { className: 'card', children: [...] } }
+        // $$typeof: Symbol prevents XSS — Symbols can't be serialized to JSON
+        
+        // React 17+ new JSX transform (no React import needed):
+        import { jsx as _jsx, jsxs as _jsxs } from 'react/jsx-runtime';
+        const element = _jsxs('div', { className: 'card', children: [ _jsx('h1', { children: 'Hello' }) ] });
+        
+        // Functional vs Class — why functional won:
+        // 1. No `this` binding confusion
+        // 2. Easier composition via custom hooks vs HOCs/render props
+        // 3. React concurrent features designed around functional model
+        
+        // Keys — stable identity in lists
+        // BAD: key={index} — reorders break component state
+        // GOOD: key={item.id} — stable, data-driven identity
+        // KEY TIP: changing key = force remount (resets all state)
+        function ParentWithReset() {
+          const [key, setKey] = useState(0);
+          return (
+            &lt;&gt;
+              &lt;ExpensiveForm key={key} /&gt;
+              &lt;button onClick={() =&gt; setKey(k =&gt; k + 1)}&gt;Reset Form&lt;/button&gt;
+            &lt;/&gt;
+          );
+        }
+        
+        // Reconciliation: O(n) heuristic diffing
+        // Rule 1: Different type = full remount (state is lost)
+        // Rule 2: Same type = update props only
+        // Fiber: interruptible linked-list traversal (React 16+)
+        // Phase 1 (render): interruptible, no side effects
+        // Phase 2 (commit): synchronous, applies DOM mutations</code></pre>
+                    <div class="callout callout-warning" style="margin-top:16px;"><strong>Virtual DOM misconception:</strong> It's fast because it <em>batches and minimizes</em> DOM mutations, not because DOM is slow. React's commit phase applies all mutations in one pass, avoiding layout thrashing.</div>
+                  </div>
+                  <div class="feature-card">
+                    <h3 style="color:#f1f5f9;margin-bottom:12px;">Controlled vs Uncontrolled Components</h3>
+                    <pre><code class="language-javascript">// Controlled: React owns state — every keystroke → setState → instant validation
+        function ControlledForm() {
+          const [email, setEmail] = useState('');
+          return (
+            &lt;input type="email" value={email}
+              onChange={e =&gt; setEmail(e.target.value)} /&gt;
+          );
+        }
+        
+        // Uncontrolled: DOM owns state, ref reads on demand
+        function UncontrolledForm() {
+          const emailRef = useRef(null);
+          const handleSubmit = (e) => {
+            e.preventDefault();
+            console.log(emailRef.current.value);
+          };
+          return &lt;form onSubmit={handleSubmit}&gt;&lt;input ref={emailRef} /&gt;&lt;/form&gt;;
+        }
+        // Uncontrolled preferred for: file inputs, non-React library integration, perf on large forms</code></pre>
+                  </div>
+                </section>
+
+        <section class="section" id="react-hooks">
+                  <div class="section-header">
+                    <span class="section-tag">React.js</span>
+                    <h2>React Hooks — Deep Dive</h2>
+                  </div>
+                  <p style="color:#94a3b8;margin-bottom:28px;line-height:1.7;">Hooks are index-keyed linked lists attached to the fiber, which is why the rules of hooks exist. Senior engineers must understand the mental model, not just the API.</p>
+        
+                  <div class="feature-card" style="margin-bottom:24px;">
+                    <h3 style="color:#f1f5f9;margin-bottom:12px;">useState — Batching, Functional Updates, Lazy Initializer</h3>
+                    <pre><code class="language-javascript">// Functional update — always use when new state depends on old state
+        const incrementThrice = () => {
+          setCount(c => c + 1);
+          setCount(c => c + 1);
+          setCount(c => c + 1); // correctly goes 0 → 3
+        };
+        
+        // Lazy initializer — function runs ONCE on mount
+        const [data, setData] = useState(() => parseHugeJSON(rawInput)); // not called every render
+        
+        // React 18 automatic batching — ONE re-render for all updates
+        const handleAsync = async () => {
+          await fetchSomething();
+          setA(1);  // batched!
+          setB(2);  // batched! → single re-render
+        };
+        // React 17: setTimeout / Promise updates NOT batched — two renders
+        // Opt out: import { flushSync } from 'react-dom'; flushSync(() => setA(1));</code></pre>
+                  </div>
+        
+                  <div class="feature-card" style="margin-bottom:24px;">
+                    <h3 style="color:#f1f5f9;margin-bottom:12px;">useEffect — Lifecycle, Cleanup, Common Pitfalls</h3>
+                    <pre><code class="language-javascript">// Race condition fix — cleanup flag
+        function DataFetcher({ userId }) {
+          const [data, setData] = useState(null);
+          useEffect(() => {
+            let cancelled = false;
+            async function fetchUser() {
+              const res = await fetch(`/api/users/${userId}`);
+              const json = await res.json();
+              if (!cancelled) setData(json); // guard against stale update after unmount
+            }
+            fetchUser();
+            return () => { cancelled = true; }; // cleanup
+          }, [userId]);
+        }
+        
+        // Mistake: Object/function in deps → infinite loop
+        // BAD: const options = { filter }; useEffect(() => {}, [options]); // new ref every render
+        // FIX: useEffect(() => fetchData({ filter }), [filter]); // stable primitive
+        
+        // Mistake: Missing cleanup for event listeners
+        useEffect(() => {
+          const handler = (e) => setPos({ x: e.clientX, y: e.clientY });
+          window.addEventListener('mousemove', handler);
+          return () => window.removeEventListener('mousemove', handler); // MUST cleanup
+        }, []);
+        
+        // React 18 Strict Mode: mounts → unmounts → remounts in dev to catch bad cleanup</code></pre>
+                  </div>
+        
+                  <div class="feature-card" style="margin-bottom:24px;">
+                    <h3 style="color:#f1f5f9;margin-bottom:12px;">useRef, useContext, useReducer, useCallback, useMemo</h3>
+                    <pre><code class="language-javascript">// useRef: mutable value that does NOT trigger re-render
+        // Use for: DOM refs, timer IDs, previous value tracking, stale closure fix
+        const countRef = useRef(count);
+        countRef.current = count; // always up-to-date in long-lived callbacks
+        
+        // forwardRef + useImperativeHandle: expose specific imperative API
+        const Modal = React.forwardRef(function Modal(props, ref) {
+          const [open, setOpen] = useState(false);
+          React.useImperativeHandle(ref, () => ({ open: () => setOpen(true), close: () => setOpen(false) }));
+          return open ? &lt;div className="modal"&gt;{props.children}&lt;/div&gt; : null;
+        });
+        
+        // useContext: ALWAYS memoize the value object!
+        const value = useMemo(() => ({ theme, toggle }), [theme]); // else re-renders all consumers
+        
+        // Split contexts by update frequency — read context vs dispatch context
+        const ThemeDispatchContext = React.createContext(null); // stable — write operations
+        const ThemeStateContext    = React.createContext(null); // changes — read operations
+        
+        // useReducer wins over useState when: multiple related fields, named transitions, testable logic
+        function fetchReducer(state, action) {
+          switch (action.type) {
+            case 'FETCH_START':   return { ...state, loading: true, error: null };
+            case 'FETCH_SUCCESS': return { loading: false, data: action.payload, error: null };
+            case 'FETCH_ERROR':   return { loading: false, data: null, error: action.payload };
+            default: throw new Error(`Unknown: ${action.type}`);
+          }
+        }
+        
+        // useMemo / useCallback — profile first, memoize second
+        // useCallback: stable function reference for React.memo'd child components
+        const handleSave = useCallback(() => saveToServer(name), [name]);
+        // useMemo: expensive computation
+        const filtered = useMemo(() => products.filter(p => p.name.includes(q)), [products, q]);</code></pre>
+                  </div>
+        
+                  <div class="feature-card">
+                    <h3 style="color:#f1f5f9;margin-bottom:12px;">Custom Hooks — Rules and Common Patterns</h3>
+                    <pre><code class="language-javascript">// Rules of Hooks: why call order matters
+        // React uses CALL ORDER to match hooks to fiber slots (no name-based lookup)
+        // Conditional call = slot shift = wrong state → "Rendered fewer hooks than expected"
+        
+        // useFetch — abort signal handles unmount cleanup
+        function useFetch(url) {
+          const [state, dispatch] = useReducer(fetchReducer, { status: 'idle', data: null, error: null });
+          useEffect(() => {
+            if (!url) return;
+            const controller = new AbortController();
+            dispatch({ type: 'FETCH_START' });
+            fetch(url, { signal: controller.signal })
+              .then(r => r.json())
+              .then(data => dispatch({ type: 'FETCH_SUCCESS', payload: data }))
+              .catch(err => { if (err.name !== 'AbortError') dispatch({ type: 'FETCH_ERROR', payload: err.message }); });
+            return () => controller.abort();
+          }, [url]);
+          return state;
+        }
+        
+        // useDebounce — delays value until typing stops
+        function useDebounce(value, delay = 300) {
+          const [debounced, setDebounced] = useState(value);
+          useEffect(() => {
+            const timer = setTimeout(() => setDebounced(value), delay);
+            return () => clearTimeout(timer);
+          }, [value, delay]);
+          return debounced;
+        }</code></pre>
+                  </div>
+                </section>
+
+        <section class="section" id="react-performance">
+                  <div class="section-header">
+                    <span class="section-tag">React.js</span>
+                    <h2>React Performance Optimization</h2>
+                  </div>
+                  <p style="color:#94a3b8;margin-bottom:28px;line-height:1.7;">Profile first with React DevTools Profiler, then apply targeted fixes. Blindly adding <code>React.memo</code> and <code>useMemo</code> everywhere is an anti-pattern.</p>
+        
+                  <div class="feature-grid" style="grid-template-columns:1fr;margin-bottom:24px;">
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:10px;">React.memo — Shallow Comparison</h4>
+                      <pre><code class="language-javascript">// Skips re-render if props shallowly equal
+        const ExpensiveChart = React.memo(function Chart({ data, title }) {
+          return &lt;canvas&gt;...&lt;/canvas&gt;;
+        });
+        
+        // Objects/arrays: NEW reference = always re-renders
+        // Fix: stable reference with useMemo
+        const chartData = useMemo(() => computeChartData(userId), [userId]);
+        
+        // Custom comparison (use sparingly):
+        const Chart = React.memo(Chart, (prev, next) => prev.data.id === next.data.id);
+        // true = skip re-render; false = re-render</code></pre>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:10px;">Virtualization — Large Lists</h4>
+                      <pre><code class="language-javascript">// Problem: 10K rows = 10K DOM nodes
+        // Solution: render only ~20-50 visible rows
+        import { FixedSizeList } from 'react-window';
+        
+        function VirtualList({ items }) {
+          const Row = ({ index, style }) =&gt; (
+            &lt;div style={style}&gt;{items[index].name}&lt;/div&gt;
+            // CRITICAL: must apply `style` for positioning
+          );
+          return (
+            &lt;FixedSizeList height={600} itemCount={items.length} itemSize={50} width="100%"&gt;
+              {Row}
+            &lt;/FixedSizeList&gt;
+          );
+        }</code></pre>
+                    </div>
+                  </div>
+        
+                  <div class="feature-card" style="margin-bottom:24px;">
+                    <h3 style="color:#f1f5f9;margin-bottom:12px;">Code Splitting + Concurrent Features</h3>
+                    <pre><code class="language-javascript">// Route-level splitting — most impactful split boundary
+        const Dashboard = lazy(() => import('./pages/Dashboard'));
+        function App() {
+          return (
+            &lt;Suspense fallback={&lt;PageSpinner /&gt;}&gt;
+              &lt;Routes&gt;
+                &lt;Route path="/dashboard" element={&lt;Dashboard /&gt;} /&gt;
+              &lt;/Routes&gt;
+            &lt;/Suspense&gt;
+          );
+        }
+        // Prefetch on hover: onMouseEnter={() => import('./pages/Dashboard')}
+        
+        // useTransition — non-urgent update (background, interruptible)
+        function SearchPage() {
+          const [query, setQuery] = useState('');
+          const [results, setResults] = useState([]);
+          const [isPending, startTransition] = useTransition();
+        
+          const handleChange = (e) => {
+            setQuery(e.target.value);           // URGENT — immediate
+            startTransition(() => {
+              setResults(expensiveSearch(e.target.value)); // NON-URGENT — background
+            });
+          };
+          return &lt;&gt;&lt;input value={query} onChange={handleChange} /&gt;{isPending &amp;&amp; &lt;Spinner /&gt;}&lt;/&gt;;
+        }
+        
+        // useDeferredValue — defer a value from a parent (can't control the setter)
+        const deferredQuery = useDeferredValue(inputValue); // lags behind; shows stale until ready
+        const isStale = deferredQuery !== inputValue;
+        
+        // Re-render root causes:
+        // 1. setState / dispatch called
+        // 2. Parent re-rendered (if not memoized)
+        // 3. Context value changed
+        // Fixes: React.memo, state colocation, context splitting, children-as-props pattern</code></pre>
+                  </div>
+        
+                  <div class="callout callout-info">
+                    <strong>DevTools Profiler workflow:</strong> Record interaction → Flame Graph (width = render time, grey = not rendered) → Ranked chart (sort by duration) → "Why did this render?" → Highlight Updates (Settings) to see unexpected flashing.
+                  </div>
+                </section>
+
+        <section class="section" id="react-patterns">
+                  <div class="section-header">
+                    <span class="section-tag">React.js</span>
+                    <h2>Advanced React Patterns</h2>
+                  </div>
+        
+                  <div class="feature-card" style="margin-bottom:24px;">
+                    <h3 style="color:#f1f5f9;margin-bottom:12px;">Compound Components — Implicit State via Context</h3>
+                    <pre><code class="language-javascript">const AccordionContext = React.createContext(null);
+        
+        function Accordion({ children, defaultOpen = null }) {
+          const [openItem, setOpenItem] = useState(defaultOpen);
+          const toggle = useCallback((id) => setOpenItem(c => c === id ? null : id), []);
+          return (
+            &lt;AccordionContext.Provider value={{ openItem, toggle }}&gt;
+              &lt;div className="accordion"&gt;{children}&lt;/div&gt;
+            &lt;/AccordionContext.Provider&gt;
+          );
+        }
+        
+        AccordionItem.Header = function Header({ id, isOpen, toggle, children }) {
+          return &lt;button onClick={() =&gt; toggle(id)}&gt;{children} {isOpen ? '▲' : '▼'}&lt;/button&gt;;
+        };
+        
+        // Consumer: full control over structure, zero prop drilling
+        &lt;Accordion defaultOpen="q1"&gt;
+          &lt;Accordion.Item id="q1"&gt;
+            &lt;AccordionItem.Header&gt;What is React?&lt;/AccordionItem.Header&gt;
+            &lt;AccordionItem.Body&gt;A UI library.&lt;/AccordionItem.Body&gt;
+          &lt;/Accordion.Item&gt;
+        &lt;/Accordion&gt;</code></pre>
+                  </div>
+        
+                  <div class="feature-grid" style="grid-template-columns:1fr;margin-bottom:24px;">
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:10px;">HOC Pattern</h4>
+                      <pre><code class="language-javascript">function withAuth(WrappedComponent) {
+          function AuthGuard(props) {
+            const { user, loading } = useAuth();
+            if (loading) return &lt;Spinner /&gt;;
+            if (!user)   return &lt;Redirect to="/login" /&gt;;
+            return &lt;WrappedComponent {...props} user={user} /&gt;;
+          }
+          // Preserve displayName for DevTools:
+          AuthGuard.displayName = `withAuth(${WrappedComponent.name})`;
+          return AuthGuard;
+        }
+        // HOC pitfalls: wrapper hell in DevTools, prop collision, ref forwarding needed
+        // Modern preference: replace with custom hooks wherever possible</code></pre>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:10px;">Error Boundaries + Portals</h4>
+                      <pre><code class="language-javascript">// Error boundaries MUST be class components
+        class ErrorBoundary extends React.Component {
+          state = { hasError: false };
+          static getDerivedStateFromError() { return { hasError: true }; }
+          componentDidCatch(error, info) { errorTracker.capture(error, info); }
+          render() {
+            return this.state.hasError
+              ? this.props.fallback
+              : this.props.children;
+          }
+        }
+        
+        // Portal: render outside React tree (modals, tooltips)
+        // Solves z-index / overflow:hidden issues
+        ReactDOM.createPortal(
+          &lt;div className="modal"&gt;{children}&lt;/div&gt;,
+          document.getElementById('modal-root')
+        );
+        // Event bubbling still follows React component tree (not DOM tree)</code></pre>
+                    </div>
+                  </div>
+                </section>
+
+        <section class="section" id="react-state-mgmt">
+                  <div class="section-header">
+                    <span class="section-tag">React.js</span>
+                    <h2>State Management — Picking the Right Tool</h2>
+                  </div>
+                  <div class="callout callout-info" style="margin-bottom:24px;">
+                    <strong>Decision framework:</strong> One component? → <code>useState</code>. Nearby components? → lift state. Many/deep components? → Context or Zustand. Data from server? → React Query. Large app, complex client state, time-travel debugging? → Redux Toolkit.
+                  </div>
+        
+                  <div class="feature-grid" style="grid-template-columns:1fr;margin-bottom:24px;">
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:10px;">Zustand — Simple Global State</h4>
+                      <pre><code class="language-javascript">import { create } from 'zustand';
+        import { persist } from 'zustand/middleware';
+        
+        const useCartStore = create(persist(
+          (set, get) => ({
+            items: [],
+            addItem: (item) => set(state => ({ items: [...state.items, item] })),
+            clearCart: () => set({ items: [] }),
+            get totalItems() { return get().items.length; },
+          }),
+          { name: 'cart-storage' } // localStorage persistence
+        ));
+        
+        // Selective subscription — only re-renders when slice changes
+        const total = useCartStore(s => s.totalItems);
+        const addItem = useCartStore(s => s.addItem); // stable — no re-render</code></pre>
+                    </div>
+                    <div class="feature-card">
+                      <h4 style="color:#f1f5f9;margin-bottom:10px;">TanStack Query — Server State</h4>
+                      <pre><code class="language-javascript">// Server state needs: caching, deduplication, background refresh,
+        // optimistic updates, retry, stale-while-revalidate
+        const { data, isLoading, isError } = useQuery({
+          queryKey: ['users', userId],
+          queryFn: () => fetch(`/api/users/${userId}`).then(r => r.json()),
+          staleTime: 5 * 60 * 1000,       // fresh for 5 min
+          refetchOnWindowFocus: true,      // auto-revalidate on tab focus
+        });
+        
+        // Optimistic mutation
+        const { mutate } = useMutation({
+          mutationFn: addTodo,
+          onMutate: async (newTodo) => {
+            const snapshot = queryClient.getQueryData(['todos']);
+            queryClient.setQueryData(['todos'], old => [...old, newTodo]);
+            return { snapshot }; // for rollback
+          },
+          onError: (_, __, context) => queryClient.setQueryData(['todos'], context.snapshot),
+          onSettled: () => queryClient.invalidateQueries({ queryKey: ['todos'] }),
+        });</code></pre>
+                    </div>
+                  </div>
+        
+                  <div class="feature-card">
+                    <h3 style="color:#f1f5f9;margin-bottom:12px;">Redux Toolkit — Large Apps</h3>
+                    <pre><code class="language-javascript">import { createSlice, createAsyncThunk, configureStore } from '@reduxjs/toolkit';
+        
+        const fetchUser = createAsyncThunk('users/fetchById', async (userId) => {
+          const res = await fetch(`/api/users/${userId}`);
+          return res.json();
+        });
+        
+        const usersSlice = createSlice({
+          name: 'users',
+          initialState: { entities: {}, loading: false },
+          reducers: {
+            // Immer built-in — mutate draft, get immutable result
+            userUpdated: (state, { payload: { id, changes } }) => {
+              Object.assign(state.entities[id], changes);
+            },
+          },
+          extraReducers: (builder) => {
+            builder
+              .addCase(fetchUser.pending,   state => { state.loading = true; })
+              .addCase(fetchUser.fulfilled, (state, { payload }) => {
+                state.loading = false;
+                state.entities[payload.id] = payload;
+              });
+          },
+        });
+        
+        // Key insight: use React Query for server state, Redux/Zustand for client state only
+        // Don't put fetched data into Redux — that's exactly what React Query solves</code></pre>
+                  </div>
+                </section>
+
+        <section class="section" id="react-interview">
+                  <div class="section-header">
+                    <span class="section-tag">Interview Prep</span>
+                    <h2>React Interview — Deep Q&amp;A</h2>
+                  </div>
+                  <div class="qa-list">
+                    <div class="qa-item">
+                      <div class="qa-question">Explain React reconciliation and what the Fiber architecture adds.</div>
+                      <div class="qa-answer">Reconciliation determines what changed in the UI and applies minimal DOM mutations. React maintains two trees: current (on screen) and work-in-progress (being built). The original stack reconciler (React 15) was recursive and synchronous — could not be interrupted, causing dropped frames on large trees. Fiber (React 16+) re-implements this as an iterative linked-list traversal. Each fiber is a unit of work. React can pause, resume, abort, or reuse work. Two phases: (1) Render phase (interruptible) — traverse fiber tree, mark effects; (2) Commit phase (synchronous) — apply DOM mutations. This enables concurrent features: useTransition marks updates as interruptible so user-facing updates (typing) preempt expensive background renders.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">What are the rules of hooks and why do they exist?</div>
+                      <div class="qa-answer">Two rules: (1) only call hooks at the top level — never inside conditionals, loops, or nested functions; (2) only call from React function components or custom hooks. React tracks hook state by call order — each component fiber has a linked list of "hook slots." First useState call gets slot 0, second gets slot 1, etc. If a hook is skipped in one render, every hook after shifts down, reading from the wrong slot — silent corruption. Outside rendering, the React dispatcher is cleared, so useState throws "Invalid hook call." ESLint's react-hooks/rules-of-hooks catches these statically.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">What is a stale closure in React hooks and how do you fix it?</div>
+                      <div class="qa-answer">A stale closure occurs when a function captures a variable at render time, but the variable changes in subsequent renders while the function references the old value. Classic example: setInterval with empty deps captures initial count=0, always sets to 1. Fix 1: functional update — <code>setCount(c =&gt; c + 1)</code> doesn't need to close over count. Fix 2: add to deps (re-creates interval on each change). Fix 3: useRef — <code>countRef.current = count</code> always up-to-date in the long-lived callback without restarting the effect.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">React 18 automatic batching — how does it differ from React 17?</div>
+                      <div class="qa-answer">React 17: updates batched only inside React event handlers (onClick, etc.). setTimeout, Promise.then, native DOM event listeners caused separate re-renders per setState. React 18: automatic batching everywhere — all setA(1); setB(2); calls within one event tick cause ONE re-render, regardless of where they're called (setTimeout, Promise, async function). Opt out with flushSync() when you genuinely need intermediate DOM reads between updates. Requires createRoot() instead of ReactDOM.render to enable.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">How does React Query differ from Redux for server state?</div>
+                      <div class="qa-answer">Mental model difference: Redux treats server data as application state you manually synchronize. React Query treats it as a cache of remote state that's always potentially stale and needs automatic revalidation. React Query provides: caching, deduplication, background refresh, stale-while-revalidate, optimistic updates, retry with backoff, devtools — all for free. Redux for server state requires ~80 lines per endpoint of actions/thunks/reducer/loading/error. Best practice: use both — React Query for server state, Zustand/Redux for client-only state (undo/redo, local workflow, cross-entity derived state).</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">What causes hydration mismatches in SSR and how do you fix them?</div>
+                      <div class="qa-answer">SSR renders HTML on server; hydration attaches React to existing DOM client-side. Mismatch occurs when server HTML ≠ client render output. Common causes: (1) Date/time — server renders at request time, client renders later → different strings; (2) browser APIs (window, localStorage) called during render — don't exist on server; (3) invalid HTML nesting — browser auto-corrects, changing tree shape. Fixes: use useEffect to populate time-sensitive values client-side; typeof window guard for browser APIs; suppressHydrationWarning for intentional differences. React 18 logs exact mismatched component and value in dev.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">useEffect vs useLayoutEffect — when do you use each?</div>
+                      <div class="qa-answer">useEffect fires asynchronously after browser paint — non-blocking, default choice. useLayoutEffect fires synchronously after DOM mutations but before browser paints — blocks paint. Use useLayoutEffect only when reading DOM layout and synchronously re-rendering to avoid visual flash: tooltip positioning (read DOM rect, set position, user never sees wrong position), third-party DOM library initialization. IMPORTANT: useLayoutEffect doesn't run on the server (SSR) — use useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">Explain the trade-offs between prop drilling, Context, and external state managers.</div>
+                      <div class="qa-answer">Prop drilling: simple, explicit data flow, breaks down at 3+ levels — every intermediate component must be modified when the prop shape changes. Context: any component can read without threading props, breaks down when: (a) value changes frequently → all consumers re-render; (b) context grows into a kitchen-sink blob. Fix: split into multiple small focused contexts by update frequency. External managers (Zustand, Redux): solve context's performance problem via selective subscriptions — components subscribe to only the slice they need. Breaks down when overused for server state.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">How would you diagnose and fix dropped frames in a React app?</div>
+                      <div class="qa-answer">Step 1: Profile — React DevTools Profiler, record the interaction, check Flame Graph for components &gt;16ms. "Why did this render?" shows changed props/state/context. Step 2: Enable "Highlight Updates" — unexpected flashing shows unnecessary re-renders. Step 3: Targeted fixes: large list → react-window virtualization; expensive computation → useMemo; function reference instability → useCallback + React.memo; context thrashing → split contexts or Zustand selectors; main thread blocking → Web Worker; non-urgent updates → useTransition. Step 4: Measure again — verify the fix moved the metric.</div>
+                    </div>
+                    <div class="qa-item">
+                      <div class="qa-question">When would you use keys outside of lists?</div>
+                      <div class="qa-answer">Keys force remounting — changing a key unmounts the old component instance and mounts a fresh one, resetting all internal state. Use cases: (1) Reset a form when the entity changes — &lt;UserForm key={userId} /&gt;: changing userId forces full remount, all useState resets; (2) Force re-animation on data change; (3) Reset error boundary state — &lt;ErrorBoundary key={resetKey}&gt;: incrementing resetKey resets the boundary. This is the canonical React pattern, preferred over componentWillReceiveProps comparisons or imperative reset methods.</div>
+                    </div>
+                  </div>
+                </section>
+        <footer class="footer">
+          <p>Senior Full-Stack Interview Prep Guide</p>
+          <p><a href="index.html" style="color:#68d391;text-decoration:none;">← Back to Home</a></p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQ4n5wg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="app.js"></script>
+</body>
+</html>
