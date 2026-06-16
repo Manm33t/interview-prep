@@ -67,7 +67,7 @@
                   </p>
         
                   <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">Complexity Hierarchy — From Best to Worst</h3>
-                  <div class="feature-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));margin-bottom:24px;">
                     <div class="feature-card" style="border-left:3px solid #68d391;">
                       <div style="font-size:22px;font-weight:800;color:#68d391;margin-bottom:8px;">O(1)</div>
                       <h4 style="color:#f1f5f9;margin-bottom:6px;">Constant</h4>
@@ -114,7 +114,7 @@
                   <p style="color:#94a3b8;line-height:1.7;margin-bottom:16px;">
                     These are three distinct measures. <strong style="color:#e2e8f0;">Big O</strong> (worst-case upper bound), <strong style="color:#e2e8f0;">Big Ω (Omega)</strong> (best-case lower bound), and <strong style="color:#e2e8f0;">Big Θ (Theta)</strong> (tight bound — both upper and lower). When interviewers say "Big O" they almost always mean worst-case Big O.
                   </p>
-                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-bottom:24px;">
                     <div class="feature-card">
                       <h4 style="color:#60a5fa;margin-bottom:8px;">Quick Sort Example</h4>
                       <ul style="color:#94a3b8;font-size:14px;line-height:1.8;padding-left:18px;">
@@ -246,7 +246,7 @@
                   </div>
         
                   <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Complexity Cheat Sheet — Common Data Structures</h3>
-                  <div class="feature-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:24px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:24px;">
                     <div class="feature-card">
                       <h4 style="color:#f1f5f9;margin-bottom:12px;">Array / Dynamic Array</h4>
                       <ul style="color:#94a3b8;font-size:13px;line-height:1.9;padding-left:18px;">
@@ -900,7 +900,7 @@
                     <strong style="color:#f1f5f9;">Linked list debugging tip:</strong> Always use a <code>dummy</code> head node when the head itself might be modified (deletion, merge). It eliminates null checks for the head case and makes the code uniform. Cost: O(1) extra space — always worth it.
                   </div>
         
-                  <div class="feature-grid" style="grid-template-columns:repeat(2,1fr);margin-top:24px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-top:24px;">
                     <div class="feature-card">
                       <h4 style="color:#f1f5f9;margin-bottom:10px;">Singly vs Doubly — When to Use</h4>
                       <ul style="color:#94a3b8;font-size:14px;line-height:1.8;padding-left:18px;">
@@ -1636,7 +1636,7 @@
                   return 0;
                 }</code></pre>
         
-                  <div class="feature-grid" style="grid-template-columns:repeat(2,1fr);margin-top:24px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-top:24px;">
                     <div class="feature-card">
                       <h4 style="color:#f1f5f9;margin-bottom:10px;">Algorithm Selection</h4>
                       <ul style="color:#94a3b8;font-size:13px;line-height:1.8;padding-left:18px;">
@@ -1672,7 +1672,7 @@
                     Dynamic Programming solves problems by breaking them into <strong style="color:#e2e8f0;">overlapping subproblems</strong> and storing results to avoid recomputation. The two key properties are <strong style="color:#68d391;">optimal substructure</strong> (optimal solution contains optimal solutions to subproblems) and <strong style="color:#68d391;">overlapping subproblems</strong> (same subproblems recur). DP converts exponential brute force to polynomial time.
                   </p>
         
-                  <div class="feature-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:24px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:24px;">
                     <div class="feature-card" style="border-left:3px solid #68d391;">
                       <h4 style="color:#68d391;margin-bottom:8px;">Top-Down: Memoization</h4>
                       <p style="color:#94a3b8;font-size:14px;line-height:1.6;">Start with recursion. Cache results in a map/array. Natural to write — follows the recurrence relation directly. Lazy: only computes needed subproblems.</p>
@@ -1911,7 +1911,7 @@
                     Knowing <em>which</em> sort to use — and why — signals engineering maturity. Merge sort for stability and guaranteed O(n log n), quicksort for cache-friendly in-place average performance, heap sort when O(1) auxiliary space is required, counting/radix sort when keys are bounded integers and you need O(n). JavaScript's built-in <code>Array.prototype.sort</code> uses TimSort (a hybrid merge/insertion sort) — O(n log n) worst case, O(n) best case on nearly-sorted data.
                   </p>
         
-                  <div class="feature-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));margin-bottom:24px;">
                     <div class="feature-card">
                       <h4 style="color:#68d391;margin-bottom:6px;">Merge Sort</h4>
                       <ul style="color:#94a3b8;font-size:12px;line-height:1.7;padding-left:14px;">

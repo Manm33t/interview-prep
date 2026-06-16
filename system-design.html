@@ -59,7 +59,7 @@
                   </div>
                   <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">CAP Theorem — What It Really Means</h3>
                   <p style="color:#94a3b8;line-height:1.7;margin-bottom:16px;">CAP: a distributed system can guarantee at most <strong style="color:#e2e8f0;">two of three</strong>: Consistency, Availability, Partition Tolerance. Critical nuance: <em>partition tolerance is not optional</em> — network partitions happen in any real distributed system. The real choice: during a partition, sacrifice C or A?</p>
-                  <div class="feature-grid" style="grid-template-columns:1fr 1fr;margin-bottom:24px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:24px;">
                     <div class="feature-card" style="border-left:3px solid #3b82f6;">
                       <h4 style="color:#60a5fa;margin-bottom:8px;">CP Systems — Consistent &amp; Partition Tolerant</h4>
                       <p style="color:#94a3b8;font-size:14px;line-height:1.6;">During partition, refuse to respond rather than return stale data. Examples: ZooKeeper, HBase, etcd, Redis (w/ WAIT), MongoDB (majority write concern). Use when: financial transactions, inventory, leader election.</p>
@@ -70,7 +70,7 @@
                     </div>
                   </div>
                   <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">PACELC + Consistency Models</h3>
-                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-bottom:20px;">
                     <div class="feature-card"><h4 style="color:#f1f5f9;margin-bottom:6px;">Linearizability</h4><p style="color:#94a3b8;font-size:13px;">Strongest: after write completes, all reads see it. ZooKeeper, etcd. High latency.</p></div>
                     <div class="feature-card"><h4 style="color:#f1f5f9;margin-bottom:6px;">Causal Consistency</h4><p style="color:#94a3b8;font-size:13px;">Causally related ops seen in order by all. Concurrent ops may differ. MongoDB causal sessions.</p></div>
                     <div class="feature-card"><h4 style="color:#f1f5f9;margin-bottom:6px;">Eventual Consistency</h4><p style="color:#94a3b8;font-size:13px;">No new writes → replicas converge. No timing guarantee. DNS, Cassandra default.</p></div>
@@ -103,7 +103,7 @@
                     <span class="section-tag">System Design</span>
                     <h2>Scalability Patterns</h2>
                   </div>
-                  <div class="feature-grid" style="grid-template-columns:1fr 1fr;margin-bottom:24px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:24px;">
                     <div class="feature-card" style="border-left:3px solid #3b82f6;">
                       <h4 style="color:#60a5fa;margin-bottom:8px;">Vertical Scaling (Scale Up)</h4>
                       <p style="color:#94a3b8;font-size:14px;line-height:1.6;">Add more CPU/RAM to existing machine. Simpler, no distributed coordination. Hard ceiling + single point of failure. Use for: databases, monoliths in early growth.</p>
@@ -192,13 +192,13 @@
                     <h2>Advanced System Components</h2>
                   </div>
                   <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">API Gateway Responsibilities</h3>
-                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-bottom:24px;">
                     <div class="feature-card"><div class="feature-icon">→</div><h4 style="color:#f1f5f9;margin-bottom:8px;">Request Routing</h4><p style="color:#94a3b8;font-size:14px;line-height:1.6;">Path/header-based routing to services. Versioning (/v1, /v2). Blue-green routing by percentage.</p></div>
                     <div class="feature-card"><div class="feature-icon">🔒</div><h4 style="color:#f1f5f9;margin-bottom:8px;">Auth &amp; AuthZ</h4><p style="color:#94a3b8;font-size:14px;line-height:1.6;">JWT validation, API key management, OAuth2 token introspection. Offloads auth from every microservice.</p></div>
                     <div class="feature-card"><div class="feature-icon">⚡</div><h4 style="color:#f1f5f9;margin-bottom:8px;">Rate Limiting</h4><p style="color:#94a3b8;font-size:14px;line-height:1.6;">Per-API-key or per-IP limits. Token bucket / sliding window. Returns 429.</p></div>
                   </div>
                   <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Distributed Transactions: 2PC vs Saga</h3>
-                  <div class="feature-grid" style="grid-template-columns:1fr 1fr;margin-bottom:20px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:20px;">
                     <div class="feature-card" style="border-left:3px solid #f87171;">
                       <h4 style="color:#fca5a5;margin-bottom:10px;">Two-Phase Commit (2PC)</h4>
                       <p style="color:#94a3b8;font-size:14px;line-height:1.7;">Phase 1 (Prepare): coordinator asks all participants "can you commit?" Each locks resources. Phase 2 (Commit/Abort): if all say yes → commit, else abort. <strong style="color:#f87171;">Problems:</strong> Coordinator is SPOF. Locks held during Phase 1 = blocking. Not suitable for microservices across orgs.</p>
@@ -209,7 +209,7 @@
                     </div>
                   </div>
                   <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">CQRS + Event Sourcing</h3>
-                  <div class="feature-grid" style="grid-template-columns:1fr 1fr;margin-bottom:20px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:20px;">
                     <div class="feature-card">
                       <h4 style="color:#f1f5f9;margin-bottom:8px;">Event Sourcing</h4>
                       <p style="color:#94a3b8;font-size:14px;line-height:1.7;">Store sequence of events, not current state. State = replay events. Immutable, append-only log. Benefits: full audit trail, time-travel debugging, replay for new read models. Drawbacks: replay of millions of events is slow (use snapshots); schema evolution of historical events is hard.</p>
@@ -255,7 +255,7 @@
         // CDN-level redirect for ultra-low latency; Bloom filter for non-existent codes</code></pre>
         
                   <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 16px;">Twitter/Social Feed — Fanout Strategies</h3>
-                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-bottom:16px;">
                     <div class="feature-card" style="border-left:3px solid #3b82f6;">
                       <h4 style="color:#60a5fa;margin-bottom:8px;">Fanout on Write (Push)</h4>
                       <p style="color:#94a3b8;font-size:14px;line-height:1.7;">On post, push tweet to all follower timeline caches. Read is O(1). <strong style="color:#f87171;">Celebrity problem:</strong> 10M followers = 10M writes per post.</p>

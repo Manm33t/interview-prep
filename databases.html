@@ -115,7 +115,7 @@
                   <div class="callout callout-warning" style="margin:20px 0;">Denormalization trade-offs: write anomalies (must update all copies), storage cost, consistency risk. Always normalize first, denormalize only when EXPLAIN ANALYZE reveals the JOIN as the actual bottleneck.</div>
         
                   <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:32px 0 12px;">Sharding Strategies</h3>
-                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-bottom:20px;">
                     <div class="feature-card"><h4 style="color:#f1f5f9;margin-bottom:8px;">Range Sharding</h4><p style="color:#94a3b8;font-size:14px;">Shard by key range. Supports range scans. <strong style="color:#f87171;">Hotspot risk:</strong> new writes always hit latest shard.</p></div>
                     <div class="feature-card"><h4 style="color:#f1f5f9;margin-bottom:8px;">Hash Sharding</h4><p style="color:#94a3b8;font-size:14px;">hash(key) % N. Even distribution. <strong style="color:#f87171;">Resharding problem:</strong> adding a shard requires rehashing ~1/N of all data. Use consistent hashing.</p></div>
                     <div class="feature-card"><h4 style="color:#f1f5f9;margin-bottom:8px;">Directory Sharding</h4><p style="color:#94a3b8;font-size:14px;">Lookup service maps entity → shard. Most flexible. <strong style="color:#f87171;">SPOF:</strong> directory service must be cached aggressively.</p></div>
@@ -145,7 +145,7 @@
                     <h2>Transactions, Isolation Levels &amp; Concurrency</h2>
                   </div>
                   <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:0 0 12px;">ACID Deep Dive</h3>
-                  <div class="feature-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:24px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-bottom:24px;">
                     <div class="feature-card"><h4 style="color:#60a5fa;margin-bottom:8px;">Atomicity</h4><p style="color:#94a3b8;font-size:14px;line-height:1.7;">All-or-nothing. Implemented via Write-Ahead Log (WAL) — changes written to WAL first; on crash, incomplete transactions rolled back on recovery.</p></div>
                     <div class="feature-card"><h4 style="color:#34d399;margin-bottom:8px;">Isolation</h4><p style="color:#94a3b8;font-size:14px;line-height:1.7;">Concurrent transactions execute as if serial. Tunable via isolation levels. Full isolation (Serializable) is expensive — most apps use Read Committed or Repeatable Read.</p></div>
                     <div class="feature-card"><h4 style="color:#f59e0b;margin-bottom:8px;">Durability</h4><p style="color:#94a3b8;font-size:14px;line-height:1.7;">Committed data persists after crash. WAL fsync to durable storage. Never use fsync=off in production.</p></div>
@@ -323,7 +323,7 @@
         SELECT now() - pg_last_xact_replay_timestamp() AS replication_lag;</code></pre>
         
                   <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:24px 0 12px;">Index Types & When to Use Each</h3>
-                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));">
                     <div class="feature-card"><h4 style="color:#60a5fa;margin-bottom:6px;">B-Tree (default)</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Equality, range (&lt;, &gt;, BETWEEN), ORDER BY, LIKE 'prefix%'. 99% of use cases. Supports multi-column (composite) indexes.</p></div>
                     <div class="feature-card"><h4 style="color:#60a5fa;margin-bottom:6px;">Hash</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Equality only (=). O(1) lookup vs B-tree's O(log n). Not replicated before PG10. Rarely worth switching from B-tree.</p></div>
                     <div class="feature-card"><h4 style="color:#60a5fa;margin-bottom:6px;">GIN (Generalized Inverted)</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Full-text search (tsvector), JSONB containment (@&gt;), array overlap (&&). Slower to build, fast to query many keys per row.</p></div>

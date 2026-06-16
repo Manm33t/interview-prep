@@ -734,14 +734,58 @@ code:not(pre code) {
 
   .hero-stats { gap: 16px; }
 
-  .feature-grid { grid-template-columns: 1fr 1fr; }
+  /* Override ALL inline grid-template-columns at tablet — max 2 cols */
+  .feature-grid,
+  .feature-grid[style] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* SVG diagrams: allow horizontal scroll rather than overflow clipping */
+  svg {
+    max-width: 100%;
+  }
+
+  /* Wrap tables in a scrollable container */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
 }
 
 @media (max-width: 600px) {
   .section-header { flex-direction: column; align-items: flex-start; gap: 8px; }
   .hero-actions { flex-direction: column; align-items: center; }
-  .feature-grid { grid-template-columns: 1fr; }
-  .hero-stats { gap: 16px; }
+  .hero-stats { gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .hero-title { font-size: 28px; }
+
+  /* Single column for everything on small phones */
+  .feature-grid,
+  .feature-grid[style] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Tighter content padding on phones */
+  .content-wrapper {
+    padding: 0 12px 60px;
+    padding-top: 52px;
+  }
+
+  /* Smaller section headings */
+  .section h2 { font-size: 20px; }
+  .section h3 { font-size: 15px; }
+
+  /* Code blocks: smaller font, still scrollable */
+  pre code {
+    font-size: 11.5px !important;
+    padding: 14px 14px !important;
+  }
+
+  /* Q&A answers: allow taller expansion on mobile */
+  .qa-item.open .qa-answer {
+    max-height: 1200px;
+  }
 }
 
 /* ── hljs overrides ───────────────────────────────────────────── */

@@ -63,7 +63,7 @@ header{display:flex;align-items:center;gap:12px;padding:0 18px;background:var(--
 .phase-pill.active.script{background:var(--cyan);border-color:var(--cyan)}
 
 /* Queue grid */
-.queues-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+.queues-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
 .queue-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;min-height:90px}
 .queue-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:7px 10px 5px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
 .queue-items{padding:6px 8px;display:flex;flex-direction:column;gap:4px;min-height:60px}

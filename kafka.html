@@ -122,7 +122,7 @@
                     </svg>
                   </div>
         
-                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-bottom:20px;">
                     <div class="feature-card"><h4 style="color:#fbbf24;margin-bottom:6px;">Topic &amp; Partition</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">A topic is a named stream. Partitions enable parallelism — each partition is an ordered, immutable log. More partitions = more consumer parallelism, but more overhead.</p></div>
                     <div class="feature-card"><h4 style="color:#fbbf24;margin-bottom:6px;">Offset</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Each message has a monotonically increasing offset per partition. Consumers track their offset — they can replay from any point. Kafka retains messages by time or size, not until consumed.</p></div>
                     <div class="feature-card"><h4 style="color:#fbbf24;margin-bottom:6px;">Consumer Group</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Multiple consumer groups can read the same topic independently. Within a group, each partition is assigned to exactly one consumer — enables horizontal scaling. Max parallelism = num partitions.</p></div>
@@ -196,7 +196,7 @@
         });</code></pre>
         
                   <h3 style="font-size:18px;font-weight:700;color:#f1f5f9;margin:24px 0 12px;">Delivery Semantics</h3>
-                  <div class="feature-grid" style="grid-template-columns:repeat(3,1fr);">
+                  <div class="feature-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));">
                     <div class="feature-card" style="border-left:3px solid #fbbf24;"><h4 style="color:#fcd34d;margin-bottom:6px;">At Most Once</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Commit offset before processing. If consumer crashes mid-processing, message is lost. Use when: losing some events is acceptable (metrics, analytics).</p></div>
                     <div class="feature-card" style="border-left:3px solid #4ade80;"><h4 style="color:#86efac;margin-bottom:6px;">At Least Once</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Process then commit offset. If crash after processing but before commit, message is redelivered. Consumer must be idempotent. Default for most systems.</p></div>
                     <div class="feature-card" style="border-left:3px solid #a78bfa;"><h4 style="color:#c4b5fd;margin-bottom:6px;">Exactly Once</h4><p style="color:#94a3b8;font-size:13px;line-height:1.6;">Kafka Transactions: idempotent producer + transactional.id + read-process-write in one atomic transaction. High overhead. Use for financial systems.</p></div>
